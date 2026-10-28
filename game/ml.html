@@ -1,0 +1,514 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17A897">
+    <title>Top Up Mobile Legends | SakaPay</title>
+
+    <style>
+        :root {
+            --primary: #17A897;
+            --primary-dark: #108779;
+            --bg: #f3f7f7;
+            --text: #18312f;
+            --muted: #71817f;
+            --border: #e1eae8;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .brand {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .brand small {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            opacity: .9;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            padding: 16px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #17A897, #086e65);
+            color: white;
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+
+        .hero .tag {
+            display: inline-block;
+            background: #ffffff25;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .hero h1 {
+            margin: 12px 0 6px;
+            font-size: 23px;
+        }
+
+        .hero p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: .9;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .number {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 9px;
+            background: #e4f8f4;
+            color: var(--primary-dark);
+            font-size: 13px;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 0 0 15px;
+        }
+
+        label.field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin: 14px 0 7px;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .nominal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .nominal {
+            position: relative;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 13px 10px;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        .nominal:has(input:checked) {
+            border: 1.5px solid var(--primary);
+            background: #edfffb;
+        }
+
+        .nominal input {
+            accent-color: var(--primary);
+        }
+
+        .nominal .diamond {
+            display: block;
+            font-size: 13px;
+            font-weight: 750;
+            margin: 9px 0 5px;
+        }
+
+        .nominal .price {
+            font-size: 12px;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .summary-row span {
+            color: var(--muted);
+        }
+
+        .summary-row strong {
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+        .total {
+            font-size: 17px;
+            color: var(--primary-dark);
+        }
+
+        .pay-button {
+            width: 100%;
+            border: 0;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            font-size: 15px;
+            font-weight: 750;
+            padding: 15px;
+            margin-top: 17px;
+            cursor: pointer;
+        }
+
+        .pay-button:active {
+            background: var(--primary-dark);
+        }
+
+        .notice {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 12px 0 28px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 14px;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <a href="../kategori.html" class="back" aria-label="Kembali">←</a>
+    <div class="brand">
+        SakaPay
+        <small>Top Up Game</small>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <span class="tag">GAME TOP UP</span>
+        <h1>Mobile Legends</h1>
+        <p>Isi ulang diamond favoritmu dengan mudah melalui halaman pemesanan SakaPay.</p>
+    </section>
+
+    <form id="orderForm">
+
+        <section class="card">
+            <h2 class="section-title">
+                <span class="number">1</span>
+                Masukkan Data Akun
+            </h2>
+            <p class="hint">Masukkan User ID dan Zone ID yang benar sebelum melanjutkan.</p>
+
+            <div class="input-row">
+                <div>
+                    <label class="field-label" for="userId">User ID</label>
+                    <input
+                        type="text"
+                        id="userId"
+                        inputmode="numeric"
+                        placeholder="Contoh: 123456789"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label class="field-label" for="zoneId">Zone ID</label>
+                    <input
+                        type="text"
+                        id="zoneId"
+                        inputmode="numeric"
+                        placeholder="Contoh: 1234"
+                        required
+                    >
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">
+                <span class="number">2</span>
+                Pilih Diamond
+            </h2>
+            <p class="hint">Pilih satu nominal diamond untuk melihat total harga.</p>
+
+            <div class="nominal-grid">
+
+                <label class="nominal">
+                    <input type="radio" name="nominal"
+                        value="86 Diamond" data-price="20000" required>
+                    <span class="diamond">86 Diamond</span>
+                    <span class="price">Rp20.000</span>
+                </label>
+
+                <label class="nominal">
+                    <input type="radio" name="nominal"
+                        value="172 Diamond" data-price="39000">
+                    <span class="diamond">172 Diamond</span>
+                    <span class="price">Rp39.000</span>
+                </label>
+
+                <label class="nominal">
+                    <input type="radio" name="nominal"
+                        value="257 Diamond" data-price="58000">
+                    <span class="diamond">257 Diamond</span>
+                    <span class="price">Rp58.000</span>
+                </label>
+
+                <label class="nominal">
+                    <input type="radio" name="nominal"
+                        value="344 Diamond" data-price="77000">
+                    <span class="diamond">344 Diamond</span>
+                    <span class="price">Rp77.000</span>
+                </label>
+
+                <label class="nominal">
+                    <input type="radio" name="nominal"
+                        value="429 Diamond" data-price="96000">
+                    <span class="diamond">429 Diamond</span>
+                    <span class="price">Rp96.000</span>
+                </label>
+
+                <label class="nominal">
+                    <input type="radio" name="nominal"
+                        value="706 Diamond" data-price="155000">
+                    <span class="diamond">706 Diamond</span>
+                    <span class="price">Rp155.000</span>
+                </label>
+
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">
+                <span class="number">3</span>
+                Metode Pembayaran
+            </h2>
+
+            <label class="field-label" for="payment">Pilih pembayaran</label>
+            <select id="payment" required>
+                <option value="">Pilih metode pembayaran</option>
+                <option value="QRIS">QRIS</option>
+                <option value="DANA">DANA</option>
+                <option value="GoPay">GoPay</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+            </select>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">
+                <span class="number">4</span>
+                Ringkasan Pesanan
+            </h2>
+
+            <div class="summary-row">
+                <span>Game</span>
+                <strong>Mobile Legends</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>User ID</span>
+                <strong id="sumUser">-</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Zone ID</span>
+                <strong id="sumZone">-</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Nominal</span>
+                <strong id="sumNominal">-</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Pembayaran</span>
+                <strong id="sumPayment">-</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Total</span>
+                <strong class="total" id="sumPrice">Rp0</strong>
+            </div>
+
+            <button type="submit" class="pay-button">
+                Buat Pesanan
+            </button>
+
+            <p class="notice">
+                Demo portofolio SakaPay. Harga hanya contoh dan belum tentu
+                sesuai harga resmi. Tombol ini belum memproses pembayaran
+                sungguhan atau mengirim diamond ke akun.
+            </p>
+
+            <div id="result" role="status" aria-live="polite"></div>
+        </section>
+
+    </form>
+
+    <div class="footer">© SakaPay · Layanan digital</div>
+</main>
+
+<script>
+const form = document.getElementById("orderForm");
+
+const userId = document.getElementById("userId");
+const zoneId = document.getElementById("zoneId");
+const payment = document.getElementById("payment");
+
+const formatRupiah = angka =>
+    "Rp" + angka.toLocaleString("id-ID");
+
+function updateSummary() {
+    const selected = document.querySelector(
+        'input[name="nominal"]:checked'
+    );
+
+    document.getElementById("sumUser").textContent =
+        userId.value.trim() || "-";
+
+    document.getElementById("sumZone").textContent =
+        zoneId.value.trim() || "-";
+
+    document.getElementById("sumNominal").textContent =
+        selected ? selected.value : "-";
+
+    document.getElementById("sumPayment").textContent =
+        payment.value || "-";
+
+    document.getElementById("sumPrice").textContent =
+        selected
+            ? formatRupiah(Number(selected.dataset.price))
+            : "Rp0";
+}
+
+form.addEventListener("input", updateSummary);
+form.addEventListener("change", updateSummary);
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const selected = document.querySelector(
+        'input[name="nominal"]:checked'
+    );
+
+    if (!selected) {
+        return;
+    }
+
+    const orderId = "SP" + Date.now().toString().slice(-8);
+
+    const result = document.getElementById("result");
+    result.style.marginTop = "14px";
+    result.style.padding = "12px";
+    result.style.borderRadius = "10px";
+    result.style.background = "#eafffb";
+    result.style.color = "#106b60";
+
+    result.textContent =
+        "Pesanan demo " + orderId +
+        " berhasil dibuat. Belum ada pembayaran yang diproses.";
+
+    result.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+});
+
+updateSummary();
+</script>
+
+</body>
+</html>

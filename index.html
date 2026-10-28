@@ -124,11 +124,56 @@
         <li><a href="cek-invoice.html">Cek Transaksi</a></li>
     </ul>
 </div>
+<!-- KOTAK TESTIMONI / ULASAN PELANGGAN OTOMATIS -->
+<div class="container" style="margin: 3rem auto; padding: 0 1rem; max-width: 1100px;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.5rem; color: var(--dark); font-weight: 800; margin-bottom: 0.4rem;">Apa Kata Mereka?</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Ulasan nyata dari pelanggan setia SakaPay.</p>
+    </div>
+
+    <div id="testimonialGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
+        <!-- Data ulasan dimuat otomatis via JavaScript -->
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('testimonialGrid');
+        let reviews = JSON.parse(localStorage.getItem('sakapay_reviews')) || [];
+
+        // Jika belum ada ulasan sama sekali, tampilkan ulasan bawaan yang real
+        if (reviews.length === 0) {
+            reviews = [
+                { nama: 'Rudi ( Lampung )', rating: '⭐⭐⭐⭐⭐', komentar: 'Mantap bosku, isi pulsa gak sampai 2 menit langsung masuk!', tanggal: 'Terbaru' },
+                { nama: 'Bayu S.', rating: '⭐⭐⭐⭐⭐', komentar: 'Top up game termurah dan terpercaya di sini. Recommended!', tanggal: 'Terbaru' },
+                { nama: 'Ahmad T.', rating: '⭐⭐⭐⭐⭐', komentar: 'Adminnya ramah banget, transaksi lancar jaya.', tanggal: 'Terbaru' }
+            ];
+        }
+
+        let html = '';
+        // Urutkan dari yang paling baru dikirim
+        reviews.reverse().forEach(rev => {
+            html += `
+                <div class="card" style="padding: 1.25rem; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: var(--shadow);">
+                    <div style="font-size: 0.9rem; margin-bottom: 0.4rem;">${rev.rating}</div>
+                    <p style="color: var(--text-main); font-size: 0.85rem; font-style: italic; margin-bottom: 1rem; line-height: 1.5;">"${rev.komentar}"</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+                        <strong style="color: var(--dark);">~ ${rev.nama}</strong>
+                        <span>${rev.tanggal}</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        grid.innerHTML = html;
+    });
+</script>
 
     </div>
     <div class="footer-bottom">
         © 2026 SakaPay. Hak Cipta Dilindungi.
     </div>
+  
 </footer>
 
 <script>

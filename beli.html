@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beli Produk - SakaPay</title>
+    <style>
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 90px;
+            color: #1e293b;
+        }
+        /* Header Atas */
+        .header {
+            background: #17A897;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .back-arrow {
+            font-size: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 15px auto;
+            padding: 0 15px;
+        }
+
+        /* Banner Info Produk / Game */
+        .product-banner {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .product-icon {
+            font-size: 36px;
+            background: #f0fdf4;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: #0f172a;
+        }
+        .product-info p {
+            margin: 0;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Kotak Section Form */
+        .section-box {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f172a;
+        }
+        .step-badge {
+            background: #e2e8f0;
+            color: #17A897;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background: #f8fafc;
+            margin-top: 5px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #17A897;
+            background: #fff;
+        }
+
+        /* Grid Pilihan Nominal (Kotak-kotak) */
+        .nominal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .nominal-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .nominal-card.selected {
+            border-color: #17A897;
+            background: #f0fdf4;
+        }
+        .nominal-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        .nominal-price {
+            font-size: 13px;
+            color: #e11d48;
+            font-weight: bold;
+        }
+        .nominal-price span {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: normal;
+        }
+
+        /* Footer / Bar Bawah untuk Checkout */
+        .footer-checkout {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .price-summary span {
+            font-size: 11px;
+            color: #64748b;
+            display: block;
+        }
+        .price-summary h4 {
+            margin: 0;
+            color: #e11d48;
+            font-size: 18px;
+        }
+        .btn-buy {
+            background: #17A897;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(23, 168, 151, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Atas -->
+    <div class="header">
+        <a href="pesan.html" class="back-arrow">←</a>
+        <h2 id="namaProdukHeader">Detail Pembelian</h2>
+    </div>
+
+    <div class="container">
+        
+        <!-- Banner Produk & Foto -->
+        <div class="product-banner">
+            <div class="product-icon" id="bannerIcon">🎮</div>
+            <div class="product-info">
+                <h3 id="bannerTitle">Memuat Produk...</h3>
+                <p>Proses instan & otomatis 24 Jam di SakaPay</p>
+            </div>
+        </div>
+
+        <!-- STEP 1: Masukkan Akun / Tujuan -->
+        <div class="section-box">
+            <div class="section-title">
+                <span class="step-badge">1</span> Masukkan Data Akun / Tujuan
+            </div>
+            <div id="inputAreaTujuan">
+                <!-- Berubah otomatis: ID Game (ML/PUBG pakai ID+Server) atau No HP -->
+            </div>
+            <small style="color: #64748b; font-size: 11px; margin-top: 5px; display: block;">Pastikan data akun sudah benar sebelum melanjutkan.</small>
+        </div>
+
+        <!-- STEP 2: Pilih Nominal (Grid Card) -->
+        <div class="section-box">
+            <div class="section-title" style="margin-bottom: 12px;">
+                <span class="step-badge">2</span> Pilih Nominal / Item
+            </div>
+            
+            <div class="nominal-grid" id="gridNominal">
+                <!-- Data pilihan nominal diisi dinamis via JS -->
+            </div>
+        </div>
+
+        <!-- STEP 3: Metode Pembayaran -->
+        <div class="section-box">
+            <div class="section-title">
+                <span class="step-badge">3</span> Pilih Metode Pembayaran
+            </div>
+            <select id="metodeBayar">
+                <option value="QRIS Otomatis">QRIS (Otomatis & Bebas Biaya Admin)</option>
+                <option value="GoPay / DANA">GoPay / DANA</option>
+                <option value="Transfer Bank BCA/BRI">Transfer Bank BCA / BRI</option>
+            </select>
+        </div>
+
+    </div>
+
+    <!-- Footer Checkout Melayang -->
+    <div class="footer-checkout">
+        <div class="price-summary">
+            <span>Total Pembayaran</span>
+            <h4 id="totalHargaText">Rp 0</h4>
+        </div>
+        <button class="btn-buy" onclick="prosesBeli()">Beli Sekarang</button>
+    </div>
+
+    <script>
+        // Tangkap nama produk dari URL (Contoh: beli.html?produk=Free%20Fire)
+        const urlParams = new URLSearchParams(window.location.search);
+        const namaProduk = urlParams.get('produk') || 'Free Fire Global';
+
+        document.getElementById('namaProdukHeader').innerText = namaProduk;
+        document.getElementById('bannerTitle').innerText = namaProduk;
+
+        // Atur ikon banner berdasarkan produk
+        let iconBanner = '🔥';
+        if (namaProduk.includes('Mobile Legends')) iconBanner = '⚔️';
+        else if (namaProduk.includes('PUBG')) iconBanner = '🎯';
+        else if (namaProduk.includes('Telkomsel') || namaProduk.includes('XL') || namaProduk.includes('Pulsa')) iconBanner = '📱';
+        else if (namaProduk.includes('DANA') || namaProduk.includes('OVO')) iconBanner = '💳';
+        document.getElementById('bannerIcon').innerText = iconBanner;
+
+        // Atur Input Form (Game pakai ID+Server, Pulsa pakai No HP)
+        const inputArea = document.getElementById('inputAreaTujuan');
+        if (namaProduk.includes('Mobile Legends') || namaProduk.includes('PUBG')) {
+            inputArea.innerHTML = `
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="idPlayer" placeholder="User ID (Cth: 77539363)" style="flex: 2;">
+                    <input type="text" id="serverGame" placeholder="Zone ID (Cth: 12109)" style="flex: 1;">
+                </div>
+            `;
+        } else if (namaProduk.includes('Token PLN')) {
+            inputArea.innerHTML = `
+                <input type="number" id="noTujuan" placeholder="Masukkan Nomor Meter / ID Pelanggan">
+            `;
+        } else {
+            inputArea.innerHTML = `
+                <input type="number" id="noTujuan" placeholder="Masukkan Nomor HP / Akun Tujuan">
+            `;
+        }
+
+        // Daftar Pilihan Nominal Dummy (Bisa disesuaikan)
+        let daftarNominal = [
+            { nama: "70 Diamonds / 10k", harga: 10000, label: "70 Items" },
+            { nama: "100 Diamonds / 18k", harga: 18999, label: "100 Items" },
+            { nama: "140 Diamonds / 20k", harga: 20000, label: "140 Items" },
+            { nama: "210 Diamonds / 38k", harga: 38799, label: "210 Items" },
+            { nama: "355 Diamonds / 50k", harga: 50000, label: "355 Items" },
+            { nama: "520 Diamonds / 94k", harga: 94599, label: "520 Items" }
+        ];
+
+        if (namaProduk.includes('Pulsa') || namaProduk.includes('Telkomsel') || namaProduk.includes('XL')) {
+            daftarNominal = [
+                { nama: "Pulsa 10.000", harga: 12000, label: "Pulsa 10k" },
+                { nama: "Pulsa 20.000", harga: 22000, label: "Pulsa 20k" },
+                { nama: "Pulsa 50.000", harga: 52000, label: "Pulsa 50k" },
+                { nama: "Pulsa 100.000", harga: 102000, label: "Pulsa 100k" }
+            ];
+        }
+
+        let produkPilihan = {
+            item: daftarNominal[0].nama,
+            harga: daftarNominal[0].harga
+        };
+
+        function muatNominal() {
+            const grid = document.getElementById('gridNominal');
+            grid.innerHTML = '';
+
+            daftarNominal.forEach((item, index) => {
+                let card = document.createElement('div');
+                let isSelected = index === 0 ? 'selected' : '';
+                card.className = `nominal-card ${isSelected}`;
+                
+                card.innerHTML = `
+                    <div class="nominal-name">${item.nama}</div>
+                    <div class="nominal-price"><span>Harga</span> Rp ${item.harga.toLocaleString('id-ID')}</div>
+                `;
+
+                card.onclick = () => {
+                    document.querySelectorAll('.nominal-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    
+                    produkPilihan.item = item.nama;
+                    produkPilihan.harga = item.harga;
+
+                    document.getElementById('totalHargaText').innerText = 'Rp ' + item.harga.toLocaleString('id-ID');
+                };
+
+                grid.appendChild(card);
+            });
+
+            document.getElementById('totalHargaText').innerText = 'Rp ' + produkPilihan.harga.toLocaleString('id-ID');
+        }
+
+        function prosesBeli() {
+            let tujuanFinal = '';
+            if (namaProduk.includes('Mobile Legends') || namaProduk.includes('PUBG')) {
+                let id = document.getElementById('idPlayer').value.trim();
+                let server = document.getElementById('serverGame').value.trim();
+                if (!id) {
+                    alert('Harap masukkan User ID terlebih dahulu!');
+                    return;
+                }
+                tujuanFinal = id + (server ? ' (' + server + ')' : '');
+            } else {
+                let no = document.getElementById('noTujuan').value.trim();
+                if (!no) {
+                    alert('Harap masukkan nomor tujuan terlebih dahulu!');
+                    return;
+                }
+                tujuanFinal = no;
+            }
+
+            let metode = document.getElementById('metodeBayar').value;
+            let invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+
+            let dataInvoice = {
+                id: invoiceId,
+                layanan: namaProduk + ' - ' + produkPilihan.item,
+                tujuan: tujuanFinal,
+                nominal: produkPilihan.item,
+                harga: produkPilihan.harga,
+                metode: metode,
+                status: 'Menunggu Pembayaran',
+                tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+            };
+
+            // Simpan ke LocalStorage agar otomatis terbaca di invoice.html & admin.html
+            localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
+
+            // Lempar ke halaman invoice
+            window.location.href = 'invoice.html?id=' + invoiceId;
+        }
+
+        window.onload = () => {
+            muatNominal();
+        };
+    </script>
+</body>
+</html>
