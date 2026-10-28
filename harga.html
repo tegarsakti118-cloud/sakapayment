@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Harga - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <i data-lucide="zap" style="color: var(--primary); width: 20px; height: 20px;"></i> SakaPay
+        </a>
+        
+        <div class="nav-right">
+            <a href="pesan.html" class="btn-primary">
+                <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan
+            </a>
+            <button class="menu-toggle" id="menu-btn">
+                <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+            </button>
+        </div>
+
+        <ul class="nav-links" id="nav-menu">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="layanan.html">Layanan</a></li>
+    <li><a href="harga.html">Harga</a></li>
+    <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Container Harga -->
+<div class="container">
+    <div style="margin-bottom: 2rem; text-align: center;">
+        <h1 style="color: var(--dark); font-size: 1.75rem; margin-bottom: 0.5rem;">Daftar Harga Resmi SakaPay</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Informasi harga produk digital, pulsa, token, dan game terupdate.</p>
+    </div>
+
+    <!-- Tabel Kategori 1: Pulsa & Paket Data -->
+    <div style="background: var(--white); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);">
+        <h2 style="font-size: 1.1rem; color: var(--dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">
+            <i data-lucide="smartphone" style="color: var(--primary); width: 18px; height: 18px;"></i> Pulsa & Paket Data
+        </h2>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 300px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted);">
+                        <th style="padding: 0.5rem;">Produk</th>
+                        <th style="padding: 0.5rem;">Harga</th>
+                        <th style="padding: 0.5rem; text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">Telkomsel 10.000</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 11.500</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">Telkomsel 25.000</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 26.500</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">Indosat Freedom 5GB</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 22.000</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tabel Kategori 2: Token PLN -->
+    <div style="background: var(--white); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);">
+        <h2 style="font-size: 1.1rem; color: var(--dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">
+            <i data-lucide="zap" style="color: var(--primary); width: 18px; height: 18px;"></i> Token PLN
+        </h2>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 300px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted);">
+                        <th style="padding: 0.5rem;">Produk</th>
+                        <th style="padding: 0.5rem;">Harga</th>
+                        <th style="padding: 0.5rem; text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">Token PLN 20.000</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 21.500</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">Token PLN 50.000</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 51.500</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tabel Kategori 3: Voucher Game & E-Wallet -->
+    <div style="background: var(--white); border-radius: var(--radius); border: 1px solid var(--border-color); padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);">
+        <h2 style="font-size: 1.1rem; color: var(--dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem;">
+            <i data-lucide="gamepad-2" style="color: var(--primary); width: 18px; height: 18px;"></i> Voucher Game & E-Wallet
+        </h2>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 300px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted);">
+                        <th style="padding: 0.5rem;">Produk</th>
+                        <th style="padding: 0.5rem;">Harga</th>
+                        <th style="padding: 0.5rem; text-align: right;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">Mobile Legends 86 Diamonds</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 21.000</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">Free Fire 140 Diamonds</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 19.500</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.6rem; font-weight: 600; color: var(--dark);">DANA / OVO Top Up 50.000</td>
+                        <td style="padding: 0.6rem; font-weight: 700; color: var(--primary);">Rp 51.000</td>
+                        <td style="padding: 0.6rem; text-align: right;"><a href="pesan.html" class="btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Pesan</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-col">
+            <h5>SakaPay</h5>
+            <p style="color: #94a3b8; font-size: 0.85rem;">Solusi pembayaran digital PPOB dan game terlengkap di genggaman Anda.</p>
+        </div>
+        <div class="footer-col">
+    <h5>Navigasi Cepat</h5>
+    <ul>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="layanan.html">Layanan</a></li>
+        <li><a href="harga.html">Harga</a></li>
+        <li><a href="tentang.html">Tentang Kami</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+        <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+    </ul>
+</div>
+
+    </div>
+    <div class="footer-bottom">
+        © 2026 SakaPay. Hak Cipta Dilindungi.
+    </div>
+</footer>
+
+<script>
+    lucide.createIcons();
+
+    // Script Toggle Menu Hamburger
+    const menuBtn = document.getElementById('menu-btn');
+    const navMenu = document.getElementById('nav-menu');
+
+    menuBtn.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+</script>
+</body>
+</html>

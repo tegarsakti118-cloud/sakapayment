@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Status Transaksi - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <a href="index.html" class="logo"><i data-lucide="zap" style="color: var(--primary); width: 20px; height: 20px;"></i> SakaPay</a>
+        <div class="nav-right">
+            <a href="pesan.html" class="btn-primary"><i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan</a>
+            <button class="menu-toggle" id="menu-btn"><i data-lucide="menu" style="width: 20px; height: 20px;"></i></button>
+        </div>
+        <ul class="nav-links" id="nav-menu">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="layanan.html">Layanan</a></li>
+    <li><a href="harga.html">Harga</a></li>
+    <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container" style="max-width: 600px;">
+    <div style="margin-bottom: 1.5rem; text-align: center;">
+        <h1 style="color: var(--dark); font-size: 1.5rem; margin-bottom: 0.4rem;">Cek Status Transaksi</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Masukkan nomor invoice Anda untuk melacak status pesanan.</p>
+    </div>
+
+    <div class="card" style="padding: 1.5rem;">
+        <form id="checkForm" onsubmit="searchInvoice(event)">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 0.4rem;">Nomor Invoice</label>
+                <input type="text" id="searchId" class="form-control" placeholder="Contoh: SKP-123456" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 0.9rem;">
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.6rem; font-size: 0.85rem;">
+                <i data-lucide="search" style="width: 16px; height: 16px;"></i> Cek Status
+            </button>
+        </form>
+
+        <!-- Hasil Pencarian -->
+        <div id="searchResult" style="display: none; margin-top: 1.5rem; background: #f8fafc; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius);">
+            <h3 style="font-size: 1rem; color: var(--dark); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px;">
+                <i data-lucide="info" style="width: 16px; height: 16px; color: var(--primary);"></i> Hasil Pencarian
+            </h3>
+            <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                <p><strong>No. Invoice:</strong> <span id="resNo">-</span></p>
+                <p><strong>Produk:</strong> <span id="resProd">-</span></p>
+                <p><strong>Tujuan:</strong> <span id="resTarget">-</span></p>
+                <p><strong>Total:</strong> <span id="resPrice" style="color: var(--primary); font-weight: 700;">-</span></p>
+                <p><strong>Metode:</strong> <span id="resMethod">-</span></p>
+                <p><strong>Status:</strong> <span id="resStatus" style="color: #ca8a04; font-weight: 600;">-</span></p>
+            </div>
+            <div style="margin-top: 1rem;">
+                <a id="detailLink" href="#" class="btn-primary" style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 0.4rem;">Buka Nota Invoice Lengkap</a>
+            </div>
+        </div>
+
+        <div id="errorResult" style="display: none; margin-top: 1.5rem; background: #fef2f2; border: 1px solid #fecaca; padding: 1rem; border-radius: var(--radius); color: #991b1b; font-size: 0.85rem; text-align: center;">
+            Nomor invoice tidak ditemukan. Pastikan nomor yang dimasukkan benar!
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-col">
+            <h5>SakaPay</h5>
+            <p style="color: #94a3b8; font-size: 0.85rem;">Solusi pembayaran digital PPOB dan game terlengkap.</p>
+        </div>
+        <div class="footer-col">
+    <h5>Navigasi Cepat</h5>
+    <ul>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="layanan.html">Layanan</a></li>
+        <li><a href="harga.html">Harga</a></li>
+        <li><a href="tentang.html">Tentang Kami</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+        <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+    </ul>
+</div>
+
+    </div>
+    <div class="footer-bottom">© 2026 SakaPay. Hak Cipta Dilindungi.</div>
+</footer>
+
+<script>
+    lucide.createIcons();
+    document.getElementById('menu-btn').addEventListener('click', () => {
+        document.getElementById('nav-menu').classList.toggle('active');
+    });
+
+    function searchInvoice(event) {
+        event.preventDefault();
+        const query = document.getElementById('searchId').value.trim();
+        
+        const dataJson = localStorage.getItem(query);
+        const searchResult = document.getElementById('searchResult');
+        const errorResult = document.getElementById('errorResult');
+
+        if (dataJson) {
+            const data = JSON.parse(dataJson);
+            document.getElementById('resNo').innerText = data.id;
+            document.getElementById('resProd').innerText = data.produk;
+            document.getElementById('resTarget').innerText = data.tujuan;
+            document.getElementById('resPrice').innerText = data.harga;
+            document.getElementById('resMethod').innerText = data.metode;
+            document.getElementById('resStatus').innerText = data.status;
+            document.getElementById('detailLink').href = `invoice.html?id=${data.id}`;
+
+            searchResult.style.display = 'block';
+            errorResult.style.display = 'none';
+            lucide.createIcons();
+        } else {
+            searchResult.style.display = 'none';
+            errorResult.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <a href="index.html" class="logo">
+            <i data-lucide="zap" style="color: var(--primary); width: 20px; height: 20px;"></i> SakaPay
+        </a>
+        
+        <div class="nav-right">
+            <a href="pesan.html" class="btn-primary">
+                <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan
+            </a>
+            <button class="menu-toggle" id="menu-btn">
+                <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+            </button>
+        </div>
+
+        <ul class="nav-links" id="nav-menu">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="layanan.html">Layanan</a></li>
+    <li><a href="harga.html">Harga</a></li>
+    <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Container Tentang Kami -->
+<div class="container" style="max-width: 800px;">
+    <div style="margin-bottom: 2rem; text-align: center;">
+        <h1 style="color: var(--dark); font-size: 1.75rem; margin-bottom: 0.5rem;">Tentang SakaPay</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Solusi terpercaya untuk kebutuhan pembayaran digital dan PPOB Anda.</p>
+    </div>
+
+    <div class="card" style="padding: 2rem; margin-bottom: 1.5rem;">
+        <h3 style="color: var(--dark); font-size: 1.2rem; margin-bottom: 0.75rem;">Siapa Kami?</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.7;">
+            <strong>SakaPay</strong> adalah platform layanan pembayaran digital dan PPOB (Payment Point Online Bank) yang didirikan untuk memberikan kemudahan, kecepatan, dan keamanan dalam setiap transaksi kebutuhan digital harian Anda. Mulai dari pulsa reguler, paket data internet, token PLN, voucher game populer, hingga pengisian saldo e-wallet.
+        </p>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;">
+            Kami berkomitmen untuk menghadirkan pengalaman bertransaksi yang praktis langsung dari genggaman tangan Anda, didukung dengan sistem otomatis 24 jam dan pelayanan yang ramah.
+        </p>
+    </div>
+
+    <div class="features-grid" style="margin-bottom: 2rem;">
+        <div class="feature-item">
+            <i data-lucide="shield-check" style="color: var(--primary); margin-bottom: 0.5rem; width: 24px; height: 24px;"></i>
+            <h4>Aman & Terpercaya</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Setiap transaksi tercatat dengan transparan menggunakan sistem invoice digital.</p>
+        </div>
+        <div class="feature-item">
+            <i data-lucide="zap" style="color: var(--primary); margin-bottom: 0.5rem; width: 24px; height: 24px;"></i>
+            <h4>Proses Cepat</h4>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Layanan diproses secara instan setelah konfirmasi pembayaran diterima.</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-col">
+            <h5>SakaPay</h5>
+            <p style="color: #94a3b8; font-size: 0.85rem;">Solusi pembayaran digital PPOB dan game terlengkap di genggaman Anda.</p>
+        </div>
+        <div class="footer-col">
+    <h5>Navigasi Cepat</h5>
+    <ul>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="layanan.html">Layanan</a></li>
+        <li><a href="harga.html">Harga</a></li>
+        <li><a href="tentang.html">Tentang Kami</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+        <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+    </ul>
+</div>
+
+    </div>
+    <div class="footer-bottom">
+        © 2026 SakaPay. Hak Cipta Dilindungi.
+    </div>
+</footer>
+
+<script>
+    lucide.createIcons();
+
+    // Script Toggle Menu Hamburger
+    const menuBtn = document.getElementById('menu-btn');
+    const navMenu = document.getElementById('nav-menu');
+
+    menuBtn.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+</script>
+</body>
+</html>

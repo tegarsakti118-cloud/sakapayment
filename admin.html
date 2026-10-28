@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin Clean - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --bg-body: #f8fafc;
+            --border: #e2e8f0;
+            --sidebar-bg: #ffffff;
+            --active-bg: #f0fdf4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg-body); color: var(--dark); overflow-x: hidden; }
+
+        /* Layout Main */
+        .admin-layout { display: flex; min-height: 100vh; width: 100%; }
+
+        /* Sidebar Clean Modern */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-menu {
+            padding: 1rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-body);
+            color: var(--dark);
+        }
+
+        .nav-item.active {
+            background: var(--active-bg);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-item.logout {
+            color: #ef4444;
+        }
+        .nav-item.logout:hover {
+            background: #fef2f2;
+        }
+
+        /* Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        /* Top Bar Mobile (Hamburger dipindah ke KIRI) */
+        .mobile-header {
+            display: none;
+            background: var(--white);
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        /* Overlay gelap saat sidebar HP terbuka */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 95;
+        }
+        .sidebar-overlay.show { display: block; }
+
+        /* Stats Card Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .stat-card span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-card h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Table Clean UI */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left; }
+        th, td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        th { background: #f8fafc; color: var(--text-muted); font-weight: 600; font-size: 0.725rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Badge Status */
+        .badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge-pending { background: #fef9c3; color: #854d0e; }
+        .badge-process { background: #e0f2fe; color: #0369a1; }
+        .badge-success { background: #dcfce7; color: #15803d; }
+
+        /* Actions */
+        .btn-action {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.725rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-action.success { background: var(--primary); color: #fff; border: none; }
+        .btn-action.danger { color: #ef4444; border-color: #fca5a5; }
+
+        /* Responsive Mobile Layout */
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PROTEKSI LOGIN -->
+<script>
+    if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+        alert('Akses ditolak! Silakan login terlebih dahulu.');
+        window.location.href = 'login-admin.html';
+    }
+</script>
+
+<!-- Overlay Gelap -->
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Mobile Header (Hamburger di KIRI) -->
+<div class="mobile-header">
+    <button onclick="toggleSidebar()" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; color: var(--dark);">
+        <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+    </button>
+    <div style="font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 6px; font-size: 1.1rem;">
+        <i data-lucide="zap" style="width: 18px; height: 18px;"></i> SakaPay Admin
+    </div>
+</div>
+
+<div class="admin-layout">
+    
+    <!-- SIDEBAR CLEAN -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i data-lucide="zap"></i> SakaPay
+        </div>
+        
+        <nav class="sidebar-menu">
+            <a class="nav-item active" onclick="switchTab('dashboard', event)">
+                <i data-lucide="layout-dashboard" style="width: 18px;"></i> Dashboard
+            </a>
+            <a class="nav-item" onclick="switchTab('pesan', event)">
+                <i data-lucide="shopping-cart" style="width: 18px;"></i> Pesanan
+            </a>
+            <a class="nav-item" onclick="switchTab('produk', event)">
+                <i data-lucide="package" style="width: 18px;"></i> Produk & Harga
+            </a>
+            <a class="nav-item" onclick="switchTab('pembayaran', event)">
+                <i data-lucide="credit-card" style="width: 18px;"></i> Verifikasi
+            </a>
+            <a class="nav-item" onclick="switchTab('pengaturan', event)">
+                <i data-lucide="settings" style="width: 18px;"></i> Pengaturan
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a class="nav-item logout" onclick="logoutAdmin()">
+                <i data-lucide="log-out" style="width: 18px;"></i> Keluar
+            </a>
+        </div>
+    </aside>
+
+    <!-- KONTEN UTAMA -->
+    <main class="main-content">
+        
+        <!-- TAB 1: DASHBOARD UTAMA -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div style="margin-bottom: 1.25rem;">
+                <h1 style="font-size: 1.35rem; color: var(--dark); font-weight: 700;">Ringkasan Usaha</h1>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">Pantau performa SakaPay hari ini secara aktual.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span>Total Pesanan</span>
+                    <h2 id="statTotal">0</h2>
+                </div>
+                <div class="stat-card">
+                    <span>Menunggu Diproses</span>
+                    <h2 id="statPending" style="color: #ca8a04;">0</h2>
+                </div>
+                <div class="stat-card">
+                    <span>Pesanan Selesai</span>
+                    <h2 id="statCompleted" style="color: #16a34a;">0</h2>
+                </div>
+                <div class="stat-card">
+                    <span>Total Pendapatan</span>
+                    <h2 id="statRevenue" style="color: var(--primary);">Rp 0</h2>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius);">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;">5 Pesanan Terbaru</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Tanggal</th>
+                                <th>Produk</th>
+                                <th>Tujuan</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrderTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: MANAJEMEN PESANAN -->
+        <div id="tab-pesan" class="tab-content">
+            <div style="margin-bottom: 1.25rem;">
+                <h1 style="font-size: 1.35rem; color: var(--dark); font-weight: 700;">Manajemen Pesanan</h1>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">Cari dan perbarui status transaksi dari pelanggan.</p>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius);">
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <input type="text" id="searchInvoice" placeholder="Cari No. Invoice / Nomor HP..." oninput="filterOrders()" style="flex: 1; min-width: 180px; padding: 0.55rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem;">
+                    <select id="filterStatus" onchange="filterOrders()" style="padding: 0.55rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem;">
+                        <option value="">Semua Status</option>
+                        <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+                        <option value="Diproses">Diproses</option>
+                        <option value="Selesai">Selesai</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Produk</th>
+                                <th>Tujuan</th>
+                                <th>Total</th>
+                                <th>Metode</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fullOrderTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PRODUK & HARGA -->
+        <div id="tab-produk" class="tab-content">
+            <div style="margin-bottom: 1.25rem;">
+                <h1 style="font-size: 1.35rem; color: var(--dark); font-weight: 700;">Produk dan Harga</h1>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">Atur penawaran dan harga layanan SakaPay.</p>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-width: 600px;">
+                <form onsubmit="alert('Produk baru berhasil disimpan!'); return false;">
+                    <div style="margin-bottom: 0.85rem;">
+                        <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Nama Layanan / Produk</label>
+                        <input type="text" placeholder="Contoh: Telkomsel 10.000" required style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem;">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Harga Jual (Rp)</label>
+                        <input type="number" placeholder="11500" required style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="padding: 0.55rem 1rem; font-size: 0.85rem;">Tambah Produk</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB 4: VERIFIKASI PEMBAYARAN -->
+        <div id="tab-pembayaran" class="tab-content">
+            <div style="margin-bottom: 1.25rem;">
+                <h1 style="font-size: 1.35rem; color: var(--dark); font-weight: 700;">Verifikasi Pembayaran</h1>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">Konfirmasi transaksi yang uangnya sudah masuk ke mutasi bank/e-wallet Anda.</p>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius);">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice</th>
+                                <th>Total</th>
+                                <th>Metode</th>
+                                <th>Status</th>
+                                <th>Tindakan Konfirmasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: PENGATURAN -->
+        <div id="tab-pengaturan" class="tab-content">
+            <div style="margin-bottom: 1.25rem;">
+                <h1 style="font-size: 1.35rem; color: var(--dark); font-weight: 700;">Pengaturan Sistem</h1>
+                <p style="color: var(--text-muted); font-size: 0.8rem;">Kelola identitas brand dan kontak admin.</p>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); max-width: 500px;">
+                <form onsubmit="alert('Pengaturan tersimpan!'); return false;">
+                    <div style="margin-bottom: 1rem;">
+                        <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Nomor WhatsApp Admin</label>
+                        <input type="text" value="6281234567890" style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="padding: 0.55rem 1rem; font-size: 0.85rem;">Simpan Pengaturan</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    // Toggle Mobile Sidebar & Overlay
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('show');
+        document.getElementById('overlay').classList.toggle('show');
+    }
+
+    // Switch Tab
+    function switchTab(tabId, event) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById('tab-' + tabId).classList.add('active');
+        if (event) event.currentTarget.classList.add('active');
+        
+        // Tutup sidebar di mobile saat menu dipilih
+        document.getElementById('sidebar').classList.remove('show');
+        document.getElementById('overlay').classList.remove('show');
+        lucide.createIcons();
+    }
+
+    // Load Data Transaksi dari LocalStorage
+    function loadOrders() {
+        let orders = [];
+        let totalToday = 0, pendingCount = 0, completedCount = 0, revenue = 0;
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('SKP-')) {
+                const data = JSON.parse(localStorage.getItem(key));
+                orders.push(data);
+
+                totalToday++;
+                if (data.status === 'Menunggu Pembayaran') pendingCount++;
+                if (data.status === 'Selesai') {
+                    completedCount++;
+                    let cleanPrice = parseInt(data.harga.replace(/[^0-9]/g, '')) || 0;
+                    revenue += cleanPrice;
+                }
+            }
+        }
+
+        document.getElementById('statTotal').innerText = totalToday;
+        document.getElementById('statPending').innerText = pendingCount;
+        document.getElementById('statCompleted').innerText = completedCount;
+        document.getElementById('statRevenue').innerText = 'Rp ' + revenue.toLocaleString('id-ID');
+
+        renderTables(orders);
+    }
+
+    function getBadgeClass(status) {
+        if (status === 'Selesai') return 'badge-success';
+        if (status === 'Diproses') return 'badge-process';
+        return 'badge-pending';
+    }
+
+    function renderTables(dataList) {
+        let recentHtml = '', fullHtml = '', payHtml = '';
+        dataList.reverse();
+
+        dataList.forEach((data, index) => {
+            let badgeClass = getBadgeClass(data.status);
+
+            if (index < 5) {
+                recentHtml += `
+                    <tr>
+                        <td><strong>${data.id}</strong></td>
+                        <td>${data.tanggal || '-'}</td>
+                        <td>${data.produk}</td>
+                        <td>${data.tujuan}</td>
+                        <td>${data.harga}</td>
+                        <td><span class="badge ${badgeClass}">${data.status}</span></td>
+                    </tr>
+                `;
+            }
+
+            fullHtml += `
+                <tr>
+                    <td><strong>${data.id}</strong></td>
+                    <td>${data.produk}</td>
+                    <td>${data.tujuan}</td>
+                    <td>${data.harga}</td>
+                    <td>${data.metode}</td>
+                    <td><span class="badge ${badgeClass}">${data.status}</span></td>
+                    <td>
+                        <button onclick="updateStatus('${data.id}', 'Selesai')" class="btn-action success">Selesaikan</button>
+                        <button onclick="deleteOrder('${data.id}')" class="btn-action danger">Hapus</button>
+                    </td>
+                </tr>
+            `;
+
+            if (data.status === 'Menunggu Pembayaran') {
+                payHtml += `
+                    <tr>
+                        <td><strong>${data.id}</strong></td>
+                        <td>${data.harga}</td>
+                        <td>${data.metode}</td>
+                        <td><span class="badge ${badgeClass}">${data.status}</span></td>
+                        <td>
+                            <button onclick="updateStatus('${data.id}', 'Selesai')" class="btn-action success">Uang Sudah Masuk (Selesaikan)</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        });
+
+        document.getElementById('recentOrderTable').innerHTML = recentHtml || '<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">Belum ada transaksi.</td></tr>';
+        document.getElementById('fullOrderTable').innerHTML = fullHtml || '<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">Belum ada transaksi.</td></tr>';
+        document.getElementById('paymentTable').innerHTML = payHtml || '<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">Tidak ada pembayaran yang perlu diverifikasi.</td></tr>';
+    }
+
+    function updateStatus(id, newStatus) {
+        let data = JSON.parse(localStorage.getItem(id));
+        if (data) {
+            data.status = newStatus;
+            localStorage.setItem(id, JSON.stringify(data));
+            alert('Status Invoice ' + id + ' berhasil diubah menjadi: ' + newStatus);
+            loadOrders();
+        }
+    }
+
+    function deleteOrder(id) {
+        if (confirm('Yakin ingin menghapus transaksi ' + id + '?')) {
+            localStorage.removeItem(id);
+            loadOrders();
+        }
+    }
+
+    function filterOrders() {
+        let query = document.getElementById('searchInvoice').value.toLowerCase();
+        let statusFilter = document.getElementById('filterStatus').value;
+
+        let filtered = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('SKP-')) {
+                const data = JSON.parse(localStorage.getItem(key));
+                let matchQuery = data.id.toLowerCase().includes(query) || data.tujuan.toLowerCase().includes(query) || data.produk.toLowerCase().includes(query);
+                let matchStatus = statusFilter === "" || data.status === statusFilter;
+
+                if (matchQuery && matchStatus) filtered.push(data);
+            }
+        }
+        renderTables(filtered);
+    }
+
+    function logoutAdmin() {
+        sessionStorage.removeItem('adminLoggedIn');
+        window.location.href = 'login-admin.html';
+    }
+
+    loadOrders();
+</script>
+</body>
+</html>
+

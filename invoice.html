@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nota Invoice - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <a href="index.html" class="logo"><i data-lucide="zap" style="color: var(--primary); width: 20px; height: 20px;"></i> SakaPay</a>
+        <div class="nav-right">
+            <a href="pesan.html" class="btn-primary"><i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan</a>
+            <button class="menu-toggle" id="menu-btn"><i data-lucide="menu" style="width: 20px; height: 20px;"></i></button>
+        </div>
+        <ul class="nav-links" id="nav-menu">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="layanan.html">Layanan</a></li>
+    <li><a href="harga.html">Harga</a></li>
+    <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container" style="max-width: 600px;">
+    <div class="card" style="padding: 2rem;">
+        <div style="text-align: center; border-bottom: 2px dashed var(--border-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 0.5rem;">
+                <i data-lucide="zap" style="width: 24px; height: 24px;"></i> SakaPay Invoice
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Bukti Transaksi Pembayaran Digital & PPOB</p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 1rem;">
+            <span style="color: var(--text-muted);">No. Invoice:</span>
+            <span style="font-weight: 700; color: var(--dark);" id="viewInvoiceId">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 1rem;">
+            <span style="color: var(--text-muted);">Tanggal:</span>
+            <span style="font-weight: 600; color: var(--text-main);" id="viewDate">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 1rem;">
+            <span style="color: var(--text-muted);">Status:</span>
+            <span id="viewStatus" style="background: #fef9c3; color: #854d0e; padding: 0.15rem 0.5rem; border-radius: 20px; font-weight: 600; font-size: 0.75rem;">Menunggu Pembayaran</span>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 1rem 0; margin: 1rem 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Produk Layanan</span>
+                <span style="font-weight: 600; color: var(--dark);" id="viewProduct">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted);">Nomor Tujuan / ID</span>
+                <span style="font-weight: 600; color: var(--dark);" id="viewTarget">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+                <span style="color: var(--text-muted);">Metode Pembayaran</span>
+                <span style="font-weight: 600; color: var(--dark);" id="viewMethod">-</span>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <span style="font-weight: 700; font-size: 1rem; color: var(--dark);">Total Pembayaran:</span>
+            <span style="font-weight: 800; font-size: 1.25rem; color: var(--primary);" id="viewTotal">-</span>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            <a id="waConfirmBtn" href="#" target="_blank" class="btn-primary" style="flex: 1; justify-content: center; background: #25d366; font-size: 0.75rem; padding: 0.5rem 0.4rem; white-space: nowrap;">
+                <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i> Konfirmasi WA
+            </a>
+            <button onclick="window.print()" class="btn-primary" style="flex: 1; justify-content: center; font-size: 0.75rem; padding: 0.5rem 0.4rem; white-space: nowrap;">
+                <i data-lucide="printer" style="width: 14px; height: 14px;"></i> Cetak / Simpan
+            </button>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="footer-container">
+        <div class="footer-col">
+            <h5>SakaPay</h5>
+            <p style="color: #94a3b8; font-size: 0.85rem;">Solusi pembayaran digital PPOB dan game terlengkap.</p>
+        </div>
+        <div class="footer-col">
+    <h5>Navigasi Cepat</h5>
+    <ul>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="layanan.html">Layanan</a></li>
+        <li><a href="harga.html">Harga</a></li>
+        <li><a href="tentang.html">Tentang Kami</a></li>
+        <li><a href="kontak.html">Kontak</a></li>
+        <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+    </ul>
+</div>
+
+    </div>
+    <div class="footer-bottom">© 2026 SakaPay. Hak Cipta Dilindungi.</div>
+</footer>
+
+<script>
+    lucide.createIcons();
+    document.getElementById('menu-btn').addEventListener('click', () => {
+        document.getElementById('nav-menu').classList.toggle('active');
+    });
+
+    // Ambil ID dari URL atau localStorage terakhir
+    const urlParams = new URLSearchParams(window.location.search);
+    let invID = urlParams.get('id');
+    if (!invID) {
+        invID = localStorage.getItem('latestInvoice');
+    }
+
+    if (invID && localStorage.getItem(invID)) {
+        const data = JSON.parse(localStorage.getItem(invID));
+        document.getElementById('viewInvoiceId').innerText = data.id;
+        document.getElementById('viewDate').innerText = data.tanggal;
+        document.getElementById('viewProduct').innerText = data.produk;
+        document.getElementById('viewTarget').innerText = data.tujuan;
+        document.getElementById('viewMethod').innerText = data.metode;
+        document.getElementById('viewTotal').innerText = data.harga;
+        document.getElementById('viewStatus').innerText = data.status;
+
+        // Tombol WhatsApp otomatis
+        const adminPhone = '6281234567890';
+        const textWA = `Halo Admin SakaPay, saya ingin konfirmasi pembayaran untuk Invoice: *${data.id}* (${data.produk}) senilai *${data.harga}*.`;
+        document.getElementById('waConfirmBtn').href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(textWA)}`;
+    } else {
+        alert('Data transaksi tidak ditemukan!');
+        window.location.href = 'pesan.html';
+    }
+</script>
+  <!-- KOTAK FORM ULASAN / TESTIMONI (MUNCUL OTOMATIS JIKA STATUS SELESAI) -->
+<div class="card" id="reviewSection" style="margin-top: 1.5rem; padding: 1.5rem; display: none; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius);">
+    <h3 style="font-size: 1rem; color: var(--dark); margin-bottom: 0.75rem; font-weight: 700;">Beri Ulasan Layanan SakaPay</h3>
+    <div id="reviewFormContainer">
+        <div style="margin-bottom: 0.75rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Rating Bintang</label>
+            <select id="userRating" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 0.85rem; background: #fff;">
+                <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ (Sangat Puas)</option>
+                <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ (Puas)</option>
+                <option value="⭐⭐⭐">⭐⭐⭐ (Cukup)</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 0.75rem;">
+            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.3rem;">Komentar / Ulasan</label>
+            <input type="text" id="userComment" placeholder="Contoh: Mantap bosku, proses cepat!" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 0.85rem;" required>
+        </div>
+        <button onclick="submitReview()" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.6rem; font-size: 0.85rem;">Kirim Ulasan</button>
+    </div>
+    <div id="reviewSuccessMsg" style="display: none; color: #16a34a; font-size: 0.85rem; font-weight: 600; text-align: center; padding: 0.5rem 0;">
+        ✨ Terima kasih! Ulasan Anda telah dikirim dan langsung tampil di beranda.
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const invoiceId = urlParams.get('id');
+        
+        if (invoiceId) {
+            const invData = JSON.parse(localStorage.getItem(invoiceId));
+            
+            if (invData && invData.status) {
+                // Ubah status ke huruf kecil semua untuk memastikan tidak luput karena salah ketik huruf kapital
+                const statusOrder = invData.status.trim().toLowerCase();
+                
+                // Jika statusnya adalah 'selesai' (bisa 'Selesai', 'SELESAI', atau 'selesai')
+                if (statusOrder === 'selesai') {
+                    document.getElementById('reviewSection').style.display = 'block';
+                } else {
+                    document.getElementById('reviewSection').style.display = 'none';
+                }
+            }
+        }
+    });
+
+    function submitReview() {
+        const rating = document.getElementById('userRating').value;
+        const comment = document.getElementById('userComment').value;
+        const urlParams = new URLSearchParams(window.location.search);
+        const invoiceId = urlParams.get('id');
+        let rawTujuan = 'Pelanggan';
+
+        if (invoiceId) {
+            const invData = JSON.parse(localStorage.getItem(invoiceId));
+            if (invData && invData.tujuan) {
+                rawTujuan = invData.tujuan;
+            }
+        }
+
+        if (!comment.trim()) {
+            alert('Komentar tidak boleh kosong!');
+            return;
+        }
+
+        // Samarkan nomor HP sebagian untuk privasi
+        let maskedTujuan = rawTujuan.length > 6 ? rawTujuan.substring(0, 4) + '****' + rawTujuan.slice(-2) : rawTujuan;
+
+        const reviewObj = {
+            nama: maskedTujuan,
+            rating: rating,
+            komentar: comment,
+            tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+        };
+
+        // Simpan ke localStorage 'sakapay_reviews'
+        let reviews = JSON.parse(localStorage.getItem('sakapay_reviews')) || [];
+        reviews.push(reviewObj);
+        localStorage.setItem('sakapay_reviews', JSON.stringify(reviews));
+
+        // Ubah tampilan form menjadi pesan sukses
+        document.getElementById('reviewFormContainer').style.display = 'none';
+        document.getElementById('reviewSuccessMsg').style.display = 'block';
+    }
+</script>
+
+
+</body>
+</html>

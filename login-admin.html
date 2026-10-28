@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<div class="container" style="max-width: 400px; margin-top: 5rem;">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 0.5rem;">
+            <i data-lucide="zap" style="width: 24px; height: 24px;"></i> SakaPay Admin
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Masuk untuk mengelola sistem SakaPay</p>
+    </div>
+
+    <div class="card" style="padding: 1.5rem;">
+        <form onsubmit="handleLogin(event)">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 0.4rem;">Username</label>
+                <input type="text" id="username" class="form-control" placeholder="Masukkan username" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 0.9rem;">
+            </div>
+            <div style="margin-bottom: 1.25rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 0.4rem;">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Masukkan password" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 0.9rem;">
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.6rem; font-size: 0.85rem;">
+                <i data-lucide="log-in" style="width: 16px; height: 16px;"></i> Login Admin
+            </button>
+        </form>
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="index.html" style="color: var(--text-muted); font-size: 0.75rem; text-decoration: none;">&larr; Kembali ke Beranda</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    function handleLogin(event) {
+        event.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+
+        // Atur username & password admin di sini (bisa diubah sesuai keinginan Anda)
+        if (user === 'admin' && pass === 'sakapay2026') {
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            window.location.href = 'admin.html';
+        } else {
+            alert('Username atau Password salah!');
+        }
+    }
+</script>
+</body>
+</html>
