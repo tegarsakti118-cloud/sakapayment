@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client Resmi -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root {
@@ -62,23 +64,9 @@
             align-items: center;
         }
 
-        .brand {
-            font-size: 16px;
-            font-weight: 800;
-        }
-
-        .brand small {
-            display: block;
-            font-size: 11px;
-            font-weight: 500;
-            opacity: .9;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 14px;
-        }
+        .brand { font-size: 16px; font-weight: 800; }
+        .brand small { display: block; font-size: 11px; font-weight: 500; opacity: .9; }
+        .container { max-width: 600px; margin: auto; padding: 14px; }
 
         .hero {
             background: linear-gradient(135deg, #17A897, #086e65);
@@ -97,17 +85,8 @@
             font-weight: 700;
         }
 
-        .hero h1 {
-            margin: 8px 0 4px;
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-        .hero p {
-            font-size: 12.5px;
-            line-height: 1.5;
-            opacity: .95;
-        }
+        .hero h1 { margin: 8px 0 4px; font-size: 19px; font-weight: 800; }
+        .hero p { font-size: 12.5px; line-height: 1.5; opacity: .95; }
 
         .card {
             background: white;
@@ -140,12 +119,7 @@
             font-weight: 800;
         }
 
-        .hint {
-            color: var(--muted);
-            font-size: 11.5px;
-            line-height: 1.5;
-            margin: 0 0 12px;
-        }
+        .hint { color: var(--muted); font-size: 11.5px; line-height: 1.5; margin: 0 0 12px; }
 
         .input-row {
             display: grid;
@@ -239,10 +213,7 @@
         }
 
         /* Input Kode Promo */
-        .promo-box {
-            display: flex;
-            gap: 8px;
-        }
+        .promo-box { display: flex; gap: 8px; }
 
         .btn-apply-promo {
             background: var(--primary);
@@ -257,11 +228,7 @@
         }
 
         /* Pilihan Pembayaran Visual */
-        .payment-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .payment-list { display: flex; flex-direction: column; gap: 8px; }
 
         .payment-tile {
             display: flex;
@@ -275,39 +242,12 @@
             background: white;
         }
 
-        .payment-tile.selected {
-            border-color: var(--primary);
-            background: #f0fdfa;
-        }
+        .payment-tile.selected { border-color: var(--primary); background: #f0fdfa; }
+        .pay-left { display: flex; align-items: center; gap: 10px; }
+        .pay-icon-chip { background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; color: var(--primary-dark); }
+        .pay-name { font-size: 13px; font-weight: 700; color: #1e293b; }
+        .pay-radio { accent-color: var(--primary); width: 16px; height: 16px; }
 
-        .pay-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pay-icon-chip {
-            background: #f1f5f9;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-
-        .pay-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: #1e293b;
-        }
-
-        .pay-radio {
-            accent-color: var(--primary);
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Bottom Bar */
         .footer-checkout {
             position: fixed;
             bottom: 0;
@@ -323,19 +263,8 @@
             border-top: 1px solid var(--border);
         }
 
-        .price-summary span {
-            font-size: 11px;
-            color: var(--muted);
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .price-summary h4 {
-            margin: 0;
-            color: var(--primary-dark);
-            font-size: 18px;
-            font-weight: 800;
-        }
+        .price-summary span { font-size: 11px; color: var(--muted); display: block; margin-bottom: 2px; }
+        .price-summary h4 { margin: 0; color: var(--primary-dark); font-size: 18px; font-weight: 800; }
 
         .btn-buy {
             background: var(--primary);
@@ -350,11 +279,8 @@
             transition: background 0.15s ease;
         }
 
-        .btn-buy:active {
-            background: var(--primary-dark);
-        }
+        .btn-buy:active { background: var(--primary-dark); }
 
-        /* Toast Notifikasi */
         .toast-box {
             position: fixed;
             top: 20px;
@@ -376,9 +302,7 @@
             text-align: center;
         }
 
-        .toast-box.show {
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast-box.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 
@@ -401,7 +325,7 @@
     <section class="hero">
         <span class="tag">PROMO RESMI</span>
         <h1>Mobile Legends: Bang Bang</h1>
-        <p>Layanan top up diamond & Weekly Diamond Pass instan 24 jam dengan invoice digital.</p>
+        <p>Layanan top up diamond &amp; Weekly Diamond Pass instan 24 jam dengan invoice digital.</p>
     </section>
 
     <section class="card">
@@ -422,12 +346,12 @@
         <div class="nominal-grid" id="nominalGrid"></div>
     </section>
 
-    <!-- Langkah Promo Berkuota -->
+    <!-- Langkah Promo Berkuota Real-Time Supabase -->
     <section class="card">
         <h2 class="section-title"><span class="number">%</span> Punya Kode Promo? (Opsional)</h2>
         <div class="promo-box">
             <input type="text" id="inputPromo" placeholder="Masukkan kode promo (Cth: MLMAMPUS)" style="text-transform: uppercase;">
-            <button type="button" class="btn-apply-promo" onclick="terapkanPromo()">Gunakan</button>
+            <button type="button" id="btnGunakanPromo" class="btn-apply-promo" onclick="terapkanPromoCloud()">Gunakan</button>
         </div>
         <div id="promoNotice" style="display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 700;">
             🎉 Berhasil! Anda hemat <span id="diskonNominalText">Rp 0</span>
@@ -439,10 +363,7 @@
         <h2 class="section-title"><span class="number">3</span> Pilih Metode Pembayaran</h2>
         <div class="payment-list">
             <div class="payment-tile selected" onclick="pilihMetode('QRIS', this)">
-                <div class="pay-left">
-                    <span class="pay-icon-chip">QRIS</span>
-                    <span class="pay-name">QRIS All Payment (Semua Bank &amp; E-Wallet)</span>
-                </div>
+                <div class="pay-left"><span class="pay-icon-chip">QRIS</span><span class="pay-name">QRIS All Payment (Semua Bank &amp; E-Wallet)</span></div>
                 <input type="radio" name="payMethod" class="pay-radio" checked>
             </div>
             <div class="payment-tile" onclick="pilihMetode('DANA', this)">
@@ -471,11 +392,15 @@
         <span id="selectedItemLabel">Weekly Diamond Pass</span>
         <h4 id="totalHargaText">Rp 27.500</h4>
     </div>
-    <button class="btn-buy" onclick="prosesBeli()">Beli Sekarang</button>
+    <button class="btn-buy" id="btnSubmitOrder" onclick="prosesBeli()">Beli Sekarang</button>
 </footer>
 
 <script>
-// IDENTITAS HALAMAN: KHUSUS MOBILE LEGENDS (ML)
+// ================= KONEKSI SUPABASE CLOUD =================
+const SUPABASE_URL = "https://uqnwdybpjlkcvlezibhl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
+const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const TARGET_HALAMAN = "ML";
 
 const daftarNominal = [
@@ -573,9 +498,10 @@ function showToast(msg, icon = '⚠️') {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// VALIDASI PROMO DENGAN TARGET PRODUK SPESIFIK
-function terapkanPromo() {
+// VALIDASI PROMO LANGSUNG DARI SUPABASE CLOUD SECARA REAL-TIME
+async function terapkanPromoCloud() {
     const input = document.getElementById('inputPromo');
+    const btn = document.getElementById('btnGunakanPromo');
     const kode = input.value.trim().toUpperCase();
 
     if (!kode) {
@@ -583,45 +509,59 @@ function terapkanPromo() {
         return;
     }
 
-    let promos = [];
+    btn.disabled = true;
+    btn.textContent = '...';
+
     try {
-        promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
-    } catch (e) {}
+        const { data: promoFound, error } = await dbClient
+            .from('promos')
+            .select('*')
+            .eq('kode', kode)
+            .maybeSingle();
 
-    const promoFound = promos.find(p => p.kode === kode);
+        if (error) throw error;
 
-    if (!promoFound) {
-        showToast('Kode promo tidak ditemukan!');
-        return;
+        if (!promoFound) {
+            showToast('Kode promo tidak terdaftar di database!');
+            return;
+        }
+
+        // Cek target produk spesifik
+        const targetPromo = promoFound.target || "SEMUA";
+        if (targetPromo !== "SEMUA" && targetPromo !== TARGET_HALAMAN) {
+            let namaTarget = "produk lain";
+            if (targetPromo === "FF") namaTarget = "Free Fire";
+            else if (targetPromo === "PUBG") namaTarget = "PUBG Mobile";
+            else if (targetPromo === "PULSA") namaTarget = "Pulsa & Data";
+            else if (targetPromo === "PLN") namaTarget = "Token PLN";
+            else if (targetPromo === "EWALLET") namaTarget = "E-Wallet";
+
+            showToast(`Maaf, promo ${kode} hanya khusus untuk ${namaTarget}!`);
+            return;
+        }
+
+        const sisaKuota = promoFound.kuota - promoFound.terpakai;
+        if (sisaKuota <= 0) {
+            showToast('Maaf, kuota promo ini sudah habis!');
+            return;
+        }
+
+        // Promo Valid
+        promoAktif = promoFound;
+        document.getElementById('diskonNominalText').textContent = `Rp ${Number(promoFound.diskon).toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} orang)`;
+        document.getElementById('promoNotice').style.display = 'block';
+        input.disabled = true;
+
+        showToast(`Promo ${kode} aktif! Hemat Rp ${Number(promoFound.diskon).toLocaleString('id-ID')}`, '🎉');
+        hitungTotal();
+
+    } catch (err) {
+        console.error(err);
+        showToast('Gagal memverifikasi promo ke server cloud.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Gunakan';
     }
-
-    // CEK APAKAH PROMO KHUSUS UNTUK PRODUK LAIN
-    const targetPromo = promoFound.target || "SEMUA";
-    if (targetPromo !== "SEMUA" && targetPromo !== TARGET_HALAMAN) {
-        let namaTarget = "produk lain";
-        if (targetPromo === "FF") namaTarget = "Free Fire";
-        else if (targetPromo === "PUBG") namaTarget = "PUBG Mobile";
-        else if (targetPromo === "PULSA") namaTarget = "Pulsa & Data";
-        else if (targetPromo === "PLN") namaTarget = "Token PLN";
-        else if (targetPromo === "EWALLET") namaTarget = "E-Wallet";
-
-        showToast(`Maaf, promo ${kode} hanya khusus untuk ${namaTarget}!`);
-        return;
-    }
-
-    const sisaKuota = promoFound.kuota - promoFound.terpakai;
-    if (sisaKuota <= 0) {
-        showToast('Maaf, kuota promo ini sudah habis!');
-        return;
-    }
-
-    promoAktif = promoFound;
-    document.getElementById('diskonNominalText').textContent = `Rp ${promoFound.diskon.toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} orang)`;
-    document.getElementById('promoNotice').style.display = 'block';
-    input.disabled = true;
-
-    showToast(`Promo ${kode} aktif! Hemat Rp ${promoFound.diskon.toLocaleString('id-ID')}`, '🎉');
-    hitungTotal();
 }
 
 function kembaliKeHalamanSebelumnya() {
@@ -632,7 +572,8 @@ function kembaliKeHalamanSebelumnya() {
     }
 }
 
-function prosesBeli() {
+async function prosesBeli() {
+    const btnBuy = document.getElementById('btnSubmitOrder');
     const uEl = document.getElementById('userId');
     const zEl = document.getElementById('zoneId');
     const u = uEl.value.trim();
@@ -654,12 +595,18 @@ function prosesBeli() {
         return;
     }
 
+    btnBuy.disabled = true;
+    btnBuy.textContent = 'Memproses...';
+
+    // JIKA MEMAKAI PROMO, POTONG KUOTA LANGSUNG DI DATABASE SUPABASE
     if (promoAktif) {
-        let promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
-        const idx = promos.findIndex(p => p.kode === promoAktif.kode);
-        if (idx !== -1 && promos[idx].terpakai < promos[idx].kuota) {
-            promos[idx].terpakai += 1;
-            localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+        try {
+            await dbClient
+                .from('promos')
+                .update({ terpakai: promoAktif.terpakai + 1 })
+                .eq('id', promoAktif.id);
+        } catch (e) {
+            console.error('Gagal update kuota promo di cloud:', e);
         }
     }
 

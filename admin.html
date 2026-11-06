@@ -8,7 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase JS Client Resmi -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --sidebar-width: 250px;
@@ -230,11 +233,7 @@
             transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
         }
 
-        .admin-toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
+        .admin-toast.show { transform: translateY(0); opacity: 1; }
         .admin-toast.toast-success { border-left: 4px solid #16a34a; }
         .admin-toast.toast-error { border-left: 4px solid #ef4444; }
 
@@ -269,20 +268,7 @@
         }
 
         .modal-overlay.show .modal-box { transform: scale(1); }
-
-        .modal-icon-badge {
-            width: 48px;
-            height: 48px;
-            background: #fee2e2;
-            color: #ef4444;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 12px;
-            font-size: 22px;
-        }
-
+        .modal-icon-badge { width: 48px; height: 48px; background: #fee2e2; color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 22px; }
         .modal-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
         .modal-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; }
         .modal-actions { display: flex; gap: 10px; }
@@ -300,7 +286,6 @@
 </head>
 <body>
 
-<!-- Toast Notifikasi Admin -->
 <div id="adminToast" class="admin-toast">
     <span id="toastIcon">✨</span>
     <span id="toastMsg">Notifikasi</span>
@@ -327,7 +312,6 @@
 
 <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-<!-- Header Ponsel -->
 <div class="mobile-header">
     <button onclick="toggleSidebar()" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; color: var(--dark);" aria-label="Buka Menu">
         <i data-lucide="menu" style="width: 22px; height: 22px;"></i>
@@ -352,7 +336,7 @@
                 <i data-lucide="shopping-cart" style="width: 18px;"></i> Kelola Pesanan
             </a>
             <a class="nav-item" onclick="switchTab('promo', event)">
-                <i data-lucide="ticket" style="width: 18px;"></i> Kelola Promo
+                <i data-lucide="ticket" style="width: 18px;"></i> Kelola Promo (Cloud)
             </a>
             <a class="nav-item" onclick="switchTab('pembayaran', event)">
                 <i data-lucide="credit-card" style="width: 18px;"></i> Verifikasi Bayar
@@ -454,17 +438,24 @@
             </div>
         </div>
 
-        <!-- Tab 3: Kelola Promo (DENGAN PILIHAN KHUSUS GAME/PRODUK) -->
+        <!-- Tab 3: Kelola Promo (ONLINE DENGAN SUPABASE CLOUD) -->
         <div id="tab-promo" class="tab-content">
             <div style="margin-bottom: 1.25rem;">
-                <h1 style="font-size: 1.3rem; color: var(--dark); font-weight: 800;">Kelola Kuota Promo Diskon</h1>
-                <p style="color: var(--text-muted); font-size: 0.825rem;">Buat kode voucher khusus game tertentu (ML/FF) atau untuk semua produk.</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <h1 style="font-size: 1.3rem; color: var(--dark); font-weight: 800;">Kelola Promo Cloud (Supabase)</h1>
+                        <p style="color: var(--text-muted); font-size: 0.825rem;">Database promo online terpusat secara nasional.</p>
+                    </div>
+                    <button onclick="loadPromosOnline()" class="btn-action success" style="padding: 6px 12px; font-size: 12px;">
+                        🔄 Muat Ulang Data
+                    </button>
+                </div>
             </div>
 
             <!-- Form Tambah Promo Baru -->
             <div class="card" style="margin-bottom: 1.5rem; max-width: 600px;">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">+ Tambah Kode Promo Baru</h3>
-                <form onsubmit="tambahPromo(event)">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">+ Tambah Promo Online Baru</h3>
+                <form onsubmit="tambahPromoOnline(event)">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                         <div>
                             <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Kode Voucher</label>
@@ -495,13 +486,13 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-primary" style="padding: 0.55rem 1.2rem; font-size: 0.85rem;">Simpan Promo</button>
+                    <button type="submit" id="btnSubmitPromo" class="btn-primary" style="padding: 0.55rem 1.2rem; font-size: 0.85rem;">Simpan ke Supabase Cloud</button>
                 </form>
             </div>
 
             <!-- Tabel Daftar Promo Aktif -->
             <div class="card">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">Daftar Promo Berkuota</h3>
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">Daftar Promo Aktif di Database Supabase</h3>
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -514,7 +505,9 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="promoTable"></tbody>
+                        <tbody id="promoTable">
+                            <tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Menghubungkan ke database Supabase...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -570,6 +563,11 @@
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
+
+    // ================= KONEKSI SUPABASE RESMI SAKAPAY =================
+    const SUPABASE_URL = "https://uqnwdybpjlkcvlezibhl.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
+    const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     // ================= TOAST NOTIFIKASI ADMIN =================
     function showAdminToast(msg, type = 'success') {
@@ -662,7 +660,7 @@
         document.getElementById('statRevenue').textContent = 'Rp ' + revenue.toLocaleString('id-ID');
 
         renderTables(orders);
-        loadPromos();
+        loadPromosOnline();
     }
 
     function getBadgeClass(status) {
@@ -782,24 +780,7 @@
         renderTables(filtered);
     }
 
-    // ================= KELOLA PROMO LOGIC =================
-    function getPromos() {
-        let promos = [];
-        try {
-            promos = JSON.parse(localStorage.getItem('sakapay_promos'));
-        } catch (e) {}
-
-        if (!Array.isArray(promos) || promos.length === 0) {
-            promos = [
-                { kode: "MLMAMPUS", diskon: 1500, kuota: 3, terpakai: 0, target: "ML" },
-                { kode: "FFHEMAT", diskon: 1000, kuota: 5, terpakai: 0, target: "FF" },
-                { kode: "SAKAPAY", diskon: 1000, kuota: 10, terpakai: 0, target: "SEMUA" }
-            ];
-            localStorage.setItem('sakapay_promos', JSON.stringify(promos));
-        }
-        return promos;
-    }
-
+    // ================= KELOLA PROMO ONLINE (SUPABASE REAL-TIME) =================
     function getTargetLabel(target) {
         if (target === 'ML') return '<span class="badge" style="background:#e0f2fe; color:#0369a1;">⚔️ Khusus ML</span>';
         if (target === 'FF') return '<span class="badge" style="background:#fee2e2; color:#b91c1c;">🔥 Khusus FF</span>';
@@ -810,35 +791,53 @@
         return '<span class="badge" style="background:#f1f5f9; color:#475569;">🌐 Semua Produk</span>';
     }
 
-    function loadPromos() {
-        const promos = getPromos();
-        let html = '';
+    async function loadPromosOnline() {
+        const tableBody = document.getElementById('promoTable');
+        
+        try {
+            const { data: promos, error } = await dbClient
+                .from('promos')
+                .select('*')
+                .order('id', { ascending: false });
 
-        promos.forEach((p, idx) => {
-            const sisa = p.kuota - p.terpakai;
-            const isHabis = sisa <= 0;
-            const badge = isHabis ? '<span class="badge" style="background:#fee2e2; color:#dc2626;">KUOTA HABIS</span>' : `<span class="badge badge-success">AKTIF (Sisa ${sisa})</span>`;
-            const targetBadge = getTargetLabel(p.target || 'SEMUA');
+            if (error) throw error;
 
-            html += `
-                <tr>
-                    <td><strong>${p.kode}</strong></td>
-                    <td>${targetBadge}</td>
-                    <td style="color:var(--primary); font-weight:700;">Rp ${Number(p.diskon).toLocaleString('id-ID')}</td>
-                    <td>${p.terpakai} / ${p.kuota} orang</td>
-                    <td>${badge}</td>
-                    <td>
-                        <button onclick="hapusPromo(${idx})" class="btn-action danger">Hapus</button>
-                    </td>
-                </tr>
-            `;
-        });
+            if (!promos || promos.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada kode promo di Supabase.</td></tr>';
+                return;
+            }
 
-        document.getElementById('promoTable').innerHTML = html || '<tr><td colspan="6" style="text-align:center;">Belum ada promo.</td></tr>';
+            let html = '';
+            promos.forEach((p) => {
+                const sisa = p.kuota - p.terpakai;
+                const isHabis = sisa <= 0;
+                const badge = isHabis ? '<span class="badge" style="background:#fee2e2; color:#dc2626;">KUOTA HABIS</span>' : `<span class="badge badge-success">AKTIF (Sisa ${sisa})</span>`;
+                const targetBadge = getTargetLabel(p.target || 'SEMUA');
+
+                html += `
+                    <tr>
+                        <td><strong>${p.kode}</strong></td>
+                        <td>${targetBadge}</td>
+                        <td style="color:var(--primary); font-weight:700;">Rp ${Number(p.diskon).toLocaleString('id-ID')}</td>
+                        <td>${p.terpakai} / ${p.kuota} orang</td>
+                        <td>${badge}</td>
+                        <td>
+                            <button onclick="hapusPromoOnline(${p.id}, '${p.kode}')" class="btn-action danger">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+        } catch (err) {
+            console.error(err);
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat promo dari Supabase. Pastikan tabel promos sudah dibuat.</td></tr>';
+        }
     }
 
-    function tambahPromo(e) {
+    async function tambahPromoOnline(e) {
         e.preventDefault();
+        const btn = document.getElementById('btnSubmitPromo');
         const kode = document.getElementById('inputKode').value.trim().toUpperCase();
         const diskon = parseInt(document.getElementById('inputDiskon').value) || 0;
         const kuota = parseInt(document.getElementById('inputKuota').value) || 0;
@@ -849,30 +848,49 @@
             return;
         }
 
-        let promos = getPromos();
-        if (promos.some(p => p.kode === kode)) {
-            showAdminToast('Kode promo ini sudah terdaftar!', 'error');
-            return;
+        btn.disabled = true;
+        btn.textContent = 'Menyimpan...';
+
+        try {
+            const { error } = await dbClient
+                .from('promos')
+                .insert([{ kode, diskon, kuota, terpakai: 0, target }]);
+
+            if (error) {
+                if (error.code === '23505') throw new Error('Kode promo ini sudah ada di database!');
+                throw error;
+            }
+
+            showAdminToast(`Promo ${kode} berhasil disimpan di Supabase Cloud!`, 'success');
+            document.getElementById('inputKode').value = '';
+            document.getElementById('inputDiskon').value = '';
+            document.getElementById('inputKuota').value = '';
+            document.getElementById('inputTarget').value = 'SEMUA';
+            
+            await loadPromosOnline();
+        } catch (err) {
+            showAdminToast(err.message || 'Gagal menyimpan promo ke Supabase', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Simpan ke Supabase Cloud';
         }
-
-        promos.push({ kode, diskon, kuota, terpakai: 0, target });
-        localStorage.setItem('sakapay_promos', JSON.stringify(promos));
-        showAdminToast(`Promo ${kode} (${target}) berhasil disimpan!`, 'success');
-
-        document.getElementById('inputKode').value = '';
-        document.getElementById('inputDiskon').value = '';
-        document.getElementById('inputKuota').value = '';
-        document.getElementById('inputTarget').value = 'SEMUA';
-        loadPromos();
     }
 
-    function hapusPromo(idx) {
-        showConfirmModal('Hapus Kode Promo', 'Yakin ingin menghapus kode promo ini dari sistem?', () => {
-            let promos = getPromos();
-            promos.splice(idx, 1);
-            localStorage.setItem('sakapay_promos', JSON.stringify(promos));
-            showAdminToast('Kode promo berhasil dihapus', 'success');
-            loadPromos();
+    function hapusPromoOnline(promoId, kode) {
+        showConfirmModal('Hapus Kode Promo', `Yakin ingin menghapus kode ${kode} dari Supabase Cloud?`, async () => {
+            try {
+                const { error } = await dbClient
+                    .from('promos')
+                    .delete()
+                    .eq('id', promoId);
+
+                if (error) throw error;
+
+                showAdminToast(`Promo ${kode} berhasil dihapus dari cloud!`, 'success');
+                await loadPromosOnline();
+            } catch (err) {
+                showAdminToast('Gagal menghapus promo dari database.', 'error');
+            }
         });
     }
 
