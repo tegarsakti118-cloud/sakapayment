@@ -23,149 +23,176 @@
             <a href="pesan.html" class="btn-primary">
                 <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan
             </a>
-            <button class="menu-toggle" id="menu-btn">
+            <button class="menu-toggle" id="menu-btn" aria-label="Buka Menu">
                 <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
             </button>
         </div>
 
         <ul class="nav-links" id="nav-menu">
-    <li><a href="index.html">Beranda</a></li>
-    <li><a href="layanan.html">Layanan</a></li>
-    <li><a href="harga.html">Harga</a></li>
-    <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="layanan.html" class="active">Layanan</a></li>
+            <li><a href="harga.html">Harga</a></li>
+            <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+            <li><a href="tentang.html">Tentang Kami</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
         </ul>
     </div>
 </nav>
 
-<!-- Container Katalog -->
-<div class="container">
-    <div style="margin-bottom: 2rem; text-align: center;">
-        <h1 style="color: var(--dark); font-size: 1.75rem; margin-bottom: 0.5rem;">Katalog Layanan SakaPay</h1>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Pilih produk digital dan PPOB terpercaya dengan proses cepat 24 jam.</p>
+<main>
+    <div class="container">
+        <!-- Header Judul yang Responsif di HP -->
+        <div class="page-header">
+            <h1 class="page-title">Katalog Layanan SakaPay</h1>
+            <p class="page-subtitle">Pilih produk digital & PPOB terpercaya dengan proses cepat.</p>
+        </div>
+
+        <!-- Filter Kategori (Bisa digeser dengan sentuhan di HP) -->
+        <div class="filter-tabs">
+            <button class="filter-btn active" onclick="filterKategori('semua', this)">Semua</button>
+            <button class="filter-btn" onclick="filterKategori('pulsa', this)">Pulsa & Data</button>
+            <button class="filter-btn" onclick="filterKategori('pln', this)">Token PLN</button>
+            <button class="filter-btn" onclick="filterKategori('game', this)">Voucher Game</button>
+            <button class="filter-btn" onclick="filterKategori('ewallet', this)">E-Wallet</button>
+        </div>
+
+        <!-- Grid Produk yang Fleksibel -->
+        <div class="grid-services" id="produkGrid">
+            
+            <!-- Produk 1 -->
+            <div class="service-card" data-category="pulsa">
+                <div>
+                    <span class="card-tag tag-blue">Pulsa & Data</span>
+                    <h3>Telkomsel 10.000</h3>
+                    <p>Pulsa reguler Telkomsel masa aktif bertambah instan.</p>
+                </div>
+                <div>
+                    <div class="price-tag">Rp 11.500</div>
+                    <a href="beli.html?produk=Telkomsel%2010.000" class="btn-primary" style="width: 100%;">
+                        <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
+                    </a>
+                </div>
+            </div>
+
+            <!-- Produk 2 -->
+            <div class="service-card" data-category="pulsa">
+                <div>
+                    <span class="card-tag tag-blue">Pulsa & Data</span>
+                    <h3>Indosat Freedom 5GB</h3>
+                    <p>Kuota Utama 5GB berlaku 30 Hari 24 jam penuh.</p>
+                </div>
+                <div>
+                    <div class="price-tag">Rp 22.000</div>
+                    <a href="beli.html?produk=Indosat%20Freedom%205GB" class="btn-primary" style="width: 100%;">
+                        <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
+                    </a>
+                </div>
+            </div>
+
+            <!-- Produk 3 -->
+            <div class="service-card" data-category="pln">
+                <div>
+                    <span class="card-tag tag-yellow">Token PLN</span>
+                    <h3>Token PLN 20.000</h3>
+                    <p>Token Listrik Prabayar nominal Rp 20.000 resmi PLN.</p>
+                </div>
+                <div>
+                    <div class="price-tag">Rp 21.500</div>
+                    <a href="beli.html?produk=Token%20PLN%2020.000" class="btn-primary" style="width: 100%;">
+                        <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
+                    </a>
+                </div>
+            </div>
+
+            <!-- Produk 4 -->
+            <div class="service-card" data-category="game">
+                <div>
+                    <span class="card-tag tag-orange">Voucher Game</span>
+                    <h3>Mobile Legends 86 Diamonds</h3>
+                    <p>86 Diamonds fast process langsung masuk ke ID & Server.</p>
+                </div>
+                <div>
+                    <div class="price-tag">Rp 21.000</div>
+                    <a href="beli.html?produk=Mobile%20Legends%2086%20Diamonds" class="btn-primary" style="width: 100%;">
+                        <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
+                    </a>
+                </div>
+            </div>
+
+            <!-- Produk 5 -->
+            <div class="service-card" data-category="ewallet">
+                <div>
+                    <span class="card-tag tag-green">E-Wallet</span>
+                    <h3>DANA Top Up 50.000</h3>
+                    <p>Saldo DANA Rp 50.000 langsung masuk ke nomor terdaftar.</p>
+                </div>
+                <div>
+                    <div class="price-tag">Rp 51.000</div>
+                    <a href="beli.html?produk=DANA%20Top%20Up%2050.000" class="btn-primary" style="width: 100%;">
+                        <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
+                    </a>
+                </div>
+            </div>
+
+        </div>
     </div>
-
-    <!-- Filter Kategori / Pencarian Sederhana -->
-    <div style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 1rem; margin-bottom: 1.5rem; white-space: nowrap;">
-        <button class="btn-primary" style="background-color: var(--primary); font-size: 0.8rem; padding: 0.4rem 0.8rem;">Semua</button>
-        <button style="background: var(--white); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.4rem 0.8rem; border-radius: var(--radius); font-size: 0.8rem; font-weight: 500; cursor: pointer;">Pulsa & Data</button>
-        <button style="background: var(--white); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.4rem 0.8rem; border-radius: var(--radius); font-size: 0.8rem; font-weight: 500; cursor: pointer;">Token PLN</button>
-        <button style="background: var(--white); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.4rem 0.8rem; border-radius: var(--radius); font-size: 0.8rem; font-weight: 500; cursor: pointer;">Voucher Game</button>
-        <button style="background: var(--white); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.4rem 0.8rem; border-radius: var(--radius); font-size: 0.8rem; font-weight: 500; cursor: pointer;">E-Wallet</button>
-    </div>
-
-    <!-- Grid Katalog Produk -->
-    <div class="grid-services">
-        <!-- Produk 1 -->
-        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <span style="font-size: 0.7rem; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.5rem; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 0.5rem;">Pulsa & Data</span>
-                <h3>Telkomsel 10.000</h3>
-                <p>Pulsa reguler Telkomsel masa aktif bertambah instan.</p>
-            </div>
-            <div>
-                <div style="font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">Rp 11.500</div>
-                <a href="pesan.html" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.4rem; font-size: 0.8rem;">
-                    <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
-                </a>
-            </div>
-        </div>
-
-        <!-- Produk 2 -->
-        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <span style="font-size: 0.7rem; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.5rem; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 0.5rem;">Pulsa & Data</span>
-                <h3>Indosat Freedom 5GB</h3>
-                <p>Kuota Utama 5GB berlaku 30 Hari full 24 jam.</p>
-            </div>
-            <div>
-                <div style="font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">Rp 22.000</div>
-                <a href="pesan.html" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.4rem; font-size: 0.8rem;">
-                    <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
-                </a>
-            </div>
-        </div>
-
-        <!-- Produk 3 -->
-        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <span style="font-size: 0.7rem; background: #fef08a; color: #854d0e; padding: 0.2rem 0.5rem; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 0.5rem;">Token PLN</span>
-                <h3>Token PLN 20.000</h3>
-                <p>Token Listrik Pra-bayar nominal Rp 20.000.</p>
-            </div>
-            <div>
-                <div style="font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">Rp 21.500</div>
-                <a href="pesan.html" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.4rem; font-size: 0.8rem;">
-                    <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
-                </a>
-            </div>
-        </div>
-
-        <!-- Produk 4 -->
-        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <span style="font-size: 0.7rem; background: #fed7aa; color: #9a3412; padding: 0.2rem 0.5rem; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 0.5rem;">Voucher Game</span>
-                <h3>Mobile Legends 86 Diamonds</h3>
-                <p>86 Diamonds (Weekly Pass / Fast Process).</p>
-            </div>
-            <div>
-                <div style="font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">Rp 21.000</div>
-                <a href="pesan.html" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.4rem; font-size: 0.8rem;">
-                    <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
-                </a>
-            </div>
-        </div>
-
-        <!-- Produk 5 -->
-        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
-                <span style="font-size: 0.7rem; background: #dcfce7; color: #166534; padding: 0.2rem 0.5rem; border-radius: 20px; font-weight: 600; display: inline-block; margin-bottom: 0.5rem;">E-Wallet</span>
-                <h3>DANA Top Up 50.000</h3>
-                <p>Saldo DANA Rp 50.000 langsung masuk ke akun.</p>
-            </div>
-            <div>
-                <div style="font-size: 1rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem;">Rp 51.000</div>
-                <a href="pesan.html" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.4rem; font-size: 0.8rem;">
-                    <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan Sekarang
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+</main>
 
 <footer>
     <div class="footer-container">
         <div class="footer-col">
             <h5>SakaPay</h5>
-            <p style="color: #94a3b8; font-size: 0.85rem;">Solusi pembayaran digital PPOB dan game terlengkap di genggaman Anda.</p>
+            <p>Solusi pembayaran digital PPOB dan game terlengkap di genggaman Anda.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #94a3b8;">
+                WhatsApp CS: +62 857-8024-3664
+            </p>
         </div>
         <div class="footer-col">
-    <h5>Navigasi Cepat</h5>
-    <ul>
-        <li><a href="index.html">Beranda</a></li>
-        <li><a href="layanan.html">Layanan</a></li>
-        <li><a href="harga.html">Harga</a></li>
-        <li><a href="tentang.html">Tentang Kami</a></li>
-        <li><a href="kontak.html">Kontak</a></li>
-        <li><a href="cek-invoice.html">Cek Transaksi</a></li>
-    </ul>
-</div>
-
+            <h5>Navigasi Cepat</h5>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="layanan.html">Layanan</a></li>
+                <li><a href="harga.html">Harga</a></li>
+                <li><a href="tentang.html">Tentang Kami</a></li>
+                <li><a href="kontak.html">Kontak</a></li>
+                <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+            </ul>
+        </div>
     </div>
     <div class="footer-bottom">
-        © 2026 SakaPay. Hak Cipta Dilindungi.
+        &copy; 2026 SakaPay Official. Hak Cipta Dilindungi.
     </div>
 </footer>
 
 <script>
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
-    // Script Toggle Menu Hamburger
+    // Toggle Menu Mobile
     const menuBtn = document.getElementById('menu-btn');
     const navMenu = document.getElementById('nav-menu');
+    if (menuBtn && navMenu) {
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    }
 
-    menuBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-    });
+    // Fungsi Filter Kategori Aktif
+    function filterKategori(kategori, btnEl) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+
+        const cards = document.querySelectorAll('#produkGrid .service-card');
+        cards.forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            if (kategori === 'semua' || cardCat === kategori) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
 </script>
 </body>
 </html>

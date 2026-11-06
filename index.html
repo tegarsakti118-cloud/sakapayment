@@ -3,13 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SakaPay - Solusi Pembayaran Digital</title>
+    <title>SakaPay - Solusi Pembayaran Digital & PPOB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Floating WhatsApp Button Elegan */
+        .floating-wa-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25d366;
+            color: white;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+            z-index: 999;
+            text-decoration: none;
+            transition: transform 0.15s ease;
+        }
+
+        .floating-wa-btn:active {
+            transform: scale(0.92);
+        }
+
+        .wa-online-dot {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 12px;
+            height: 12px;
+            background: #22c55e;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        /* Kartu Jaminan Amanah (Trust Badges) */
+        .trust-banner-card {
+            background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+            border: 1.5px solid #ccfbf1;
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .trust-icon {
+            color: var(--primary);
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .trust-item strong {
+            font-size: 0.875rem;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .trust-item p {
+            font-size: 0.775rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        /* ================= FAQ ACCORDION INTERAKTIF ================= */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .faq-item.active {
+            border-color: var(--primary);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 14px 16px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            text-align: left;
+            gap: 12px;
+        }
+
+        .faq-chevron {
+            color: var(--primary);
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            transition: transform 0.25s ease;
+        }
+
+        .faq-item.active .faq-chevron {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 220px;
+            padding: 0 16px 14px;
+        }
+    </style>
 </head>
 <body>
 
@@ -23,168 +167,349 @@
             <a href="pesan.html" class="btn-primary">
                 <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan
             </a>
-            <button class="menu-toggle" id="menu-btn">
+            <button class="menu-toggle" id="menu-btn" aria-label="Buka Menu">
                 <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
             </button>
         </div>
 
         <ul class="nav-links" id="nav-menu">
-    <li><a href="index.html">Beranda</a></li>
-    <li><a href="layanan.html">Layanan</a></li>
-    <li><a href="harga.html">Harga</a></li>
-    <li><a href="cek-invoice.html">Cek Transaksi</a></li>
-</ul>
+            <li><a href="index.html" class="active">Beranda</a></li>
+            <li><a href="layanan.html">Layanan</a></li>
+            <li><a href="harga.html">Harga</a></li>
+            <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+            <li><a href="tentang.html">Tentang Kami</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
+        </ul>
     </div>
 </nav>
 
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-content">
-        <h1>Solusi Pembayaran Digital Mudah, Cepat, dan Aman</h1>
-        <p>Top up, pembayaran tagihan, pulsa, data, dan berbagai layanan digital lainnya dalam satu tempat.</p>
-        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-            <a href="pesan.html" class="btn-primary" style="font-size: 0.95rem; padding: 0.6rem 1.2rem;">
-                <i data-lucide="grid" style="width: 16px; height: 16px;"></i> Pesan Sekarang
-            </a>
-            <a href="cek-invoice.html" class="btn-primary" style="background: transparent; border: 1px solid var(--white); font-size: 0.95rem; padding: 0.6rem 1.2rem;">
-                <i data-lucide="search" style="width: 16px; height: 16px;"></i> Cek Transaksi
-            </a>
+<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Solusi Pembayaran Digital Mudah, Praktis, dan Transparan</h1>
+            <p>Pemesanan pulsa, kuota data, token PLN, voucher game, dan saldo e-wallet dengan konfirmasi pembayaran digital yang rapi.</p>
+            <div class="hero-cta">
+                <a href="pesan.html" class="btn-primary">
+                    <i data-lucide="grid" style="width: 16px; height: 16px;"></i> Pilih Layanan
+                </a>
+                <a href="cek-invoice.html" class="btn-outline">
+                    <i data-lucide="search" style="width: 16px; height: 16px;"></i> Cek Status Pesanan
+                </a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Main Container -->
-<div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2 class="section-title" style="margin-bottom: 0;">Layanan Populer</h2>
-        <a href="layanan.html" style="color: var(--primary); font-size: 0.85rem; font-weight: 600; text-decoration: none;">Lihat Semua &rarr;</a>
-    </div>
-    
-    <div class="grid-services">
-        <div class="card">
-            <i data-lucide="smartphone" style="color: var(--primary); width: 28px; height: 28px; margin-bottom: 0.75rem;"></i>
-            <h3>Top Up Pulsa</h3>
-            <p>Semua operator cepat & stabil. Mulai dari Rp 1.000</p>
-            <a href="pesan.html" class="btn-primary" style="padding: 0.35rem 0.7rem; font-size: 0.8rem;">Pesan</a>
+    <!-- Konten Layanan Populer -->
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Layanan Pilihan</h2>
+                <p class="section-subtitle" style="margin-bottom: 0;">Pilih kategori kebutuhan transaksi harian Anda.</p>
+            </div>
+            <a href="pesan.html" class="section-link">Semua Kategori &rarr;</a>
         </div>
-        <div class="card">
-            <i data-lucide="wifi" style="color: var(--primary); width: 28px; height: 28px; margin-bottom: 0.75rem;"></i>
-            <h3>Paket Data</h3>
-            <p>Internet cepat & stabil. Mulai dari Rp 2.000</p>
-            <a href="pesan.html" class="btn-primary" style="padding: 0.35rem 0.7rem; font-size: 0.8rem;">Pesan</a>
-        </div>
-        <div class="card">
-            <i data-lucide="zap" style="color: var(--primary); width: 28px; height: 28px; margin-bottom: 0.75rem;"></i>
-            <h3>Token PLN</h3>
-            <p>Listrik lebih mudah. Mulai dari Rp 5.000</p>
-            <a href="pesan.html" class="btn-primary" style="padding: 0.35rem 0.7rem; font-size: 0.8rem;">Pesan</a>
-        </div>
-        <div class="card">
-            <i data-lucide="file-text" style="color: var(--primary); width: 28px; height: 28px; margin-bottom: 0.75rem;"></i>
-            <h3>Bayar Tagihan</h3>
-            <p>Tagihan rumah & lainnya. Mulai dari Rp 1.500</p>
-            <a href="pesan.html" class="btn-primary" style="padding: 0.35rem 0.7rem; font-size: 0.8rem;">Pesan</a>
-        </div>
-    </div>
+        
+        <div class="grid-services">
+            <div class="service-card">
+                <div>
+                    <i data-lucide="smartphone" class="service-icon"></i>
+                    <h3>Pulsa &amp; Data</h3>
+                    <p>Isi ulang pulsa reguler dan paket kuota internet semua operator aktif.</p>
+                </div>
+                <a href="pesan.html" class="btn-primary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem; justify-content: center;">
+                    Pilih Produk
+                </a>
+            </div>
 
-    <h2 class="section-title">Kenapa Pilih SakaPay?</h2>
-    <div class="features-grid">
-        <div class="feature-item">
-            <i data-lucide="zap" style="color: var(--primary); margin-bottom: 0.5rem; width: 20px; height: 20px;"></i>
-            <h4>Proses Cepat & Praktis</h4>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Pesan sekarang dan nikmati kemudahan transaksi digital bersama SakaPay.</p>
+            <div class="service-card">
+                <div>
+                    <i data-lucide="zap" class="service-icon"></i>
+                    <h3>Token Listrik PLN</h3>
+                    <p>Pembelian token prabayar 20k hingga 100k langsung dapat nomor stroom.</p>
+                </div>
+                <a href="pesan.html" class="btn-primary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem; justify-content: center;">
+                    Pilih Produk
+                </a>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <i data-lucide="gamepad-2" class="service-icon"></i>
+                    <h3>Top Up Game</h3>
+                    <p>Top up diamond Mobile Legends, Free Fire, dan voucher game populer lainnya.</p>
+                </div>
+                <a href="pesan.html" class="btn-primary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem; justify-content: center;">
+                    Pilih Produk
+                </a>
+            </div>
+
+            <div class="service-card">
+                <div>
+                    <i data-lucide="wallet" class="service-icon"></i>
+                    <h3>Saldo E-Wallet</h3>
+                    <p>Pengisian saldo DANA, GoPay, OVO, dan ShopeePay langsung ke akun tujuan.</p>
+                </div>
+                <a href="pesan.html" class="btn-primary" style="padding: 0.4rem 0.75rem; font-size: 0.8rem; justify-content: center;">
+                    Pilih Produk
+                </a>
+            </div>
         </div>
-        <div class="feature-item">
-            <i data-lucide="shield-check" style="color: var(--primary); margin-bottom: 0.5rem; width: 20px; height: 20px;"></i>
-            <h4>100% Aman & Terpercaya</h4>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Transaksi dijamin aman dengan sistem pencatatan transparan.</p>
+
+        <!-- Kartu Jaminan & Keamanan -->
+        <div class="trust-banner-card">
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <i data-lucide="shield-check" class="trust-icon"></i>
+                    <div>
+                        <strong>100% Legal &amp; Tanpa Password</strong>
+                        <p>Top up resmi via User ID. Kami tidak pernah meminta password atau login akun Anda.</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <i data-lucide="refresh-cw" class="trust-icon"></i>
+                    <div>
+                        <strong>Garansi Saldo Kembali</strong>
+                        <p>Jaminan dana dikembalikan penuh jika terjadi kendala pengisian dari sistem kami.</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <i data-lucide="lock" class="trust-icon"></i>
+                    <div>
+                        <strong>Privasi Terjaga</strong>
+                        <p>Nomor handphone dan data akun Anda dijamin kerahasiaannya dengan sistem invoice rapi.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="feature-item">
-            <i data-lucide="headset" style="color: var(--primary); margin-bottom: 0.5rem; width: 20px; height: 20px;"></i>
-            <h4>Layanan 24 Jam</h4>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Dukungan pelanggan responsif siap membantu Anda kapan saja.</p>
+
+        <!-- Keunggulan Layanan -->
+        <h2 class="section-title">Mengapa Memilih SakaPay?</h2>
+        <p class="section-subtitle">Standar kemudahan bertransaksi untuk kenyamanan Anda.</p>
+        
+        <div class="features-grid">
+            <div class="feature-item">
+                <i data-lucide="check-circle" class="feature-icon"></i>
+                <h4>Invoice Tercatat Rapi</h4>
+                <p>Setiap pesanan memiliki nomor invoice unik yang dapat Anda simpan, cetak, atau cek statusnya kapan saja.</p>
+            </div>
+            <div class="feature-item">
+                <i data-lucide="message-circle" class="feature-icon"></i>
+                <h4>Dukungan WhatsApp Responsif</h4>
+                <p>Konfirmasi pembayaran langsung terhubung ke WhatsApp Customer Service resmi kami tanpa proses berbelit.</p>
+            </div>
+            <div class="feature-item">
+                <i data-lucide="layout-grid" class="feature-icon"></i>
+                <h4>Antarmuka Ringan &amp; Praktis</h4>
+                <p>Akses cepat dan ramah kuota, dirancang agar mudah digunakan dari ponsel tanpa beban aplikasi tambahan.</p>
+            </div>
+        </div>
+
+        <!-- ================= SECTION FAQ INTERAKTIF ================= -->
+        <div style="margin-top: 3.5rem; margin-bottom: 2rem;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+                <p class="section-subtitle">Jawaban cepat untuk pertanyaan seputar transaksi di SakaPay.</p>
+            </div>
+
+            <div class="faq-list">
+                <!-- FAQ 1 -->
+                <div class="faq-item active">
+                    <button type="button" class="faq-question" onclick="toggleFaq(this)">
+                        <span>Berapa lama proses pengisian diamond atau pulsa?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Proses transaksi di SakaPay rata-rata memakan waktu <strong>1 hingga 5 menit</strong> setelah pembayaran QRIS Anda terkonfirmasi oleh admin melalui WhatsApp.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-item">
+                    <button type="button" class="faq-question" onclick="toggleFaq(this)">
+                        <span>Apakah akun game saya aman? Perlu kirim password?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>100% Sangat Aman!</strong> Top up di SakaPay hanya membutuhkan User ID &amp; Zone ID game Anda. Kami <em>tidak pernah</em> meminta email, password, ataupun login akun Anda.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item">
+                    <button type="button" class="faq-question" onclick="toggleFaq(this)">
+                        <span>Metode pembayaran apa saja yang bisa digunakan?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Kami mendukung pembayaran via <strong>QRIS All Payment</strong> yang bisa di-scan dari seluruh mobile banking (BCA, BRI, Mandiri, BNI) serta semua e-wallet (DANA, GoPay, OVO, ShopeePay).</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="faq-item">
+                    <button type="button" class="faq-question" onclick="toggleFaq(this)">
+                        <span>Bagaimana cara menggunakan kode promo diskon?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Pada halaman pembelian, masukkan kode promo di kolom <em>'Punya Kode Promo?'</em> lalu klik tombol <strong>Gunakan</strong>. Jika kuota promo masih tersedia, total pembayaran Anda akan langsung terpotong otomatis.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="faq-item">
+                    <button type="button" class="faq-question" onclick="toggleFaq(this)">
+                        <span>Bagaimana jika saya salah memasukkan ID akun atau nomor HP?</span>
+                        <i data-lucide="chevron-down" class="faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Segera hubungi Customer Service kami melalui tombol WhatsApp yang tersedia dengan menyebutkan <strong>Nomor Invoice</strong> Anda sebelum pesanan diproses oleh sistem.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ulasan Pelanggan -->
+        <div style="margin-top: 3.5rem; margin-bottom: 2rem;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title">Ulasan Pelanggan</h2>
+                <p class="section-subtitle">Pengalaman nyata dari pembeli setelah transaksi diselesaikan.</p>
+            </div>
+
+            <div id="testimonialGrid" class="testimonial-grid">
+                <!-- Dimuat secara aman via JS -->
+            </div>
         </div>
     </div>
-</div>
+</main>
+
+<!-- Tombol WhatsApp CS Melayang -->
+<a href="https://wa.me/6285780243664?text=Halo%20Admin%20SakaPay,%20saya%20butuh%20bantuan." target="_blank" class="floating-wa-btn" aria-label="Bantuan WhatsApp CS">
+    <span class="wa-online-dot"></span>
+    <i data-lucide="message-circle" style="width: 28px; height: 28px;"></i>
+</a>
 
 <footer>
     <div class="footer-container">
         <div class="footer-col">
             <h5>SakaPay</h5>
-            <p style="color: #94a3b8; font-size: 0.85rem;">Solusi pembayaran digital PPOB dan game terlengkap di genggaman Anda.</p>
+            <p>Platform pemesanan kebutuhan pembayaran digital dan PPOB praktis berbasis web invoice.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #94a3b8;">
+                WhatsApp CS: +62 857-8024-3664
+            </p>
         </div>
         <div class="footer-col">
-    <h5>Navigasi Cepat</h5>
-    <ul>
-        <li><a href="index.html">Beranda</a></li>
-        <li><a href="layanan.html">Layanan</a></li>
-        <li><a href="harga.html">Harga</a></li>
-        <li><a href="tentang.html">Tentang Kami</a></li>
-        <li><a href="kontak.html">Kontak</a></li>
-        <li><a href="cek-invoice.html">Cek Transaksi</a></li>
-    </ul>
-</div>
-<!-- KOTAK TESTIMONI / ULASAN PELANGGAN OTOMATIS -->
-<div class="container" style="margin: 3rem auto; padding: 0 1rem; max-width: 1100px;">
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <h2 style="font-size: 1.5rem; color: var(--dark); font-weight: 800; margin-bottom: 0.4rem;">Apa Kata Mereka?</h2>
-        <p style="color: var(--text-muted); font-size: 0.85rem;">Ulasan nyata dari pelanggan setia SakaPay.</p>
-    </div>
-
-    <div id="testimonialGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem;">
-        <!-- Data ulasan dimuat otomatis via JavaScript -->
-    </div>
-</div>
-
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const grid = document.getElementById('testimonialGrid');
-        let reviews = JSON.parse(localStorage.getItem('sakapay_reviews')) || [];
-
-        // Jika belum ada ulasan sama sekali, tampilkan ulasan bawaan yang real
-        if (reviews.length === 0) {
-            reviews = [
-                { nama: 'Rudi ( Lampung )', rating: '⭐⭐⭐⭐⭐', komentar: 'Mantap bosku, isi pulsa gak sampai 2 menit langsung masuk!', tanggal: 'Terbaru' },
-                { nama: 'Bayu S.', rating: '⭐⭐⭐⭐⭐', komentar: 'Top up game termurah dan terpercaya di sini. Recommended!', tanggal: 'Terbaru' },
-                { nama: 'Ahmad T.', rating: '⭐⭐⭐⭐⭐', komentar: 'Adminnya ramah banget, transaksi lancar jaya.', tanggal: 'Terbaru' }
-            ];
-        }
-
-        let html = '';
-        // Urutkan dari yang paling baru dikirim
-        reviews.reverse().forEach(rev => {
-            html += `
-                <div class="card" style="padding: 1.25rem; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: var(--shadow);">
-                    <div style="font-size: 0.9rem; margin-bottom: 0.4rem;">${rev.rating}</div>
-                    <p style="color: var(--text-main); font-size: 0.85rem; font-style: italic; margin-bottom: 1rem; line-height: 1.5;">"${rev.komentar}"</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
-                        <strong style="color: var(--dark);">~ ${rev.nama}</strong>
-                        <span>${rev.tanggal}</span>
-                    </div>
-                </div>
-            `;
-        });
-
-        grid.innerHTML = html;
-    });
-</script>
-
+            <h5>Navigasi Cepat</h5>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="layanan.html">Layanan</a></li>
+                <li><a href="harga.html">Harga</a></li>
+                <li><a href="tentang.html">Tentang Kami</a></li>
+                <li><a href="kontak.html">Kontak</a></li>
+                <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+            </ul>
+        </div>
     </div>
     <div class="footer-bottom">
-        © 2026 SakaPay. Hak Cipta Dilindungi.
+        &copy; 2026 SakaPay Official. Hak Cipta Dilindungi.
     </div>
-  
 </footer>
 
 <script>
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
-    // Script Toggle Menu Hamburger
     const menuBtn = document.getElementById('menu-btn');
     const navMenu = document.getElementById('nav-menu');
 
-    menuBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
+    if (menuBtn && navMenu) {
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    }
+
+    // Fungsi Buka Tutup FAQ Accordion
+    function toggleFaq(btnEl) {
+        const item = btnEl.parentElement;
+        const isActive = item.classList.contains('active');
+
+        // Tutup item lain
+        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+
+        // Buka jika sebelumnya tertutup
+        if (!isActive) {
+            item.classList.add('active');
+        }
+    }
+
+    // Render Ulasan Pelanggan Aman
+    document.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('testimonialGrid');
+        if (!grid) return;
+
+        let reviews = [];
+        try {
+            reviews = JSON.parse(localStorage.getItem('sakapay_reviews')) || [];
+        } catch (e) {
+            reviews = [];
+        }
+
+        grid.innerHTML = '';
+
+        if (!Array.isArray(reviews) || reviews.length === 0) {
+            const emptyNotice = document.createElement('div');
+            emptyNotice.className = 'testimonial-empty';
+            emptyNotice.textContent = 'Belum ada ulasan yang dipublikasikan. Selesaikan pesanan Anda dan bagikan pengalaman Anda di halaman invoice!';
+            grid.appendChild(emptyNotice);
+            return;
+        }
+
+        const recentReviews = [...reviews].reverse().slice(0, 6);
+
+        recentReviews.forEach(rev => {
+            const card = document.createElement('div');
+            card.className = 'testimonial-card';
+
+            const stars = document.createElement('div');
+            stars.style.fontSize = '0.9rem';
+            stars.style.marginBottom = '0.5rem';
+            stars.textContent = typeof rev.rating === 'string' ? rev.rating : '⭐⭐⭐⭐⭐';
+
+            const comment = document.createElement('p');
+            comment.style.color = 'var(--text-main)';
+            comment.style.fontSize = '0.85rem';
+            comment.style.fontStyle = 'italic';
+            comment.style.marginBottom = '1rem';
+            comment.style.lineHeight = '1.5';
+            comment.textContent = `"${rev.komentar || ''}"`;
+
+            const footer = document.createElement('div');
+            footer.style.display = 'flex';
+            footer.style.justifyContent = 'space-between';
+            footer.style.alignItems = 'center';
+            footer.style.fontSize = '0.75rem';
+            footer.style.color = 'var(--text-muted)';
+            footer.style.borderTop = '1px solid var(--border-color)';
+            footer.style.paddingTop = '0.75rem';
+
+            const author = document.createElement('strong');
+            author.style.color = 'var(--dark)';
+            author.textContent = rev.nama ? `~ ${rev.nama}` : '~ Pelanggan';
+
+            const date = document.createElement('span');
+            date.textContent = rev.tanggal || '';
+
+            footer.appendChild(author);
+            footer.appendChild(date);
+
+            card.appendChild(stars);
+            card.appendChild(comment);
+            card.appendChild(footer);
+
+            grid.appendChild(card);
+        });
     });
 </script>
 </body>

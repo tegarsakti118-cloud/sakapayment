@@ -9,115 +9,244 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .search-box {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            outline: none;
+            margin-top: 0.35rem;
+            transition: border-color 0.15s ease;
+        }
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+        .result-box {
+            display: none;
+            margin-top: 1.5rem;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border-radius: var(--radius-sm);
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 0.6rem;
+            gap: 10px;
+        }
+        .result-row span:first-child {
+            color: var(--text-muted);
+        }
+        .result-row span:last-child {
+            text-align: right;
+            word-break: break-word;
+        }
+        .badge-status {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-pending { background: #fef9c3; color: #854d0e; }
+        .badge-process { background: #e0f2fe; color: #0369a1; }
+        .badge-success { background: #dcfce7; color: #166534; }
+    </style>
 </head>
 <body>
 
 <nav>
     <div class="nav-container">
-        <a href="index.html" class="logo"><i data-lucide="zap" style="color: var(--primary); width: 20px; height: 20px;"></i> SakaPay</a>
+        <a href="index.html" class="logo">
+            <i data-lucide="zap" style="color: var(--primary); width: 20px; height: 20px;"></i> SakaPay
+        </a>
         <div class="nav-right">
-            <a href="pesan.html" class="btn-primary"><i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan</a>
-            <button class="menu-toggle" id="menu-btn"><i data-lucide="menu" style="width: 20px; height: 20px;"></i></button>
+            <a href="pesan.html" class="btn-primary">
+                <i data-lucide="shopping-cart" style="width: 14px; height: 14px;"></i> Pesan
+            </a>
+            <button class="menu-toggle" id="menu-btn" aria-label="Buka Menu">
+                <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+            </button>
         </div>
         <ul class="nav-links" id="nav-menu">
-    <li><a href="index.html">Beranda</a></li>
-    <li><a href="layanan.html">Layanan</a></li>
-    <li><a href="harga.html">Harga</a></li>
-    <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="layanan.html">Layanan</a></li>
+            <li><a href="harga.html">Harga</a></li>
+            <li><a href="cek-invoice.html" class="active">Cek Transaksi</a></li>
+            <li><a href="tentang.html">Tentang Kami</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
         </ul>
     </div>
 </nav>
 
-<div class="container" style="max-width: 600px;">
-    <div style="margin-bottom: 1.5rem; text-align: center;">
-        <h1 style="color: var(--dark); font-size: 1.5rem; margin-bottom: 0.4rem;">Cek Status Transaksi</h1>
-        <p style="color: var(--text-muted); font-size: 0.85rem;">Masukkan nomor invoice Anda untuk melacak status pesanan.</p>
-    </div>
-
-    <div class="card" style="padding: 1.5rem;">
-        <form id="checkForm" onsubmit="searchInvoice(event)">
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--dark); margin-bottom: 0.4rem;">Nomor Invoice</label>
-                <input type="text" id="searchId" class="form-control" placeholder="Contoh: SKP-123456" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-color); border-radius: var(--radius); font-size: 0.9rem;">
-            </div>
-            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 0.6rem; font-size: 0.85rem;">
-                <i data-lucide="search" style="width: 16px; height: 16px;"></i> Cek Status
-            </button>
-        </form>
-
-        <!-- Hasil Pencarian -->
-        <div id="searchResult" style="display: none; margin-top: 1.5rem; background: #f8fafc; border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius);">
-            <h3 style="font-size: 1rem; color: var(--dark); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px;">
-                <i data-lucide="info" style="width: 16px; height: 16px; color: var(--primary);"></i> Hasil Pencarian
-            </h3>
-            <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
-                <p><strong>No. Invoice:</strong> <span id="resNo">-</span></p>
-                <p><strong>Produk:</strong> <span id="resProd">-</span></p>
-                <p><strong>Tujuan:</strong> <span id="resTarget">-</span></p>
-                <p><strong>Total:</strong> <span id="resPrice" style="color: var(--primary); font-weight: 700;">-</span></p>
-                <p><strong>Metode:</strong> <span id="resMethod">-</span></p>
-                <p><strong>Status:</strong> <span id="resStatus" style="color: #ca8a04; font-weight: 600;">-</span></p>
-            </div>
-            <div style="margin-top: 1rem;">
-                <a id="detailLink" href="#" class="btn-primary" style="width: 100%; justify-content: center; font-size: 0.75rem; padding: 0.4rem;">Buka Nota Invoice Lengkap</a>
-            </div>
+<main>
+    <div class="container" style="max-width: 580px;">
+        <div class="page-header">
+            <h1 class="page-title">Cek Status Pesanan</h1>
+            <p class="page-subtitle">Pantau progres pengisian pulsa, token, game, atau saldo Anda secara real-time.</p>
         </div>
 
-        <div id="errorResult" style="display: none; margin-top: 1.5rem; background: #fef2f2; border: 1px solid #fecaca; padding: 1rem; border-radius: var(--radius); color: #991b1b; font-size: 0.85rem; text-align: center;">
-            Nomor invoice tidak ditemukan. Pastikan nomor yang dimasukkan benar!
+        <div class="search-box">
+            <form onsubmit="searchInvoice(event)">
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--dark);">Nomor Invoice</label>
+                <input type="text" id="searchId" class="form-input" placeholder="Contoh: SKP-123456" required autocomplete="off">
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem; padding: 0.6rem;">
+                    <i data-lucide="search" style="width: 16px; height: 16px;"></i> Lacak Transaksi
+                </button>
+            </form>
+
+            <!-- Hasil Pencarian -->
+            <div id="searchResult" class="result-box">
+                <h3 style="font-size: 0.95rem; color: var(--dark); margin-bottom: 0.85rem; display: flex; align-items: center; gap: 6px; font-weight: 700;">
+                    <i data-lucide="file-check" style="width: 16px; height: 16px; color: var(--primary);"></i> Rincian Pesanan Ditemukan
+                </h3>
+                
+                <div class="result-row">
+                    <span>No. Invoice:</span>
+                    <strong id="resNo" style="color: var(--dark);">-</strong>
+                </div>
+                <div class="result-row">
+                    <span>Produk Layanan:</span>
+                    <span id="resProd" style="font-weight: 600;">-</span>
+                </div>
+                <div class="result-row">
+                    <span>Nomor / Akun Tujuan:</span>
+                    <span id="resTarget">-</span>
+                </div>
+                <div class="result-row">
+                    <span>Total Pembayaran:</span>
+                    <strong id="resPrice" style="color: var(--primary); font-size: 0.95rem;">-</strong>
+                </div>
+                <div class="result-row">
+                    <span>Metode:</span>
+                    <span id="resMethod">-</span>
+                </div>
+                <div class="result-row">
+                    <span>Status Transaksi:</span>
+                    <span id="resStatus" class="badge-status badge-pending">-</span>
+                </div>
+
+                <div style="margin-top: 1rem; padding-top: 0.85rem; border-top: 1px dashed var(--border-color);">
+                    <a id="detailLink" href="#" class="btn-primary" style="width: 100%; justify-content: center; font-size: 0.8rem; padding: 0.5rem;">
+                        Buka Nota Invoice Lengkap &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pesan Jika Tidak Ditemukan -->
+            <div id="errorResult" style="display: none; margin-top: 1.25rem; background: #fef2f2; border: 1px solid #fecaca; padding: 1rem; border-radius: var(--radius-sm); color: #991b1b; font-size: 0.85rem; text-align: center;">
+                Nomor invoice tidak ditemukan. Pastikan format penulisan sudah benar (contoh: <strong>SKP-123456</strong>).
+            </div>
         </div>
     </div>
-</div>
+</main>
 
 <footer>
     <div class="footer-container">
         <div class="footer-col">
             <h5>SakaPay</h5>
-            <p style="color: #94a3b8; font-size: 0.85rem;">Solusi pembayaran digital PPOB dan game terlengkap.</p>
+            <p>Solusi pembayaran digital PPOB dan game terlengkap di genggaman Anda.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #94a3b8;">
+                WhatsApp CS: +62 857-8024-3664
+            </p>
         </div>
         <div class="footer-col">
-    <h5>Navigasi Cepat</h5>
-    <ul>
-        <li><a href="index.html">Beranda</a></li>
-        <li><a href="layanan.html">Layanan</a></li>
-        <li><a href="harga.html">Harga</a></li>
-        <li><a href="tentang.html">Tentang Kami</a></li>
-        <li><a href="kontak.html">Kontak</a></li>
-        <li><a href="cek-invoice.html">Cek Transaksi</a></li>
-    </ul>
-</div>
-
+            <h5>Navigasi Cepat</h5>
+            <ul>
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="layanan.html">Layanan</a></li>
+                <li><a href="harga.html">Harga</a></li>
+                <li><a href="tentang.html">Tentang Kami</a></li>
+                <li><a href="kontak.html">Kontak</a></li>
+                <li><a href="cek-invoice.html">Cek Transaksi</a></li>
+            </ul>
+        </div>
     </div>
-    <div class="footer-bottom">© 2026 SakaPay. Hak Cipta Dilindungi.</div>
+    <div class="footer-bottom">
+        &copy; 2026 SakaPay Official. Hak Cipta Dilindungi.
+    </div>
 </footer>
 
 <script>
-    lucide.createIcons();
-    document.getElementById('menu-btn').addEventListener('click', () => {
-        document.getElementById('nav-menu').classList.toggle('active');
-    });
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    const menuBtn = document.getElementById('menu-btn');
+    const navMenu = document.getElementById('nav-menu');
+    if (menuBtn && navMenu) {
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+    }
 
     function searchInvoice(event) {
         event.preventDefault();
-        const query = document.getElementById('searchId').value.trim();
-        
-        const dataJson = localStorage.getItem(query);
+        const rawQuery = document.getElementById('searchId').value.trim();
+        const queryUpper = rawQuery.toUpperCase();
+
         const searchResult = document.getElementById('searchResult');
         const errorResult = document.getElementById('errorResult');
 
-        if (dataJson) {
-            const data = JSON.parse(dataJson);
-            document.getElementById('resNo').innerText = data.id;
-            document.getElementById('resProd').innerText = data.produk;
-            document.getElementById('resTarget').innerText = data.tujuan;
-            document.getElementById('resPrice').innerText = data.harga;
-            document.getElementById('resMethod').innerText = data.metode;
-            document.getElementById('resStatus').innerText = data.status;
-            document.getElementById('detailLink').href = `invoice.html?id=${data.id}`;
+        // Cari di localStorage baik dengan format asli maupun huruf besar
+        let targetKey = null;
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.toUpperCase() === queryUpper) {
+                targetKey = k;
+                break;
+            }
+        }
 
-            searchResult.style.display = 'block';
-            errorResult.style.display = 'none';
-            lucide.createIcons();
+        if (targetKey) {
+            try {
+                const data = JSON.parse(localStorage.getItem(targetKey));
+
+                document.getElementById('resNo').textContent = data.id || targetKey;
+                document.getElementById('resProd').textContent = data.produk || data.layanan || '-';
+                document.getElementById('resTarget').textContent = data.tujuan || '-';
+                document.getElementById('resPrice').textContent = data.harga || 'Rp 0';
+                document.getElementById('resMethod').textContent = data.metode || '-';
+
+                const statusEl = document.getElementById('resStatus');
+                const st = (data.status || 'Menunggu Pembayaran').trim();
+                statusEl.textContent = st;
+
+                statusEl.className = 'badge-status';
+                const stLower = st.toLowerCase();
+                if (stLower === 'selesai') {
+                    statusEl.classList.add('badge-success');
+                } else if (stLower === 'diproses') {
+                    statusEl.classList.add('badge-process');
+                } else {
+                    statusEl.classList.add('badge-pending');
+                }
+
+                document.getElementById('detailLink').href = `invoice.html?id=${encodeURIComponent(data.id || targetKey)}`;
+
+                searchResult.style.display = 'block';
+                errorResult.style.display = 'none';
+
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } catch (err) {
+                searchResult.style.display = 'none';
+                errorResult.style.display = 'block';
+            }
         } else {
             searchResult.style.display = 'none';
             errorResult.style.display = 'block';

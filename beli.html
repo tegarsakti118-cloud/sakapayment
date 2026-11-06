@@ -3,390 +3,762 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beli Produk - SakaPay</title>
+    <title>Pemesanan Layanan Resmi - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #f1f5f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #17A897;
+            --primary-dark: #12887a;
+            --primary-light: #e6f6f4;
+            --bg-body: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 14px;
+            --radius-sm: 8px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            padding-bottom: 90px;
-            color: #1e293b;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
-        /* Header Atas */
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding-bottom: 110px;
+            min-height: 100vh;
+        }
+
+        /* Top Header */
         .header {
-            background: #17A897;
+            background: var(--primary);
             color: white;
-            padding: 15px 20px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 8px rgba(23, 168, 151, 0.25);
         }
+
+        .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            line-height: 1;
+        }
+
         .header h2 {
             margin: 0;
-            font-size: 18px;
-        }
-        .back-arrow {
-            font-size: 20px;
-            cursor: pointer;
-            text-decoration: none;
-            color: white;
+            font-size: 16px;
+            font-weight: 800;
         }
 
         .container {
             max-width: 600px;
-            margin: 15px auto;
-            padding: 0 15px;
+            margin: 14px auto;
+            padding: 0 14px;
         }
 
-        /* Banner Info Produk / Game */
+        /* Banner Modern Fintech */
         .product-banner {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            gap: 14px;
+            border: 1.5px solid #ccfbf1;
+            box-shadow: 0 4px 12px rgba(23, 168, 151, 0.08);
         }
-        .product-icon {
-            font-size: 36px;
-            background: #f0fdf4;
-            width: 60px;
-            height: 60px;
+
+        .product-icon-box {
+            font-size: 30px;
+            background: white;
+            width: 56px;
+            height: 56px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .product-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            color: #0f172a;
-        }
-        .product-info p {
-            margin: 0;
-            font-size: 12px;
-            color: #64748b;
+            border: 1px solid #bbf0ea;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            flex-shrink: 0;
         }
 
-        /* Kotak Section Form */
+        .product-info h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        .product-info .verified-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--primary-dark);
+            background: #e6f6f4;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        /* Section Box */
         .section-box {
             background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
+
         .section-title {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 13.5px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
             color: #0f172a;
         }
+
         .step-badge {
-            background: #e2e8f0;
-            color: #17A897;
+            background: var(--primary);
+            color: white;
             width: 22px;
             height: 22px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 14px;
-            background: #f8fafc;
-            margin-top: 5px;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: #17A897;
-            background: #fff;
+            font-size: 11px;
+            font-weight: 800;
         }
 
-        /* Grid Pilihan Nominal (Kotak-kotak) */
+        /* Input Modern */
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group input, .promo-box input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fff;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .input-group input:focus, .promo-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23, 168, 151, 0.15);
+        }
+
+        /* Efek Bergetar Jika Kosong */
+        .input-error {
+            border-color: #ef4444 !important;
+            animation: shake 0.3s ease-in-out;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+        }
+
+        /* Grid Nominal */
         .nominal-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
+
         .nominal-card {
             background: white;
-            border: 2px solid #e2e8f0;
+            border: 1.5px solid var(--border);
             border-radius: 12px;
             padding: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .nominal-card.selected {
-            border-color: #17A897;
-            background: #f0fdf4;
-        }
-        .nominal-name {
-            font-weight: bold;
-            font-size: 14px;
-            color: #334155;
-            margin-bottom: 6px;
-        }
-        .nominal-price {
-            font-size: 13px;
-            color: #e11d48;
-            font-weight: bold;
-        }
-        .nominal-price span {
-            font-size: 11px;
-            color: #64748b;
-            font-weight: normal;
+            transition: all 0.15s ease;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
         }
 
-        /* Footer / Bar Bawah untuk Checkout */
+        .nominal-card.selected {
+            border-color: var(--primary);
+            background: #f0fdfa;
+            box-shadow: 0 2px 8px rgba(23, 168, 151, 0.12);
+        }
+
+        .badge-tag {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            width: fit-content;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-hot { background: #fee2e2; color: #dc2626; }
+        .badge-best { background: #fef3c7; color: #b45309; }
+
+        .nominal-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #334155;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .nominal-price {
+            font-size: 13px;
+            color: var(--primary-dark);
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        /* Kotak Promo */
+        .promo-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-apply-promo {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 18px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s ease;
+        }
+
+        .btn-apply-promo:active {
+            background: var(--primary-dark);
+        }
+
+        /* PILIHAN PEMBAYARAN KARTU VISUAL */
+        .payment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .payment-tile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+        }
+
+        .payment-tile.selected {
+            border-color: var(--primary);
+            background: #f0fdfa;
+        }
+
+        .pay-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pay-icon-chip {
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .pay-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .pay-radio {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Footer Checkout Melayang */
         .footer-checkout {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
             background: white;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-            padding: 12px 20px;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+            padding: 12px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-sizing: border-box;
             z-index: 100;
+            border-top: 1px solid var(--border);
         }
+
         .price-summary span {
             font-size: 11px;
-            color: #64748b;
+            color: var(--text-muted);
             display: block;
+            margin-bottom: 2px;
         }
+
         .price-summary h4 {
             margin: 0;
-            color: #e11d48;
+            color: var(--primary-dark);
             font-size: 18px;
+            font-weight: 800;
         }
+
         .btn-buy {
-            background: #17A897;
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 12px 24px;
             border-radius: 10px;
-            font-weight: bold;
-            font-size: 15px;
+            font-weight: 800;
+            font-size: 14px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(23, 168, 151, 0.2);
+            box-shadow: 0 4px 12px rgba(23, 168, 151, 0.3);
+            transition: background 0.15s ease;
+        }
+
+        .btn-buy:active {
+            background: var(--primary-dark);
+        }
+
+        /* Toast Notifikasi Modern */
+        .toast-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #0f172a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast-box.show {
+            transform: translateX(-50%) translateY(0);
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Atas -->
-    <div class="header">
-        <a href="pesan.html" class="back-arrow">←</a>
-        <h2 id="namaProdukHeader">Detail Pembelian</h2>
+    <!-- Toast Notifikasi (Bebas Alert Kaku) -->
+    <div id="toast" class="toast-box">
+        <span id="toastIcon">⚠️</span> <span id="toastMsg">Harap masukkan nomor tujuan!</span>
     </div>
 
-    <div class="container">
+    <!-- Header -->
+    <header class="header">
+        <button type="button" class="back-arrow" onclick="kembaliKeKatalog()" aria-label="Kembali">&larr;</button>
+        <h2 id="namaProdukHeader">Pemesanan</h2>
+    </header>
+
+    <main class="container">
         
-        <!-- Banner Produk & Foto -->
+        <!-- Banner Produk Modern -->
         <div class="product-banner">
-            <div class="product-icon" id="bannerIcon">🎮</div>
+            <div class="product-icon-box" id="bannerIcon">📱</div>
             <div class="product-info">
-                <h3 id="bannerTitle">Memuat Produk...</h3>
-                <p>Proses instan & otomatis 24 Jam di SakaPay</p>
+                <h3 id="bannerTitle">Memuat Layanan...</h3>
+                <span class="verified-tag">✓ Produk Resmi &amp; Terverifikasi</span>
             </div>
         </div>
 
-        <!-- STEP 1: Masukkan Akun / Tujuan -->
+        <!-- Langkah 1: Input Nomor / ID -->
         <div class="section-box">
             <div class="section-title">
-                <span class="step-badge">1</span> Masukkan Data Akun / Tujuan
+                <span class="step-badge">1</span> Masukkan Nomor / ID Akun
             </div>
-            <div id="inputAreaTujuan">
-                <!-- Berubah otomatis: ID Game (ML/PUBG pakai ID+Server) atau No HP -->
+            <div class="input-group" id="inputAreaTujuan">
+                <input type="number" id="noTujuan" placeholder="Nomor Handphone Tujuan (cth: 0812xxxxxxxx)" required autocomplete="off">
             </div>
-            <small style="color: #64748b; font-size: 11px; margin-top: 5px; display: block;">Pastikan data akun sudah benar sebelum melanjutkan.</small>
+            <small style="color: var(--text-muted); font-size: 11.5px; margin-top: 6px; display: block;">
+                Pastikan nomor tujuan Anda sudah benar dan dalam masa aktif.
+            </small>
         </div>
 
-        <!-- STEP 2: Pilih Nominal (Grid Card) -->
+        <!-- Langkah 2: Pilihan Nominal -->
         <div class="section-box">
-            <div class="section-title" style="margin-bottom: 12px;">
-                <span class="step-badge">2</span> Pilih Nominal / Item
+            <div class="section-title">
+                <span class="step-badge">2</span> Pilih Paket / Nominal
+            </div>
+            <div class="nominal-grid" id="gridNominal">
+                <!-- Diisi via JS -->
+            </div>
+        </div>
+
+        <!-- Langkah 3: Kode Promo Berkuota (BARU!) -->
+        <div class="section-box">
+            <div class="section-title">
+                <span class="step-badge">%</span> Punya Kode Promo? (Opsional)
+            </div>
+            <div class="promo-box">
+                <input type="text" id="inputPromo" placeholder="Masukkan kode promo (Cth: SAKAPAY)" style="text-transform: uppercase;">
+                <button type="button" class="btn-apply-promo" onclick="terapkanPromo()">Gunakan</button>
+            </div>
+            <div id="promoNotice" style="display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 700;">
+                🎉 Berhasil! Anda hemat <span id="diskonNominalText">Rp 0</span>
+            </div>
+        </div>
+
+        <!-- Langkah 4: Kartu Pilihan Pembayaran Visual -->
+        <div class="section-box">
+            <div class="section-title">
+                <span class="step-badge">3</span> Metode Pembayaran
             </div>
             
-            <div class="nominal-grid" id="gridNominal">
-                <!-- Data pilihan nominal diisi dinamis via JS -->
+            <div class="payment-list" id="paymentOptions">
+                <div class="payment-tile selected" onclick="pilihMetode('QRIS', this)">
+                    <div class="pay-left">
+                        <span class="pay-icon-chip">QRIS</span>
+                        <span class="pay-name">QRIS All Payment (Semua Bank &amp; E-Wallet)</span>
+                    </div>
+                    <input type="radio" name="payMethod" class="pay-radio" checked>
+                </div>
+
+                <div class="payment-tile" onclick="pilihMetode('DANA', this)">
+                    <div class="pay-left">
+                        <span class="pay-icon-chip">DANA</span>
+                        <span class="pay-name">DANA</span>
+                    </div>
+                    <input type="radio" name="payMethod" class="pay-radio">
+                </div>
+
+                <div class="payment-tile" onclick="pilihMetode('GoPay', this)">
+                    <div class="pay-left">
+                        <span class="pay-icon-chip">GOPAY</span>
+                        <span class="pay-name">GoPay</span>
+                    </div>
+                    <input type="radio" name="payMethod" class="pay-radio">
+                </div>
+
+                <div class="payment-tile" onclick="pilihMetode('ShopeePay', this)">
+                    <div class="pay-left">
+                        <span class="pay-icon-chip">SHOPEE</span>
+                        <span class="pay-name">ShopeePay</span>
+                    </div>
+                    <input type="radio" name="payMethod" class="pay-radio">
+                </div>
+
+                <div class="payment-tile" onclick="pilihMetode('Transfer Bank BCA / BRI', this)">
+                    <div class="pay-left">
+                        <span class="pay-icon-chip">BANK</span>
+                        <span class="pay-name">Transfer Bank BCA / BRI</span>
+                    </div>
+                    <input type="radio" name="payMethod" class="pay-radio">
+                </div>
             </div>
         </div>
 
-        <!-- STEP 3: Metode Pembayaran -->
-        <div class="section-box">
-            <div class="section-title">
-                <span class="step-badge">3</span> Pilih Metode Pembayaran
-            </div>
-            <select id="metodeBayar">
-                <option value="QRIS Otomatis">QRIS (Otomatis & Bebas Biaya Admin)</option>
-                <option value="GoPay / DANA">GoPay / DANA</option>
-                <option value="Transfer Bank BCA/BRI">Transfer Bank BCA / BRI</option>
-            </select>
-        </div>
+    </main>
 
-    </div>
-
-    <!-- Footer Checkout Melayang -->
-    <div class="footer-checkout">
+    <!-- Bottom Bar Checkout Sticky -->
+    <footer class="footer-checkout">
         <div class="price-summary">
-            <span>Total Pembayaran</span>
+            <span id="selectedItemLabel">Total Pembayaran</span>
             <h4 id="totalHargaText">Rp 0</h4>
         </div>
         <button class="btn-buy" onclick="prosesBeli()">Beli Sekarang</button>
-    </div>
+    </footer>
 
     <script>
-        // Tangkap nama produk dari URL (Contoh: beli.html?produk=Free%20Fire)
         const urlParams = new URLSearchParams(window.location.search);
-        const namaProduk = urlParams.get('produk') || 'Free Fire Global';
+        const namaProduk = urlParams.get('produk') || 'Layanan Digital';
 
-        document.getElementById('namaProdukHeader').innerText = namaProduk;
-        document.getElementById('bannerTitle').innerText = namaProduk;
+        document.getElementById('namaProdukHeader').textContent = namaProduk;
+        document.getElementById('bannerTitle').textContent = namaProduk;
 
-        // Atur ikon banner berdasarkan produk
-        let iconBanner = '🔥';
-        if (namaProduk.includes('Mobile Legends')) iconBanner = '⚔️';
-        else if (namaProduk.includes('PUBG')) iconBanner = '🎯';
-        else if (namaProduk.includes('Telkomsel') || namaProduk.includes('XL') || namaProduk.includes('Pulsa')) iconBanner = '📱';
-        else if (namaProduk.includes('DANA') || namaProduk.includes('OVO')) iconBanner = '💳';
-        document.getElementById('bannerIcon').innerText = iconBanner;
+        const bannerIcon = document.getElementById('bannerIcon');
+        const prodLower = namaProduk.toLowerCase();
 
-        // Atur Input Form (Game pakai ID+Server, Pulsa pakai No HP)
-        const inputArea = document.getElementById('inputAreaTujuan');
-        if (namaProduk.includes('Mobile Legends') || namaProduk.includes('PUBG')) {
-            inputArea.innerHTML = `
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="idPlayer" placeholder="User ID (Cth: 77539363)" style="flex: 2;">
-                    <input type="text" id="serverGame" placeholder="Zone ID (Cth: 12109)" style="flex: 1;">
-                </div>
+        // Ikon & Input sesuai produk
+        if (prodLower.includes('pln') || prodLower.includes('token') || prodLower.includes('listrik')) {
+            bannerIcon.textContent = '⚡';
+            document.getElementById('inputAreaTujuan').innerHTML = `
+                <input type="number" id="noTujuan" placeholder="Nomor Meter / ID Pelanggan PLN" required autocomplete="off">
             `;
-        } else if (namaProduk.includes('Token PLN')) {
-            inputArea.innerHTML = `
-                <input type="number" id="noTujuan" placeholder="Masukkan Nomor Meter / ID Pelanggan">
+        } else if (prodLower.includes('dana') || prodLower.includes('gopay') || prodLower.includes('ovo') || prodLower.includes('shopee')) {
+            bannerIcon.textContent = '💰';
+            document.getElementById('inputAreaTujuan').innerHTML = `
+                <input type="number" id="noTujuan" placeholder="Nomor Akun E-Wallet (cth: 0857xxxxxxxx)" required autocomplete="off">
             `;
         } else {
-            inputArea.innerHTML = `
-                <input type="number" id="noTujuan" placeholder="Masukkan Nomor HP / Akun Tujuan">
+            bannerIcon.textContent = '📱';
+            document.getElementById('inputAreaTujuan').innerHTML = `
+                <input type="number" id="noTujuan" placeholder="Nomor Handphone Tujuan (cth: 0812xxxxxxxx)" required autocomplete="off">
             `;
         }
 
-        // Daftar Pilihan Nominal Dummy (Bisa disesuaikan)
-        let daftarNominal = [
-            { nama: "70 Diamonds / 10k", harga: 10000, label: "70 Items" },
-            { nama: "100 Diamonds / 18k", harga: 18999, label: "100 Items" },
-            { nama: "140 Diamonds / 20k", harga: 20000, label: "140 Items" },
-            { nama: "210 Diamonds / 38k", harga: 38799, label: "210 Items" },
-            { nama: "355 Diamonds / 50k", harga: 50000, label: "355 Items" },
-            { nama: "520 Diamonds / 94k", harga: 94599, label: "520 Items" }
-        ];
+        // Daftar nominal standar pasar top-up
+        let daftarNominal = [];
 
-        if (namaProduk.includes('Pulsa') || namaProduk.includes('Telkomsel') || namaProduk.includes('XL')) {
+        if (prodLower.includes('token') || prodLower.includes('pln')) {
             daftarNominal = [
-                { nama: "Pulsa 10.000", harga: 12000, label: "Pulsa 10k" },
-                { nama: "Pulsa 20.000", harga: 22000, label: "Pulsa 20k" },
-                { nama: "Pulsa 50.000", harga: 52000, label: "Pulsa 50k" },
-                { nama: "Pulsa 100.000", harga: 102000, label: "Pulsa 100k" }
+                { nama: "Token PLN 20.000", harga: 21500, badge: "POPULER", isHot: true },
+                { nama: "Token PLN 50.000", harga: 51500, badge: "BEST SELLER", isBest: true },
+                { nama: "Token PLN 100.000", harga: 101500 },
+                { nama: "Token PLN 200.000", harga: 201500 },
+                { nama: "Token PLN 500.000", harga: 502000 },
+                { nama: "Token PLN 1.000.000", harga: 1003000 }
+            ];
+        } else if (prodLower.includes('dana') || prodLower.includes('gopay') || prodLower.includes('ovo') || prodLower.includes('shopee')) {
+            daftarNominal = [
+                { nama: "Saldo Rp 10.000", harga: 11000 },
+                { nama: "Saldo Rp 20.000", harga: 21000, badge: "POPULER", isHot: true },
+                { nama: "Saldo Rp 25.000", harga: 26000 },
+                { nama: "Saldo Rp 50.000", harga: 51000, badge: "BEST SELLER", isBest: true },
+                { nama: "Saldo Rp 100.000", harga: 101000 },
+                { nama: "Saldo Rp 200.000", harga: 201500 }
+            ];
+        } else {
+            // Default Pulsa
+            daftarNominal = [
+                { nama: "Pulsa 5.000", harga: 6500 },
+                { nama: "Pulsa 10.000", harga: 11500, badge: "POPULER", isHot: true },
+                { nama: "Pulsa 15.000", harga: 16500 },
+                { nama: "Pulsa 20.000", harga: 21500 },
+                { nama: "Pulsa 25.000", harga: 26500, badge: "BEST SELLER", isBest: true },
+                { nama: "Pulsa 50.000", harga: 51500 },
+                { nama: "Pulsa 100.000", harga: 101500 }
             ];
         }
 
         let produkPilihan = {
-            item: daftarNominal[0].nama,
-            harga: daftarNominal[0].harga
+            item: daftarNominal[1].nama,
+            harga: daftarNominal[1].harga
         };
 
-        function muatNominal() {
+        let metodePilihan = 'QRIS';
+        let promoAktif = null;
+
+        function renderNominal() {
             const grid = document.getElementById('gridNominal');
             grid.innerHTML = '';
 
             daftarNominal.forEach((item, index) => {
-                let card = document.createElement('div');
-                let isSelected = index === 0 ? 'selected' : '';
+                const card = document.createElement('div');
+                const isSelected = index === 1 ? 'selected' : '';
                 card.className = `nominal-card ${isSelected}`;
-                
-                card.innerHTML = `
-                    <div class="nominal-name">${item.nama}</div>
-                    <div class="nominal-price"><span>Harga</span> Rp ${item.harga.toLocaleString('id-ID')}</div>
-                `;
+
+                if (item.badge) {
+                    const badge = document.createElement('span');
+                    badge.className = `badge-tag ${item.isBest ? 'badge-best' : 'badge-hot'}`;
+                    badge.textContent = item.badge === 'BEST SELLER' ? '⭐ BEST SELLER' : '🔥 POPULER';
+                    card.appendChild(badge);
+                }
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'nominal-name';
+                nameDiv.textContent = item.nama;
+
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'nominal-price';
+                priceDiv.textContent = 'Rp ' + item.harga.toLocaleString('id-ID');
+
+                card.appendChild(nameDiv);
+                card.appendChild(priceDiv);
 
                 card.onclick = () => {
                     document.querySelectorAll('.nominal-card').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
-                    
                     produkPilihan.item = item.nama;
                     produkPilihan.harga = item.harga;
-
-                    document.getElementById('totalHargaText').innerText = 'Rp ' + item.harga.toLocaleString('id-ID');
+                    hitungTotal();
                 };
 
                 grid.appendChild(card);
             });
 
-            document.getElementById('totalHargaText').innerText = 'Rp ' + produkPilihan.harga.toLocaleString('id-ID');
+            hitungTotal();
+        }
+
+        function pilihMetode(metode, tileEl) {
+            document.querySelectorAll('.payment-tile').forEach(t => {
+                t.classList.remove('selected');
+                t.querySelector('.pay-radio').checked = false;
+            });
+            tileEl.classList.add('selected');
+            tileEl.querySelector('.pay-radio').checked = true;
+            metodePilihan = metode;
+        }
+
+        function hitungTotal() {
+            let hargaAwal = produkPilihan.harga;
+            let hargaFinal = hargaAwal;
+
+            if (promoAktif) {
+                hargaFinal = Math.max(0, hargaAwal - promoAktif.diskon);
+                document.getElementById('totalHargaText').innerHTML = `
+                    <del style="color:#94a3b8; font-size:12px; margin-right:4px;">Rp ${hargaAwal.toLocaleString('id-ID')}</del>
+                    Rp ${hargaFinal.toLocaleString('id-ID')}
+                `;
+            } else {
+                document.getElementById('totalHargaText').textContent = 'Rp ' + hargaFinal.toLocaleString('id-ID');
+            }
+
+            document.getElementById('selectedItemLabel').textContent = produkPilihan.item;
+        }
+
+        function showToast(pesan, icon = '⚠️') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = pesan;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function terapkanPromo() {
+            const input = document.getElementById('inputPromo');
+            const kode = input.value.trim().toUpperCase();
+
+            if (!kode) {
+                showToast('Masukkan kode promo terlebih dahulu!');
+                return;
+            }
+
+            let promos = [];
+            try {
+                promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
+            } catch (e) {}
+
+            if (promos.length === 0) {
+                promos = [
+                    { kode: "SAKAPAY", diskon: 1000, kuota: 10, terpakai: 0 },
+                    { kode: "HEMAT500", diskon: 500, kuota: 20, terpakai: 0 }
+                ];
+                localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+            }
+
+            const promoFound = promos.find(p => p.kode === kode);
+
+            if (!promoFound) {
+                showToast('Kode promo tidak ditemukan!');
+                return;
+            }
+
+            const sisaKuota = promoFound.kuota - promoFound.terpakai;
+            if (sisaKuota <= 0) {
+                showToast('Maaf, kuota promo ini sudah habis!');
+                return;
+            }
+
+            promoAktif = promoFound;
+            document.getElementById('diskonNominalText').textContent = `Rp ${promoFound.diskon.toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} lagi)`;
+            document.getElementById('promoNotice').style.display = 'block';
+            input.disabled = true;
+
+            showToast(`Promo ${kode} aktif! Hemat Rp ${promoFound.diskon.toLocaleString('id-ID')}`, '🎉');
+            hitungTotal();
+        }
+
+        function kembaliKeKatalog() {
+            if (window.history.length > 1 && document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = 'pesan.html';
+            }
         }
 
         function prosesBeli() {
-            let tujuanFinal = '';
-            if (namaProduk.includes('Mobile Legends') || namaProduk.includes('PUBG')) {
-                let id = document.getElementById('idPlayer').value.trim();
-                let server = document.getElementById('serverGame').value.trim();
-                if (!id) {
-                    alert('Harap masukkan User ID terlebih dahulu!');
-                    return;
+            const noEl = document.getElementById('noTujuan');
+            const noVal = noEl ? noEl.value.trim() : '';
+
+            if (!noVal) {
+                if (noEl) {
+                    noEl.classList.add('input-error');
+                    noEl.focus();
+                    setTimeout(() => noEl.classList.remove('input-error'), 600);
                 }
-                tujuanFinal = id + (server ? ' (' + server + ')' : '');
-            } else {
-                let no = document.getElementById('noTujuan').value.trim();
-                if (!no) {
-                    alert('Harap masukkan nomor tujuan terlebih dahulu!');
-                    return;
-                }
-                tujuanFinal = no;
+                showToast('Harap masukkan nomor tujuan / ID Anda!');
+                return;
             }
 
-            let metode = document.getElementById('metodeBayar').value;
-            let invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+            // Kurangi kuota jika pakai promo
+            if (promoAktif) {
+                let promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
+                const idx = promos.findIndex(p => p.kode === promoAktif.kode);
+                if (idx !== -1 && promos[idx].terpakai < promos[idx].kuota) {
+                    promos[idx].terpakai += 1;
+                    localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+                }
+            }
 
-            let dataInvoice = {
+            const hargaFinal = promoAktif ? Math.max(0, produkPilihan.harga - promoAktif.diskon) : produkPilihan.harga;
+            const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+
+            const dataInvoice = {
                 id: invoiceId,
-                layanan: namaProduk + ' - ' + produkPilihan.item,
-                tujuan: tujuanFinal,
-                nominal: produkPilihan.item,
-                harga: produkPilihan.harga,
-                metode: metode,
+                produk: namaProduk + ' (' + produkPilihan.item + ')' + (promoAktif ? ` [Promo: ${promoAktif.kode}]` : ""),
+                tujuan: noVal,
+                harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
+                metode: metodePilihan,
                 status: 'Menunggu Pembayaran',
                 tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
             };
 
-            // Simpan ke LocalStorage agar otomatis terbaca di invoice.html & admin.html
             localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
+            localStorage.setItem('latestInvoice', invoiceId);
 
-            // Lempar ke halaman invoice
             window.location.href = 'invoice.html?id=' + invoiceId;
         }
 
         window.onload = () => {
-            muatNominal();
+            renderNominal();
         };
     </script>
 </body>

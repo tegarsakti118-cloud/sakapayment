@@ -3,94 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori - SakaPay</title>
+    <title>Katalog Pemesanan - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #f1f5f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #17A897;
+            --primary-dark: #12887a;
+            --bg-body: #f1f5f9;
+            --dark: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            color: #1e293b;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
+
+        body {
+            background-color: var(--bg-body);
+            color: #1e293b;
+            min-height: 100vh;
+            padding-bottom: 30px;
+        }
+
+        /* Header Bersih */
         .header {
-            background: #17A897;
+            background: var(--primary);
             color: white;
-            padding: 15px 20px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
         }
-        .header h2 {
-            margin: 0;
-            font-size: 18px;
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+
         .back-btn {
             color: white;
             text-decoration: none;
-            font-size: 20px;
-        }
-        .tab-container {
-            display: flex;
-            background: white;
-            padding: 10px 15px;
-            gap: 15px;
-            overflow-x: auto;
-            white-space: nowrap;
-            border-bottom: 1px solid #e2e8f0;
-            scrollbar-width: none;
-        }
-        .tab-container::-webkit-scrollbar {
-            display: none;
-        }
-        .tab-item {
-            display: flex;
-            flex-direction: column;
+            font-size: 22px;
+            font-weight: 700;
+            display: inline-flex;
             align-items: center;
-            font-size: 12px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .header-home-link {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
             font-weight: 600;
-            color: #64748b;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 8px;
         }
-        .tab-item.active {
-            color: #17A897;
-            background: #f0fdf4;
-        }
-        .tab-item span {
-            font-size: 18px;
-            margin-bottom: 4px;
-        }
-        .container {
-            padding: 15px;
+
+        /* Search Bar Instan */
+        .search-container {
+            padding: 12px 14px 4px;
             max-width: 600px;
             margin: 0 auto;
         }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: white;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Tab Kategori */
+        .tab-container {
+            display: flex;
+            background: white;
+            padding: 10px 14px;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 8px;
+        }
+
+        .tab-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .tab-item.active {
+            color: white;
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .container {
+            padding: 14px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Grid Item Produk */
         .grid-katalog {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
-        @media (max-width: 480px) {
+
+        @media (min-width: 480px) {
             .grid-katalog {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
         }
+
         .card-item {
             background: white;
             border-radius: 12px;
             padding: 10px;
             text-align: center;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: transform 0.1s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            transition: transform 0.12s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
         .card-item:active {
             transform: scale(0.95);
         }
+
         .card-img {
             width: 100%;
             aspect-ratio: 1/1;
@@ -98,33 +196,53 @@
             border-radius: 10px;
             object-fit: cover;
             margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
+            display: block;
         }
+
         .card-title {
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 700;
             color: #334155;
-            line-height: 1.2;
+            line-height: 1.3;
             height: 28px;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
+
+        .no-result-text {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--muted);
+            font-size: 13px;
+            background: white;
+            border-radius: 12px;
+            border: 1px dashed var(--border);
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="index.html" class="back-btn">←</a>
-        <h2>Kategori SakaPay</h2>
-        <span style="font-size: 18px; cursor: pointer;">🔍</span>
+    <header class="header">
+        <div class="header-title-box">
+            <a href="index.html" class="back-btn" title="Kembali">&larr;</a>
+            <h2>Pilih Layanan</h2>
+        </div>
+        <a href="index.html" class="header-home-link">Beranda</a>
+    </header>
+
+    <!-- Kolom Pencarian Instan -->
+    <div class="search-container">
+        <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="liveSearchInput" class="search-input" placeholder="Cari game, pulsa, e-wallet, atau PLN..." oninput="filterProdukInstan(this.value)">
+        </div>
     </div>
 
-    <div class="tab-container">
+    <!-- Tab Kategori -->
+    <div class="tab-container" id="tabContainer">
         <div class="tab-item active" onclick="gantiTab('game', this)">
             <span>🎮</span> Top Up Game
         </div>
@@ -139,88 +257,119 @@
         </div>
     </div>
 
-    <div class="container">
+    <main class="container">
         <div class="grid-katalog" id="katalogGrid">
-            <!-- Game dan item akan muncul di sini otomatis -->
+            <!-- Item produk dimuat via JS -->
         </div>
-    </div>
+    </main>
 
-            <script>
-const dataKatalog = {
-    game: [
-        { nama: "Mobile Legends", img: "assets/img/ml.png", link: "game/ml.html" },
-        { nama: "Free Fire Global", img: "assets/img/ff.png", link: "game/ff.html" },
-        { nama: "PUBG Mobile", img: "assets/img/pubg.png", link: "game/pubg.html" },
-        { nama: "Arena of Valor", img: "assets/img/aov.png", link: "game/aov.html" },
-        { nama: "Call of Duty Mobile", img: "assets/img/codm.png", link: "game/codm.html" },
-        { nama: "Google Play ID", img: "assets/img/gp.png", link: "game/google-play.html" }
-    ],
+    <script>
+    const dataKatalog = {
+        game: [
+            { nama: "Mobile Legends", img: "assets/img/ml.png", link: "game/ml.html" },
+            { nama: "Free Fire Global", img: "assets/img/ff.png", link: "game/ff.html" },
+            { nama: "PUBG Mobile", img: "assets/img/pubg.png", link: "game/pubg.html" },
+            { nama: "Arena of Valor", img: "assets/img/aov.png", link: "game/aov.html" },
+            { nama: "Call of Duty Mobile", img: "assets/img/codm.png", link: "game/codm.html" },
+            { nama: "Google Play ID", img: "assets/img/gp.png", link: "game/google-play.html" }
+        ],
 
-    pulsa: [
-        { nama: "Telkomsel", img: "assets/img/telkomsel.png", link: "pulsa/telkomsel.html" },
-        { nama: "XL Axiata", img: "assets/img/xl.png", link: "pulsa/xl.html" },
-        { nama: "Axis", img: "assets/img/axis.png", link: "pulsa/axis.html" },
-        { nama: "Indosat Ooredoo", img: "assets/img/indosat.png", link: "pulsa/indosat.html" },
-        { nama: "Smartfren", img: "assets/img/smart.png", link: "pulsa/smart.html" },
-        { nama: "Byu.", img: "assets/img/byu.png", link: "pulsa/byu.html" },
-    ],
+        pulsa: [
+            { nama: "Telkomsel", img: "assets/img/telkomsel.png", link: "beli.html?produk=Telkomsel" },
+            { nama: "XL Axiata", img: "assets/img/xl.png", link: "beli.html?produk=XL%20Axiata" },
+            { nama: "Axis", img: "assets/img/axis.png", link: "beli.html?produk=Axis" },
+            { nama: "Indosat Ooredoo", img: "assets/img/indosat.png", link: "beli.html?produk=Indosat%20Ooredoo" },
+            { nama: "Smartfren", img: "assets/img/smart.png", link: "beli.html?produk=Smartfren" },
+            { nama: "by.U", img: "assets/img/byu.png", link: "beli.html?produk=by.U" }
+        ],
 
-    ewallet: [
-        { nama: "DANA", img: "assets/img/dana.png", link: "ewallet/dana.html" },
-        { nama: "OVO", img: "assets/img/ovo.png", link: "ewallet/ovo.html" },
-        { nama: "GoPay", img: "assets/img/gopay.png", link: "ewallet/gopay.html" },
-        { nama: "ShopeePay", img: "assets/img/shopeepay.png", link: "ewallet/shopeepay.html" }
-    ],
+        ewallet: [
+            { nama: "DANA", img: "assets/img/dana.png", link: "beli.html?produk=DANA" },
+            { nama: "OVO", img: "assets/img/ovo.png", link: "beli.html?produk=OVO" },
+            { nama: "GoPay", img: "assets/img/gopay.png", link: "beli.html?produk=GoPay" },
+            { nama: "ShopeePay", img: "assets/img/shopeepay.png", link: "beli.html?produk=ShopeePay" }
+        ],
 
-    pln: [
-        { nama: "Token PLN Prabayar", img: "assets/img/pln.png", link: "pln/token.html" }
-    ]
-};
+        pln: [
+            { nama: "Token PLN Prabayar", img: "assets/img/pln.png", link: "beli.html?produk=Token%20PLN" }
+        ]
+    };
 
-function muatKatalog(kategori) {
-    const grid = document.getElementById("katalogGrid");
-    grid.innerHTML = "";
+    let kategoriAktif = "game";
 
-    dataKatalog[kategori].forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card-item";
+    function renderItems(items) {
+        const grid = document.getElementById("katalogGrid");
+        grid.innerHTML = "";
 
-        card.onclick = () => {
-            window.location.href = item.link;
-        };
+        if (items.length === 0) {
+            grid.innerHTML = `<div class="no-result-text">Produk tidak ditemukan.<br><small style="color: #94a3b8;">Coba ketik kata kunci yang lain.</small></div>`;
+            return;
+        }
 
-        const img = document.createElement("img");
-        img.src = item.img;
-        img.alt = item.nama;
-        img.className = "card-img";
-        img.onerror = () => {
-            img.onerror = null;
-            img.src = "https://placehold.co/100x100?text=SakaPay";
-        };
+        items.forEach(item => {
+            const card = document.createElement("div");
+            card.className = "card-item";
 
-        const title = document.createElement("div");
-        title.className = "card-title";
-        title.textContent = item.nama;
+            card.onclick = () => {
+                window.location.href = item.link;
+            };
 
-        card.appendChild(img);
-        card.appendChild(title);
-        grid.appendChild(card);
-    });
-}
+            const img = document.createElement("img");
+            img.src = item.img;
+            img.alt = item.nama;
+            img.className = "card-img";
+            img.onerror = () => {
+                img.onerror = null;
+                img.src = "https://placehold.co/100x100?text=SakaPay";
+            };
 
-function gantiTab(kategori, elemen) {
-    document.querySelectorAll(".tab-item").forEach(tab => {
-        tab.classList.remove("active");
-    });
+            const title = document.createElement("div");
+            title.className = "card-title";
+            title.textContent = item.nama;
 
-    elemen.classList.add("active");
-    muatKatalog(kategori);
-}
+            card.appendChild(img);
+            card.appendChild(title);
+            grid.appendChild(card);
+        });
+    }
 
-window.onload = () => muatKatalog("game");
-</script>
+    function muatKatalog(kategori) {
+        kategoriAktif = kategori;
+        const items = dataKatalog[kategori] || [];
+        renderItems(items);
+    }
 
+    function gantiTab(kategori, elemen) {
+        document.getElementById("liveSearchInput").value = "";
+        document.querySelectorAll(".tab-item").forEach(tab => {
+            tab.classList.remove("active");
+        });
 
+        elemen.classList.add("active");
+        muatKatalog(kategori);
+    }
+
+    // Fungsi Pencarian Cepat (Live Search)
+    function filterProdukInstan(keyword) {
+        const q = keyword.trim().toLowerCase();
+        
+        // Jika kolom cari kosong, kembalikan ke tab yang sedang aktif
+        if (!q) {
+            muatKatalog(kategoriAktif);
+            return;
+        }
+
+        // Cari di seluruh kategori (Game, Pulsa, E-wallet, PLN)
+        let hasil = [];
+        Object.keys(dataKatalog).forEach(kat => {
+            const match = dataKatalog[kat].filter(it => it.nama.toLowerCase().includes(q));
+            hasil = hasil.concat(match);
+        });
+
+        renderItems(hasil);
+    }
+
+    window.onload = () => muatKatalog("game");
+    </script>
 </body>
 </html>
-

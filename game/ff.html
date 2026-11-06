@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#17A897">
+    <title>Top Up Free Fire Resmi - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #17A897;
+            --primary-dark: #108779;
+            --bg: #f8fafc;
+            --text: #18312f;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --white: #ffffff;
+            --radius: 14px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 110px;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand { font-size: 16px; font-weight: 800; }
+        .brand small { display: block; font-size: 11px; font-weight: 500; opacity: .9; }
+        .container { max-width: 600px; margin: auto; padding: 14px; }
+
+        .hero {
+            background: linear-gradient(135deg, #17A897, #086e65);
+            color: white;
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .hero .tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .hero h1 { margin: 8px 0 4px; font-size: 19px; font-weight: 800; }
+        .hero p { font-size: 12.5px; line-height: 1.5; opacity: .95; }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 10px;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .number {
+            display: grid;
+            place-items: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .hint { color: var(--muted); font-size: 11.5px; line-height: 1.5; margin: 0 0 12px; }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            font-size: 13.5px;
+            outline: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23, 168, 151, 0.15);
+        }
+
+        .input-error {
+            border-color: #ef4444 !important;
+            animation: shake 0.3s ease-in-out;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+        }
+
+        .nominal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .nominal {
+            position: relative;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: white;
+        }
+
+        .nominal.selected {
+            border-color: var(--primary);
+            background: #f0fdfa;
+            box-shadow: 0 2px 8px rgba(23, 168, 151, 0.12);
+        }
+
+        .badge-promo {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            width: fit-content;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-hot { background: #fee2e2; color: #dc2626; }
+        .badge-best { background: #fef3c7; color: #b45309; }
+
+        .nominal .item-name {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin: 2px 0;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .nominal .price {
+            font-size: 12.5px;
+            color: var(--primary-dark);
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .promo-box { display: flex; gap: 8px; }
+
+        .btn-apply-promo {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0 16px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .payment-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .payment-tile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+        }
+
+        .payment-tile.selected { border-color: var(--primary); background: #f0fdfa; }
+        .pay-left { display: flex; align-items: center; gap: 10px; }
+        .pay-icon-chip { background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; color: var(--primary-dark); }
+        .pay-name { font-size: 13px; font-weight: 700; color: #1e293b; }
+        .pay-radio { accent-color: var(--primary); width: 16px; height: 16px; }
+
+        .footer-checkout {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-top: 1px solid var(--border);
+        }
+
+        .price-summary span { font-size: 11px; color: var(--muted); display: block; margin-bottom: 2px; }
+        .price-summary h4 { margin: 0; color: var(--primary-dark); font-size: 18px; font-weight: 800; }
+
+        .btn-buy {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(23, 168, 151, 0.3);
+            transition: background 0.15s ease;
+        }
+
+        .toast-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #0f172a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .toast-box.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast-box">
+    <span id="toastIcon">⚠️</span> <span id="toastMsg">Pesan</span>
+</div>
+
+<header class="header">
+    <button type="button" class="back-btn" onclick="kembaliKeHalamanSebelumnya()" aria-label="Kembali">&larr;</button>
+    <div class="brand">SakaPay <small>Top Up Free Fire</small></div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <span class="tag">TOP UP INSTAN</span>
+        <h1>Free Fire Global</h1>
+        <p>Top up diamond &amp; membership mingguan resmi langsung via Player ID.</p>
+    </section>
+
+    <section class="card">
+        <h2 class="section-title"><span class="number">1</span> Masukkan Player ID</h2>
+        <p class="hint">Temukan User ID di profil akun Free Fire Anda.</p>
+        <input type="number" id="playerId" placeholder="Contoh: 1234567890" required autocomplete="off">
+    </section>
+
+    <section class="card">
+        <h2 class="section-title"><span class="number">2</span> Pilih Paket Diamond / Membership</h2>
+        <div class="nominal-grid" id="nominalGrid"></div>
+    </section>
+
+    <!-- Langkah Promo Berkuota -->
+    <section class="card">
+        <h2 class="section-title"><span class="number">%</span> Punya Kode Promo? (Opsional)</h2>
+        <div class="promo-box">
+            <input type="text" id="inputPromo" placeholder="Masukkan kode promo (Cth: FFHEMAT)" style="text-transform: uppercase;">
+            <button type="button" class="btn-apply-promo" onclick="terapkanPromo()">Gunakan</button>
+        </div>
+        <div id="promoNotice" style="display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 700;">
+            🎉 Berhasil! Anda hemat <span id="diskonNominalText">Rp 0</span>
+        </div>
+    </section>
+
+    <!-- Pembayaran Visual -->
+    <section class="card">
+        <h2 class="section-title"><span class="number">3</span> Pilih Metode Pembayaran</h2>
+        <div class="payment-list">
+            <div class="payment-tile selected" onclick="pilihMetode('QRIS', this)">
+                <div class="pay-left"><span class="pay-icon-chip">QRIS</span><span class="pay-name">QRIS All Payment (Semua Bank &amp; E-Wallet)</span></div>
+                <input type="radio" name="payMethod" class="pay-radio" checked>
+            </div>
+            <div class="payment-tile" onclick="pilihMetode('DANA', this)">
+                <div class="pay-left"><span class="pay-icon-chip">DANA</span><span class="pay-name">DANA</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
+            </div>
+            <div class="payment-tile" onclick="pilihMetode('GoPay', this)">
+                <div class="pay-left"><span class="pay-icon-chip">GOPAY</span><span class="pay-name">GoPay</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
+            </div>
+            <div class="payment-tile" onclick="pilihMetode('ShopeePay', this)">
+                <div class="pay-left"><span class="pay-icon-chip">SHOPEE</span><span class="pay-name">ShopeePay</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
+            </div>
+            <div class="payment-tile" onclick="pilihMetode('Transfer Bank BCA / BRI', this)">
+                <div class="pay-left"><span class="pay-icon-chip">BANK</span><span class="pay-name">Transfer Bank BCA / BRI</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer-checkout">
+    <div class="price-summary">
+        <span id="selectedItemLabel">Membership Mingguan</span>
+        <h4 id="totalHargaText">Rp 29.000</h4>
+    </div>
+    <button class="btn-buy" onclick="prosesBeli()">Beli Sekarang</button>
+</footer>
+
+<script>
+// IDENTITAS HALAMAN: KHUSUS FREE FIRE (FF)
+const TARGET_HALAMAN = "FF";
+
+const daftarNominal = [
+    { nama: "Membership Mingguan", harga: 29000, badge: "BEST SELLER", isBest: true },
+    { nama: "Membership Bulanan", harga: 145000 },
+    { nama: "Level Up Pass", harga: 15000 },
+    { nama: "5 Diamond", harga: 1000 },
+    { nama: "12 Diamond", harga: 2000 },
+    { nama: "50 Diamond", harga: 7000 },
+    { nama: "70 Diamond", harga: 9500, badge: "POPULER", isHot: true },
+    { nama: "140 Diamond", harga: 19000 },
+    { nama: "210 Diamond", harga: 28500 },
+    { nama: "355 Diamond", harga: 47500 },
+    { nama: "720 Diamond", harga: 94000 },
+    { nama: "1440 Diamond", harga: 188000 },
+    { nama: "2180 Diamond", harga: 280000 }
+];
+
+let itemTerpilih = daftarNominal[0];
+let metodeTerpilih = 'QRIS';
+let promoAktif = null;
+
+function renderNominal() {
+    const grid = document.getElementById('nominalGrid');
+    grid.innerHTML = '';
+
+    daftarNominal.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = `nominal ${index === 0 ? 'selected' : ''}`;
+
+        if (item.badge) {
+            const badge = document.createElement('span');
+            badge.className = `badge-promo ${item.isBest ? 'badge-best' : 'badge-hot'}`;
+            badge.textContent = item.badge === 'BEST SELLER' ? '⭐ BEST SELLER' : '🔥 POPULER';
+            card.appendChild(badge);
+        }
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'item-name';
+        nameSpan.textContent = item.nama;
+
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'price';
+        priceSpan.textContent = 'Rp ' + item.harga.toLocaleString('id-ID');
+
+        card.appendChild(nameSpan);
+        card.appendChild(priceSpan);
+
+        card.onclick = () => {
+            document.querySelectorAll('.nominal').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            itemTerpilih = item;
+            hitungTotal();
+        };
+
+        grid.appendChild(card);
+    });
+
+    hitungTotal();
+}
+
+function pilihMetode(metode, tileEl) {
+    document.querySelectorAll('.payment-tile').forEach(t => {
+        t.classList.remove('selected');
+        t.querySelector('.pay-radio').checked = false;
+    });
+    tileEl.classList.add('selected');
+    tileEl.querySelector('.pay-radio').checked = true;
+    metodeTerpilih = metode;
+}
+
+function hitungTotal() {
+    let hargaAwal = itemTerpilih.harga;
+    let hargaFinal = hargaAwal;
+
+    if (promoAktif) {
+        hargaFinal = Math.max(0, hargaAwal - promoAktif.diskon);
+        document.getElementById('totalHargaText').innerHTML = `
+            <del style="color:#94a3b8; font-size:12px; margin-right:4px;">Rp ${hargaAwal.toLocaleString('id-ID')}</del>
+            Rp ${hargaFinal.toLocaleString('id-ID')}
+        `;
+    } else {
+        document.getElementById('totalHargaText').textContent = 'Rp ' + hargaFinal.toLocaleString('id-ID');
+    }
+
+    document.getElementById('selectedItemLabel').textContent = itemTerpilih.nama;
+}
+
+function showToast(msg, icon = '⚠️') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('toastIcon').textContent = icon;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// VALIDASI PROMO KHUSUS FREE FIRE
+function terapkanPromo() {
+    const input = document.getElementById('inputPromo');
+    const kode = input.value.trim().toUpperCase();
+
+    if (!kode) {
+        showToast('Masukkan kode promo terlebih dahulu!');
+        return;
+    }
+
+    let promos = [];
+    try {
+        promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
+    } catch (e) {}
+
+    const promoFound = promos.find(p => p.kode === kode);
+
+    if (!promoFound) {
+        showToast('Kode promo tidak ditemukan!');
+        return;
+    }
+
+    // CEK APAKAH PROMO KHUSUS UNTUK PRODUK LAIN (MISAL KHUSUS ML)
+    const targetPromo = promoFound.target || "SEMUA";
+    if (targetPromo !== "SEMUA" && targetPromo !== TARGET_HALAMAN) {
+        let namaTarget = "produk lain";
+        if (targetPromo === "ML") namaTarget = "Mobile Legends";
+        else if (targetPromo === "PUBG") namaTarget = "PUBG Mobile";
+        else if (targetPromo === "PULSA") namaTarget = "Pulsa & Data";
+        else if (targetPromo === "PLN") namaTarget = "Token PLN";
+        else if (targetPromo === "EWALLET") namaTarget = "E-Wallet";
+
+        showToast(`Maaf, promo ${kode} hanya khusus untuk ${namaTarget}!`);
+        return;
+    }
+
+    const sisaKuota = promoFound.kuota - promoFound.terpakai;
+    if (sisaKuota <= 0) {
+        showToast('Maaf, kuota promo ini sudah habis!');
+        return;
+    }
+
+    promoAktif = promoFound;
+    document.getElementById('diskonNominalText').textContent = `Rp ${promoFound.diskon.toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} orang)`;
+    document.getElementById('promoNotice').style.display = 'block';
+    input.disabled = true;
+
+    showToast(`Promo ${kode} aktif! Hemat Rp ${promoFound.diskon.toLocaleString('id-ID')}`, '🎉');
+    hitungTotal();
+}
+
+function kembaliKeHalamanSebelumnya() {
+    if (window.history.length > 1 && document.referrer) {
+        window.history.back();
+    } else {
+        window.location.href = '../pesan.html';
+    }
+}
+
+function prosesBeli() {
+    const idEl = document.getElementById('playerId');
+    const idVal = idEl.value.trim();
+
+    if (!idVal) {
+        idEl.classList.add('input-error');
+        idEl.focus();
+        setTimeout(() => idEl.classList.remove('input-error'), 600);
+        showToast('Harap masukkan Player ID Free Fire!');
+        return;
+    }
+
+    if (promoAktif) {
+        let promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
+        const idx = promos.findIndex(p => p.kode === promoAktif.kode);
+        if (idx !== -1 && promos[idx].terpakai < promos[idx].kuota) {
+            promos[idx].terpakai += 1;
+            localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+        }
+    }
+
+    const hargaFinal = promoAktif ? Math.max(0, itemTerpilih.harga - promoAktif.diskon) : itemTerpilih.harga;
+    const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+
+    const dataInvoice = {
+        id: invoiceId,
+        produk: "Free Fire (" + itemTerpilih.nama + ")" + (promoAktif ? ` [Promo: ${promoAktif.kode}]` : ""),
+        tujuan: idVal,
+        harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
+        metode: metodeTerpilih,
+        status: "Menunggu Pembayaran",
+        tanggal: new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
+    };
+
+    localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
+    localStorage.setItem('latestInvoice', invoiceId);
+
+    window.location.href = "../invoice.html?id=" + invoiceId;
+}
+
+window.onload = () => {
+    renderNominal();
+};
+</script>
+</body>
+</html>

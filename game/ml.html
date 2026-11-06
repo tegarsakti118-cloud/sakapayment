@@ -1,514 +1,690 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#17A897">
-    <title>Top Up Mobile Legends | SakaPay</title>
+    <title>Top Up Mobile Legends Resmi - SakaPay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --primary: #17A897;
             --primary-dark: #108779;
-            --bg: #f3f7f7;
+            --bg: #f8fafc;
             --text: #18312f;
-            --muted: #71817f;
-            --border: #e1eae8;
+            --muted: #64748b;
+            --border: #e2e8f0;
             --white: #ffffff;
+            --radius: 14px;
         }
 
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            margin: 0;
             background: var(--bg);
             color: var(--text);
-            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 110px;
         }
 
         .header {
             background: var(--primary);
             color: white;
-            padding: 16px;
+            padding: 14px 16px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             position: sticky;
             top: 0;
             z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
         }
 
-        .back {
+        .back-btn {
             color: white;
             text-decoration: none;
-            font-size: 25px;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
         }
 
         .brand {
-            font-size: 19px;
+            font-size: 16px;
             font-weight: 800;
         }
 
         .brand small {
             display: block;
             font-size: 11px;
-            font-weight: 400;
+            font-weight: 500;
             opacity: .9;
         }
 
         .container {
-            max-width: 650px;
+            max-width: 600px;
             margin: auto;
-            padding: 16px;
+            padding: 14px;
         }
 
         .hero {
             background: linear-gradient(135deg, #17A897, #086e65);
             color: white;
-            border-radius: 18px;
-            padding: 22px;
-            margin-bottom: 16px;
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 14px;
         }
 
         .hero .tag {
             display: inline-block;
-            background: #ffffff25;
-            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
+            font-weight: 700;
         }
 
         .hero h1 {
-            margin: 12px 0 6px;
-            font-size: 23px;
+            margin: 8px 0 4px;
+            font-size: 19px;
+            font-weight: 800;
         }
 
         .hero p {
-            margin: 0;
-            font-size: 13px;
-            line-height: 1.6;
-            opacity: .9;
+            font-size: 12.5px;
+            line-height: 1.5;
+            opacity: .95;
         }
 
         .card {
             background: white;
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 15px;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
         .section-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin: 0 0 8px;
-            font-size: 16px;
+            gap: 8px;
+            margin: 0 0 10px;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #0f172a;
         }
 
         .number {
             display: grid;
             place-items: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 9px;
-            background: #e4f8f4;
-            color: var(--primary-dark);
-            font-size: 13px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
         }
 
         .hint {
             color: var(--muted);
-            font-size: 12px;
-            line-height: 1.6;
-            margin: 0 0 15px;
-        }
-
-        label.field-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            margin: 14px 0 7px;
-        }
-
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: white;
-            font-size: 14px;
-            outline: none;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: var(--primary);
+            font-size: 11.5px;
+            line-height: 1.5;
+            margin: 0 0 12px;
         }
 
         .input-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            font-size: 13.5px;
+            outline: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23, 168, 151, 0.15);
+        }
+
+        .input-error {
+            border-color: #ef4444 !important;
+            animation: shake 0.3s ease-in-out;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+        }
+
+        /* Grid Nominal */
+        .nominal-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
 
-        .nominal-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 14px;
-        }
-
         .nominal {
             position: relative;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: 12px;
-            padding: 13px 10px;
+            padding: 12px 10px;
             cursor: pointer;
-            min-width: 0;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: white;
         }
 
-        .nominal:has(input:checked) {
-            border: 1.5px solid var(--primary);
-            background: #edfffb;
+        .nominal.selected {
+            border-color: var(--primary);
+            background: #f0fdfa;
+            box-shadow: 0 2px 8px rgba(23, 168, 151, 0.12);
         }
 
-        .nominal input {
-            accent-color: var(--primary);
+        .badge-promo {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            width: fit-content;
+            margin-bottom: 4px;
+            text-transform: uppercase;
         }
+
+        .badge-hot { background: #fee2e2; color: #dc2626; }
+        .badge-best { background: #fef3c7; color: #b45309; }
 
         .nominal .diamond {
             display: block;
             font-size: 13px;
-            font-weight: 750;
-            margin: 9px 0 5px;
+            font-weight: 700;
+            margin: 2px 0;
+            color: var(--text);
+            line-height: 1.3;
         }
 
         .nominal .price {
-            font-size: 12px;
+            font-size: 12.5px;
             color: var(--primary-dark);
-            font-weight: 700;
+            font-weight: 800;
+            margin-top: 4px;
         }
 
-        .summary-row {
+        /* Input Kode Promo */
+        .promo-box {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 13px;
+            gap: 8px;
         }
 
-        .summary-row span {
-            color: var(--muted);
-        }
-
-        .summary-row strong {
-            text-align: right;
-            overflow-wrap: anywhere;
-        }
-
-        .total {
-            font-size: 17px;
-            color: var(--primary-dark);
-        }
-
-        .pay-button {
-            width: 100%;
-            border: 0;
-            border-radius: 12px;
+        .btn-apply-promo {
             background: var(--primary);
             color: white;
-            font-size: 15px;
-            font-weight: 750;
-            padding: 15px;
-            margin-top: 17px;
+            border: none;
+            border-radius: 10px;
+            padding: 0 16px;
+            font-weight: 700;
+            font-size: 13px;
             cursor: pointer;
+            white-space: nowrap;
         }
 
-        .pay-button:active {
+        /* Pilihan Pembayaran Visual */
+        .payment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .payment-tile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+        }
+
+        .payment-tile.selected {
+            border-color: var(--primary);
+            background: #f0fdfa;
+        }
+
+        .pay-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pay-icon-chip {
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .pay-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .pay-radio {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Bottom Bar */
+        .footer-checkout {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-top: 1px solid var(--border);
+        }
+
+        .price-summary span {
+            font-size: 11px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .price-summary h4 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .btn-buy {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(23, 168, 151, 0.3);
+            transition: background 0.15s ease;
+        }
+
+        .btn-buy:active {
             background: var(--primary-dark);
         }
 
-        .notice {
-            font-size: 11px;
-            color: var(--muted);
-            line-height: 1.6;
-            margin-top: 12px;
-        }
-
-        .footer {
+        /* Toast Notifikasi */
+        .toast-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #0f172a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            max-width: 90%;
             text-align: center;
-            padding: 12px 0 28px;
-            color: var(--muted);
-            font-size: 11px;
         }
 
-        @media (max-width: 360px) {
-            .container {
-                padding: 10px;
-            }
-
-            .card {
-                padding: 14px;
-            }
-
-            .input-row {
-                grid-template-columns: 1fr;
-            }
+        .toast-box.show {
+            transform: translateX(-50%) translateY(0);
         }
     </style>
 </head>
 
 <body>
 
+<div id="toast" class="toast-box">
+    <span id="toastIcon">⚠️</span> <span id="toastMsg">Pesan</span>
+</div>
+
 <header class="header">
-    <a href="../kategori.html" class="back" aria-label="Kembali">←</a>
+    <button type="button" class="back-btn" onclick="kembaliKeHalamanSebelumnya()" aria-label="Kembali">&larr;</button>
     <div class="brand">
         SakaPay
-        <small>Top Up Game</small>
+        <small>Top Up Mobile Legends</small>
     </div>
 </header>
 
 <main class="container">
 
     <section class="hero">
-        <span class="tag">GAME TOP UP</span>
-        <h1>Mobile Legends</h1>
-        <p>Isi ulang diamond favoritmu dengan mudah melalui halaman pemesanan SakaPay.</p>
+        <span class="tag">PROMO RESMI</span>
+        <h1>Mobile Legends: Bang Bang</h1>
+        <p>Layanan top up diamond & Weekly Diamond Pass instan 24 jam dengan invoice digital.</p>
     </section>
 
-    <form id="orderForm">
+    <section class="card">
+        <h2 class="section-title"><span class="number">1</span> Masukkan User ID &amp; Zone ID</h2>
+        <p class="hint">Contoh: User ID: 12345678, Zone ID: (1234).</p>
+        <div class="input-row">
+            <div>
+                <input type="number" id="userId" placeholder="User ID" required autocomplete="off">
+            </div>
+            <div>
+                <input type="number" id="zoneId" placeholder="Zone ID" required autocomplete="off">
+            </div>
+        </div>
+    </section>
 
-        <section class="card">
-            <h2 class="section-title">
-                <span class="number">1</span>
-                Masukkan Data Akun
-            </h2>
-            <p class="hint">Masukkan User ID dan Zone ID yang benar sebelum melanjutkan.</p>
+    <section class="card">
+        <h2 class="section-title"><span class="number">2</span> Pilih Nominal Diamond / Pass</h2>
+        <div class="nominal-grid" id="nominalGrid"></div>
+    </section>
 
-            <div class="input-row">
-                <div>
-                    <label class="field-label" for="userId">User ID</label>
-                    <input
-                        type="text"
-                        id="userId"
-                        inputmode="numeric"
-                        placeholder="Contoh: 123456789"
-                        required
-                    >
+    <!-- Langkah Promo Berkuota -->
+    <section class="card">
+        <h2 class="section-title"><span class="number">%</span> Punya Kode Promo? (Opsional)</h2>
+        <div class="promo-box">
+            <input type="text" id="inputPromo" placeholder="Masukkan kode promo (Cth: MLMAMPUS)" style="text-transform: uppercase;">
+            <button type="button" class="btn-apply-promo" onclick="terapkanPromo()">Gunakan</button>
+        </div>
+        <div id="promoNotice" style="display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 700;">
+            🎉 Berhasil! Anda hemat <span id="diskonNominalText">Rp 0</span>
+        </div>
+    </section>
+
+    <!-- Pembayaran Visual -->
+    <section class="card">
+        <h2 class="section-title"><span class="number">3</span> Pilih Metode Pembayaran</h2>
+        <div class="payment-list">
+            <div class="payment-tile selected" onclick="pilihMetode('QRIS', this)">
+                <div class="pay-left">
+                    <span class="pay-icon-chip">QRIS</span>
+                    <span class="pay-name">QRIS All Payment (Semua Bank &amp; E-Wallet)</span>
                 </div>
-
-                <div>
-                    <label class="field-label" for="zoneId">Zone ID</label>
-                    <input
-                        type="text"
-                        id="zoneId"
-                        inputmode="numeric"
-                        placeholder="Contoh: 1234"
-                        required
-                    >
-                </div>
+                <input type="radio" name="payMethod" class="pay-radio" checked>
             </div>
-        </section>
-
-        <section class="card">
-            <h2 class="section-title">
-                <span class="number">2</span>
-                Pilih Diamond
-            </h2>
-            <p class="hint">Pilih satu nominal diamond untuk melihat total harga.</p>
-
-            <div class="nominal-grid">
-
-                <label class="nominal">
-                    <input type="radio" name="nominal"
-                        value="86 Diamond" data-price="20000" required>
-                    <span class="diamond">86 Diamond</span>
-                    <span class="price">Rp20.000</span>
-                </label>
-
-                <label class="nominal">
-                    <input type="radio" name="nominal"
-                        value="172 Diamond" data-price="39000">
-                    <span class="diamond">172 Diamond</span>
-                    <span class="price">Rp39.000</span>
-                </label>
-
-                <label class="nominal">
-                    <input type="radio" name="nominal"
-                        value="257 Diamond" data-price="58000">
-                    <span class="diamond">257 Diamond</span>
-                    <span class="price">Rp58.000</span>
-                </label>
-
-                <label class="nominal">
-                    <input type="radio" name="nominal"
-                        value="344 Diamond" data-price="77000">
-                    <span class="diamond">344 Diamond</span>
-                    <span class="price">Rp77.000</span>
-                </label>
-
-                <label class="nominal">
-                    <input type="radio" name="nominal"
-                        value="429 Diamond" data-price="96000">
-                    <span class="diamond">429 Diamond</span>
-                    <span class="price">Rp96.000</span>
-                </label>
-
-                <label class="nominal">
-                    <input type="radio" name="nominal"
-                        value="706 Diamond" data-price="155000">
-                    <span class="diamond">706 Diamond</span>
-                    <span class="price">Rp155.000</span>
-                </label>
-
+            <div class="payment-tile" onclick="pilihMetode('DANA', this)">
+                <div class="pay-left"><span class="pay-icon-chip">DANA</span><span class="pay-name">DANA</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
             </div>
-        </section>
-
-        <section class="card">
-            <h2 class="section-title">
-                <span class="number">3</span>
-                Metode Pembayaran
-            </h2>
-
-            <label class="field-label" for="payment">Pilih pembayaran</label>
-            <select id="payment" required>
-                <option value="">Pilih metode pembayaran</option>
-                <option value="QRIS">QRIS</option>
-                <option value="DANA">DANA</option>
-                <option value="GoPay">GoPay</option>
-                <option value="Transfer Bank">Transfer Bank</option>
-            </select>
-        </section>
-
-        <section class="card">
-            <h2 class="section-title">
-                <span class="number">4</span>
-                Ringkasan Pesanan
-            </h2>
-
-            <div class="summary-row">
-                <span>Game</span>
-                <strong>Mobile Legends</strong>
+            <div class="payment-tile" onclick="pilihMetode('GoPay', this)">
+                <div class="pay-left"><span class="pay-icon-chip">GOPAY</span><span class="pay-name">GoPay</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
             </div>
-
-            <div class="summary-row">
-                <span>User ID</span>
-                <strong id="sumUser">-</strong>
+            <div class="payment-tile" onclick="pilihMetode('ShopeePay', this)">
+                <div class="pay-left"><span class="pay-icon-chip">SHOPEE</span><span class="pay-name">ShopeePay</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
             </div>
-
-            <div class="summary-row">
-                <span>Zone ID</span>
-                <strong id="sumZone">-</strong>
+            <div class="payment-tile" onclick="pilihMetode('Transfer Bank BCA / BRI', this)">
+                <div class="pay-left"><span class="pay-icon-chip">BANK</span><span class="pay-name">Transfer Bank BCA / BRI</span></div>
+                <input type="radio" name="payMethod" class="pay-radio">
             </div>
+        </div>
+    </section>
 
-            <div class="summary-row">
-                <span>Nominal</span>
-                <strong id="sumNominal">-</strong>
-            </div>
-
-            <div class="summary-row">
-                <span>Pembayaran</span>
-                <strong id="sumPayment">-</strong>
-            </div>
-
-            <div class="summary-row">
-                <span>Total</span>
-                <strong class="total" id="sumPrice">Rp0</strong>
-            </div>
-
-            <button type="submit" class="pay-button">
-                Buat Pesanan
-            </button>
-
-            <p class="notice">
-                Demo portofolio SakaPay. Harga hanya contoh dan belum tentu
-                sesuai harga resmi. Tombol ini belum memproses pembayaran
-                sungguhan atau mengirim diamond ke akun.
-            </p>
-
-            <div id="result" role="status" aria-live="polite"></div>
-        </section>
-
-    </form>
-
-    <div class="footer">© SakaPay · Layanan digital</div>
 </main>
 
+<footer class="footer-checkout">
+    <div class="price-summary">
+        <span id="selectedItemLabel">Weekly Diamond Pass</span>
+        <h4 id="totalHargaText">Rp 27.500</h4>
+    </div>
+    <button class="btn-buy" onclick="prosesBeli()">Beli Sekarang</button>
+</footer>
+
 <script>
-const form = document.getElementById("orderForm");
+// IDENTITAS HALAMAN: KHUSUS MOBILE LEGENDS (ML)
+const TARGET_HALAMAN = "ML";
 
-const userId = document.getElementById("userId");
-const zoneId = document.getElementById("zoneId");
-const payment = document.getElementById("payment");
+const daftarNominal = [
+    { nama: "Weekly Diamond Pass", harga: 27500, badge: "BEST SELLER", isBest: true },
+    { nama: "5 Diamond", harga: 1500 },
+    { nama: "12 Diamond", harga: 3500 },
+    { nama: "19 Diamond", harga: 5500 },
+    { nama: "44 Diamond", harga: 12000 },
+    { nama: "86 Diamond", harga: 21000, badge: "POPULER", isHot: true },
+    { nama: "172 Diamond", harga: 41500 },
+    { nama: "257 Diamond", harga: 61500 },
+    { nama: "344 Diamond", harga: 82000 },
+    { nama: "429 Diamond", harga: 102000 },
+    { nama: "706 Diamond", harga: 165000 },
+    { nama: "1412 Diamond", harga: 330000 },
+    { nama: "2195 Diamond", harga: 500000 },
+    { nama: "Twilight Pass", harga: 145000 }
+];
 
-const formatRupiah = angka =>
-    "Rp" + angka.toLocaleString("id-ID");
+let itemTerpilih = daftarNominal[0];
+let metodeTerpilih = 'QRIS';
+let promoAktif = null;
 
-function updateSummary() {
-    const selected = document.querySelector(
-        'input[name="nominal"]:checked'
-    );
+function renderNominal() {
+    const grid = document.getElementById('nominalGrid');
+    grid.innerHTML = '';
 
-    document.getElementById("sumUser").textContent =
-        userId.value.trim() || "-";
+    daftarNominal.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = `nominal ${index === 0 ? 'selected' : ''}`;
 
-    document.getElementById("sumZone").textContent =
-        zoneId.value.trim() || "-";
+        if (item.badge) {
+            const badge = document.createElement('span');
+            badge.className = `badge-promo ${item.isBest ? 'badge-best' : 'badge-hot'}`;
+            badge.textContent = item.badge === 'BEST SELLER' ? '⭐ BEST SELLER' : '🔥 POPULER';
+            card.appendChild(badge);
+        }
 
-    document.getElementById("sumNominal").textContent =
-        selected ? selected.value : "-";
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'diamond';
+        nameSpan.textContent = item.nama;
 
-    document.getElementById("sumPayment").textContent =
-        payment.value || "-";
+        const priceSpan = document.createElement('span');
+        priceSpan.className = 'price';
+        priceSpan.textContent = 'Rp ' + item.harga.toLocaleString('id-ID');
 
-    document.getElementById("sumPrice").textContent =
-        selected
-            ? formatRupiah(Number(selected.dataset.price))
-            : "Rp0";
+        card.appendChild(nameSpan);
+        card.appendChild(priceSpan);
+
+        card.onclick = () => {
+            document.querySelectorAll('.nominal').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            itemTerpilih = item;
+            hitungTotal();
+        };
+
+        grid.appendChild(card);
+    });
+
+    hitungTotal();
 }
 
-form.addEventListener("input", updateSummary);
-form.addEventListener("change", updateSummary);
+function pilihMetode(metode, tileEl) {
+    document.querySelectorAll('.payment-tile').forEach(t => {
+        t.classList.remove('selected');
+        t.querySelector('.pay-radio').checked = false;
+    });
+    tileEl.classList.add('selected');
+    tileEl.querySelector('.pay-radio').checked = true;
+    metodeTerpilih = metode;
+}
 
-form.addEventListener("submit", function(event) {
-    event.preventDefault();
+function hitungTotal() {
+    let hargaAwal = itemTerpilih.harga;
+    let hargaFinal = hargaAwal;
 
-    const selected = document.querySelector(
-        'input[name="nominal"]:checked'
-    );
+    if (promoAktif) {
+        hargaFinal = Math.max(0, hargaAwal - promoAktif.diskon);
+        document.getElementById('totalHargaText').innerHTML = `
+            <del style="color:#94a3b8; font-size:12px; margin-right:4px;">Rp ${hargaAwal.toLocaleString('id-ID')}</del>
+            Rp ${hargaFinal.toLocaleString('id-ID')}
+        `;
+    } else {
+        document.getElementById('totalHargaText').textContent = 'Rp ' + hargaFinal.toLocaleString('id-ID');
+    }
 
-    if (!selected) {
+    document.getElementById('selectedItemLabel').textContent = itemTerpilih.nama;
+}
+
+function showToast(msg, icon = '⚠️') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('toastIcon').textContent = icon;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// VALIDASI PROMO DENGAN TARGET PRODUK SPESIFIK
+function terapkanPromo() {
+    const input = document.getElementById('inputPromo');
+    const kode = input.value.trim().toUpperCase();
+
+    if (!kode) {
+        showToast('Masukkan kode promo terlebih dahulu!');
         return;
     }
 
-    const orderId = "SP" + Date.now().toString().slice(-8);
+    let promos = [];
+    try {
+        promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
+    } catch (e) {}
 
-    const result = document.getElementById("result");
-    result.style.marginTop = "14px";
-    result.style.padding = "12px";
-    result.style.borderRadius = "10px";
-    result.style.background = "#eafffb";
-    result.style.color = "#106b60";
+    const promoFound = promos.find(p => p.kode === kode);
 
-    result.textContent =
-        "Pesanan demo " + orderId +
-        " berhasil dibuat. Belum ada pembayaran yang diproses.";
+    if (!promoFound) {
+        showToast('Kode promo tidak ditemukan!');
+        return;
+    }
 
-    result.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
-    });
-});
+    // CEK APAKAH PROMO KHUSUS UNTUK PRODUK LAIN
+    const targetPromo = promoFound.target || "SEMUA";
+    if (targetPromo !== "SEMUA" && targetPromo !== TARGET_HALAMAN) {
+        let namaTarget = "produk lain";
+        if (targetPromo === "FF") namaTarget = "Free Fire";
+        else if (targetPromo === "PUBG") namaTarget = "PUBG Mobile";
+        else if (targetPromo === "PULSA") namaTarget = "Pulsa & Data";
+        else if (targetPromo === "PLN") namaTarget = "Token PLN";
+        else if (targetPromo === "EWALLET") namaTarget = "E-Wallet";
 
-updateSummary();
+        showToast(`Maaf, promo ${kode} hanya khusus untuk ${namaTarget}!`);
+        return;
+    }
+
+    const sisaKuota = promoFound.kuota - promoFound.terpakai;
+    if (sisaKuota <= 0) {
+        showToast('Maaf, kuota promo ini sudah habis!');
+        return;
+    }
+
+    promoAktif = promoFound;
+    document.getElementById('diskonNominalText').textContent = `Rp ${promoFound.diskon.toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} orang)`;
+    document.getElementById('promoNotice').style.display = 'block';
+    input.disabled = true;
+
+    showToast(`Promo ${kode} aktif! Hemat Rp ${promoFound.diskon.toLocaleString('id-ID')}`, '🎉');
+    hitungTotal();
+}
+
+function kembaliKeHalamanSebelumnya() {
+    if (window.history.length > 1 && document.referrer) {
+        window.history.back();
+    } else {
+        window.location.href = '../pesan.html';
+    }
+}
+
+function prosesBeli() {
+    const uEl = document.getElementById('userId');
+    const zEl = document.getElementById('zoneId');
+    const u = uEl.value.trim();
+    const z = zEl.value.trim();
+
+    if (!u) {
+        uEl.classList.add('input-error');
+        uEl.focus();
+        setTimeout(() => uEl.classList.remove('input-error'), 600);
+        showToast('Harap masukkan User ID game!');
+        return;
+    }
+
+    if (!z) {
+        zEl.classList.add('input-error');
+        zEl.focus();
+        setTimeout(() => zEl.classList.remove('input-error'), 600);
+        showToast('Harap masukkan Zone ID game!');
+        return;
+    }
+
+    if (promoAktif) {
+        let promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
+        const idx = promos.findIndex(p => p.kode === promoAktif.kode);
+        if (idx !== -1 && promos[idx].terpakai < promos[idx].kuota) {
+            promos[idx].terpakai += 1;
+            localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+        }
+    }
+
+    const hargaFinal = promoAktif ? Math.max(0, itemTerpilih.harga - promoAktif.diskon) : itemTerpilih.harga;
+    const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+
+    const dataInvoice = {
+        id: invoiceId,
+        produk: "Mobile Legends (" + itemTerpilih.nama + ")" + (promoAktif ? ` [Promo: ${promoAktif.kode}]` : ""),
+        tujuan: `${u} (${z})`,
+        harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
+        metode: metodeTerpilih,
+        status: "Menunggu Pembayaran",
+        tanggal: new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
+    };
+
+    localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
+    localStorage.setItem('latestInvoice', invoiceId);
+
+    window.location.href = "../invoice.html?id=" + invoiceId;
+}
+
+window.onload = () => {
+    renderNominal();
+};
 </script>
-
 </body>
 </html>
