@@ -80,6 +80,33 @@ nav {
     white-space: nowrap;
 }
 
+/* Logo gambar SakaPay (navbar, footer, admin, nota) */
+.logo-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-brand .logo-img {
+    width: 28px;
+    height: 28px;
+}
+
+@media print {
+    .logo-img {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
 .nav-right {
     display: flex;
     align-items: center;
