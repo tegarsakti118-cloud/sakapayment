@@ -196,6 +196,8 @@
         .badge-pending { background: #fef9c3; color: #854d0e; }
         .badge-process { background: #e0f2fe; color: #0369a1; }
         .badge-success { background: #dcfce7; color: #166534; }
+        .badge-danger { background: #fee2e2; color: #dc2626; }
+        .badge-muted { background: #f1f5f9; color: #64748b; }
 
         .btn-action {
             background: none;
@@ -211,6 +213,7 @@
         .btn-action.process { background: #0284c7; color: #fff; border: none; }
         .btn-action.success { background: var(--primary); color: #fff; border: none; }
         .btn-action.danger { color: #ef4444; border-color: #fecaca; }
+        .btn-action.secondary { background: #64748b; color: white; border: none; }
 
         /* Toast Notifikasi */
         .admin-toast {
@@ -336,7 +339,7 @@
                 <i data-lucide="shopping-cart" style="width: 18px;"></i> Kelola Pesanan
             </a>
             <a class="nav-item" onclick="switchTab('promo', event)">
-                <i data-lucide="ticket" style="width: 18px;"></i> Kelola Promo (Cloud)
+                <i data-lucide="ticket" style="width: 18px;"></i> Kelola Voucher (Cloud)
             </a>
             <a class="nav-item" onclick="switchTab('pembayaran', event)">
                 <i data-lucide="credit-card" style="width: 18px;"></i> Verifikasi Bayar
@@ -359,7 +362,7 @@
         <div id="tab-dashboard" class="tab-content active">
             <div style="margin-bottom: 1.25rem;">
                 <h1 style="font-size: 1.3rem; color: var(--dark); font-weight: 800;">Ringkasan Toko</h1>
-                <p style="color: var(--text-muted); font-size: 0.825rem;">Statistik data transaksi dari browser pelanggan.</p>
+                <p style="color: var(--text-muted); font-size: 0.825rem;">Statistik data transaksi dan voucher cloud.</p>
             </div>
 
             <div class="stats-grid">
@@ -376,8 +379,8 @@
                     <h2 id="statCompleted" style="color: #16a34a;">0</h2>
                 </div>
                 <div class="stat-card">
-                    <span>Estimasi Omset Selesai</span>
-                    <h2 id="statRevenue" style="color: var(--primary); font-size: 1.2rem;">Rp 0</h2>
+                    <span>Voucher Digunakan</span>
+                    <h2 id="statVoucherRedeemed" style="color: var(--primary); font-size: 1.2rem;">0x</h2>
                 </div>
             </div>
 
@@ -438,40 +441,46 @@
             </div>
         </div>
 
-        <!-- Tab 3: Kelola Promo (ONLINE DENGAN SUPABASE CLOUD) -->
+        <!-- Tab 3: Kelola Voucher (SUPABASE ENGINE) -->
         <div id="tab-promo" class="tab-content">
             <div style="margin-bottom: 1.25rem;">
                 <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                     <div>
-                        <h1 style="font-size: 1.3rem; color: var(--dark); font-weight: 800;">Kelola Promo Cloud (Supabase)</h1>
-                        <p style="color: var(--text-muted); font-size: 0.825rem;">Database promo online terpusat secara nasional.</p>
+                        <h1 style="font-size: 1.3rem; color: var(--dark); font-weight: 800;">Kelola Voucher Cloud</h1>
+                        <p style="color: var(--text-muted); font-size: 0.825rem;">Database voucher terpusat, kuota otomatis, dan anti race condition.</p>
                     </div>
-                    <button onclick="loadPromosOnline()" class="btn-action success" style="padding: 6px 12px; font-size: 12px;">
+                    <button onclick="loadAllVoucherData()" class="btn-action success" style="padding: 6px 12px; font-size: 12px;">
                         🔄 Muat Ulang Data
                     </button>
                 </div>
             </div>
 
-            <!-- Form Tambah Promo Baru -->
-            <div class="card" style="margin-bottom: 1.5rem; max-width: 600px;">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">+ Tambah Promo Online Baru</h3>
-                <form onsubmit="tambahPromoOnline(event)">
+            <!-- Form Tambah Voucher Baru -->
+            <div class="card" style="margin-bottom: 1.5rem; max-width: 650px;">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);" id="formVoucherTitle">+ Buat Voucher Baru</h3>
+                <form onsubmit="simpanVoucher(event)">
+                    <input type="hidden" id="editVoucherId" value="0">
+                    
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Kode Voucher</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="inputKode" placeholder="Cth: SAKABERSIH" required style="flex: 1; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px; text-transform: uppercase;">
+                            <button type="button" onclick="generateRandomCode()" class="btn-action secondary" style="margin: 0; padding: 0 10px;">Acak Kode</button>
+                        </div>
+                    </div>
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                         <div>
-                            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Kode Voucher</label>
-                            <input type="text" id="inputKode" placeholder="Cth: MLMAMPUS" required style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px; text-transform: uppercase;">
+                            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Potongan Diskon (Rp)</label>
+                            <input type="number" id="inputDiskon" placeholder="Cth: 2000" min="1" required style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px;">
                         </div>
                         <div>
-                            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Potongan Harga (Rp)</label>
-                            <input type="number" id="inputDiskon" placeholder="Cth: 1500" required style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px;">
+                            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Batas Kuota (Orang)</label>
+                            <input type="number" id="inputKuota" placeholder="Cth: 10" min="1" required style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px;">
                         </div>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-                        <div>
-                            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Batas Kuota Orang</label>
-                            <input type="number" id="inputKuota" placeholder="Cth: 3 (Untuk 3 orang)" required style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px;">
-                        </div>
                         <div>
                             <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Berlaku Khusus Produk</label>
                             <select id="inputTarget" style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
@@ -479,34 +488,69 @@
                                 <option value="ML">⚔️ Khusus Mobile Legends</option>
                                 <option value="FF">🔥 Khusus Free Fire</option>
                                 <option value="PUBG">🎯 Khusus PUBG Mobile</option>
-                                <option value="PULSA">📱 Khusus Pulsa & Data</option>
-                                <option value="PLN">⚡ Khusus Token PLN</option>
-                                <option value="EWALLET">💰 Khusus E-Wallet</option>
+                                <option value="CODM">🔫 Khusus COD Mobile</option>
+                                <option value="AOV">🛡️ Khusus Arena of Valor</option>
+                                <option value="GOOGLEPLAY">🎁 Khusus Google Play ID</option>
                             </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 4px;">Kedaluwarsa (Opsional)</label>
+                            <input type="datetime-local" id="inputExpiry" style="width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.8rem;">
                         </div>
                     </div>
 
-                    <button type="submit" id="btnSubmitPromo" class="btn-primary" style="padding: 0.55rem 1.2rem; font-size: 0.85rem;">Simpan ke Supabase Cloud</button>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+                        <input type="checkbox" id="inputIsActive" checked style="width: 16px; height: 16px; accent-color: var(--primary);">
+                        <label for="inputIsActive" style="font-size: 0.85rem; font-weight: 600;">Aktifkan voucher ini segera</label>
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <button type="submit" id="btnSubmitVoucher" class="btn-primary" style="padding: 0.55rem 1.2rem; font-size: 0.85rem;">Simpan Voucher ke Cloud</button>
+                        <button type="button" id="btnCancelEdit" onclick="resetVoucherForm()" class="btn-action secondary" style="display: none; padding: 0.55rem 1rem;">Batal</button>
+                    </div>
                 </form>
             </div>
 
-            <!-- Tabel Daftar Promo Aktif -->
-            <div class="card">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">Daftar Promo Aktif di Database Supabase</h3>
+            <!-- Tabel Daftar Voucher -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">Daftar Master Voucher di Supabase</h3>
                 <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
-                                <th>Kode Promo</th>
+                                <th>Kode Voucher</th>
                                 <th>Khusus Untuk</th>
-                                <th>Potongan (Rp)</th>
+                                <th>Diskon</th>
                                 <th>Kuota Terpakai</th>
-                                <th>Status Kuota</th>
-                                <th>Aksi</th>
+                                <th>Kedaluwarsa</th>
+                                <th>Status</th>
+                                <th>Tindakan</th>
                             </tr>
                         </thead>
-                        <tbody id="promoTable">
-                            <tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Menghubungkan ke database Supabase...</td></tr>
+                        <tbody id="voucherTable">
+                            <tr><td colspan="7" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Menghubungkan ke database Supabase...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabel Riwayat Penggunaan Voucher -->
+            <div class="card">
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--dark);">Riwayat Pemakaian Voucher (Redemptions Log)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Kode Voucher</th>
+                                <th>Game / Produk</th>
+                                <th>ID Akun Pengguna</th>
+                                <th>No. Invoice</th>
+                                <th>Diskon</th>
+                            </tr>
+                        </thead>
+                        <tbody id="redemptionTable">
+                            <tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada riwayat pemakaian voucher.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -569,6 +613,8 @@
     const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
     const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    let cachedVouchers = [];
+
     // ================= TOAST NOTIFIKASI ADMIN =================
     function showAdminToast(msg, type = 'success') {
         const toast = document.getElementById('adminToast');
@@ -630,9 +676,10 @@
         }
     }
 
+    // ================= LOAD & RENDER TRANSAKSI =================
     function loadOrders() {
         let orders = [];
-        let totalCount = 0, pendingCount = 0, completedCount = 0, revenue = 0;
+        let totalCount = 0, pendingCount = 0, completedCount = 0;
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -645,11 +692,7 @@
                     totalCount++;
                     const st = (data.status || '').trim();
                     if (st === 'Menunggu Pembayaran') pendingCount++;
-                    if (st.toLowerCase() === 'selesai') {
-                        completedCount++;
-                        const cleanPrice = parseInt(String(data.harga).replace(/[^0-9]/g, '')) || 0;
-                        revenue += cleanPrice;
-                    }
+                    if (st.toLowerCase() === 'selesai') completedCount++;
                 } catch (e) {}
             }
         }
@@ -657,10 +700,9 @@
         document.getElementById('statTotal').textContent = totalCount;
         document.getElementById('statPending').textContent = pendingCount;
         document.getElementById('statCompleted').textContent = completedCount;
-        document.getElementById('statRevenue').textContent = 'Rp ' + revenue.toLocaleString('id-ID');
 
         renderTables(orders);
-        loadPromosOnline();
+        loadAllVoucherData();
     }
 
     function getBadgeClass(status) {
@@ -780,49 +822,86 @@
         renderTables(filtered);
     }
 
-    // ================= KELOLA PROMO ONLINE (SUPABASE REAL-TIME) =================
+    // ================= SISTEM VOUCHER CLOUD SUPABASE =================
+
     function getTargetLabel(target) {
-        if (target === 'ML') return '<span class="badge" style="background:#e0f2fe; color:#0369a1;">⚔️ Khusus ML</span>';
-        if (target === 'FF') return '<span class="badge" style="background:#fee2e2; color:#b91c1c;">🔥 Khusus FF</span>';
-        if (target === 'PUBG') return '<span class="badge" style="background:#fef3c7; color:#b45309;">🎯 Khusus PUBG</span>';
-        if (target === 'PULSA') return '<span class="badge" style="background:#dbeafe; color:#1e40af;">📱 Khusus Pulsa</span>';
-        if (target === 'PLN') return '<span class="badge" style="background:#fef08a; color:#854d0e;">⚡ Khusus PLN</span>';
-        if (target === 'EWALLET') return '<span class="badge" style="background:#dcfce7; color:#166534;">💰 Khusus E-Wallet</span>';
-        return '<span class="badge" style="background:#f1f5f9; color:#475569;">🌐 Semua Produk</span>';
+        switch (target) {
+            case 'ML': return '<span class="badge" style="background:#e0f2fe; color:#0369a1;">⚔️ Mobile Legends</span>';
+            case 'FF': return '<span class="badge" style="background:#fee2e2; color:#b91c1c;">🔥 Free Fire</span>';
+            case 'PUBG': return '<span class="badge" style="background:#fef3c7; color:#b45309;">🎯 PUBG Mobile</span>';
+            case 'CODM': return '<span class="badge" style="background:#f1f5f9; color:#0f172a;">🔫 COD Mobile</span>';
+            case 'AOV': return '<span class="badge" style="background:#ede9fe; color:#6d28d9;">🛡️ Arena of Valor</span>';
+            case 'GOOGLEPLAY': return '<span class="badge" style="background:#dcfce7; color:#15803d;">🎁 Google Play ID</span>';
+            default: return '<span class="badge badge-muted">🌐 Semua Produk</span>';
+        }
     }
 
-    async function loadPromosOnline() {
-        const tableBody = document.getElementById('promoTable');
-        
+    function generateRandomCode() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let result = 'SAKA';
+        for (let i = 0; i < 4; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById('inputKode').value = result;
+    }
+
+    async function loadAllVoucherData() {
+        await Promise.all([loadVouchers(), loadRedemptions()]);
+    }
+
+    async function loadVouchers() {
+        const tableBody = document.getElementById('voucherTable');
         try {
-            const { data: promos, error } = await dbClient
-                .from('promos')
+            const { data: vouchers, error } = await dbClient
+                .from('vouchers')
                 .select('*')
                 .order('id', { ascending: false });
 
             if (error) throw error;
+            cachedVouchers = vouchers || [];
 
-            if (!promos || promos.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada kode promo di Supabase.</td></tr>';
+            if (!vouchers || vouchers.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada voucher yang dibuat.</td></tr>';
                 return;
             }
 
             let html = '';
-            promos.forEach((p) => {
-                const sisa = p.kuota - p.terpakai;
+            const now = new Date();
+
+            vouchers.forEach((v) => {
+                const sisa = v.kuota - v.terpakai;
+                const isExpired = v.expires_at && new Date(v.expires_at) < now;
                 const isHabis = sisa <= 0;
-                const badge = isHabis ? '<span class="badge" style="background:#fee2e2; color:#dc2626;">KUOTA HABIS</span>' : `<span class="badge badge-success">AKTIF (Sisa ${sisa})</span>`;
-                const targetBadge = getTargetLabel(p.target || 'SEMUA');
+
+                let statusBadge = '';
+                if (!v.is_active) {
+                    statusBadge = '<span class="badge badge-danger">NONAKTIF</span>';
+                } else if (isExpired) {
+                    statusBadge = '<span class="badge badge-danger">KEDALUWARSA</span>';
+                } else if (isHabis) {
+                    statusBadge = '<span class="badge badge-pending">HABIS</span>';
+                } else {
+                    statusBadge = `<span class="badge badge-success">AKTIF (Sisa ${sisa})</span>`;
+                }
+
+                const expiryText = v.expires_at 
+                    ? new Date(v.expires_at).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+                    : '<span style="color:#94a3b8;">Selamanya</span>';
 
                 html += `
                     <tr>
-                        <td><strong>${p.kode}</strong></td>
-                        <td>${targetBadge}</td>
-                        <td style="color:var(--primary); font-weight:700;">Rp ${Number(p.diskon).toLocaleString('id-ID')}</td>
-                        <td>${p.terpakai} / ${p.kuota} orang</td>
-                        <td>${badge}</td>
+                        <td><strong>${v.kode}</strong></td>
+                        <td>${getTargetLabel(v.target)}</td>
+                        <td style="color:var(--primary); font-weight:700;">Rp ${Number(v.diskon).toLocaleString('id-ID')}</td>
+                        <td>${v.terpakai} / ${v.kuota}</td>
+                        <td style="font-size: 0.75rem;">${expiryText}</td>
+                        <td>${statusBadge}</td>
                         <td>
-                            <button onclick="hapusPromoOnline(${p.id}, '${p.kode}')" class="btn-action danger">Hapus</button>
+                            <button onclick="toggleActiveVoucher(${v.id}, ${!v.is_active})" class="btn-action ${v.is_active ? 'secondary' : 'process'}">
+                                ${v.is_active ? 'Nonaktifkan' : 'Aktifkan'}
+                            </button>
+                            <button onclick="editVoucher(${v.id})" class="btn-action process">Edit</button>
+                            <button onclick="hapusVoucher(${v.id}, '${v.kode}')" class="btn-action danger">Hapus</button>
                         </td>
                     </tr>
                 `;
@@ -831,20 +910,64 @@
             tableBody.innerHTML = html;
         } catch (err) {
             console.error(err);
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat promo dari Supabase. Pastikan tabel promos sudah dibuat.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat data voucher dari database.</td></tr>';
         }
     }
 
-    async function tambahPromoOnline(e) {
+    async function loadRedemptions() {
+        const tableBody = document.getElementById('redemptionTable');
+        try {
+            const { data: logs, error } = await dbClient
+                .from('voucher_redemptions')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(20);
+
+            if (error) throw error;
+
+            document.getElementById('statVoucherRedeemed').textContent = (logs ? logs.length : 0) + 'x';
+
+            if (!logs || logs.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada riwayat pemakaian voucher.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            logs.forEach((log) => {
+                const waktu = new Date(log.redeemed_at).toLocaleDateString('id-ID', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+                html += `
+                    <tr>
+                        <td><small style="color:var(--text-muted);">${waktu}</small></td>
+                        <td><strong>${log.kode_voucher}</strong></td>
+                        <td>${log.produk_game}</td>
+                        <td>${log.target_user || '-'}</td>
+                        <td>${log.invoice_id || '-'}</td>
+                        <td style="color:#16a34a; font-weight:700;">-Rp ${Number(log.diskon_didapat).toLocaleString('id-ID')}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+        } catch (err) {
+            console.error(err);
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat riwayat pemakaian.</td></tr>';
+        }
+    }
+
+    async function simpanVoucher(e) {
         e.preventDefault();
-        const btn = document.getElementById('btnSubmitPromo');
+        const btn = document.getElementById('btnSubmitVoucher');
+        const id = parseInt(document.getElementById('editVoucherId').value) || 0;
         const kode = document.getElementById('inputKode').value.trim().toUpperCase();
         const diskon = parseInt(document.getElementById('inputDiskon').value) || 0;
         const kuota = parseInt(document.getElementById('inputKuota').value) || 0;
         const target = document.getElementById('inputTarget').value;
+        const isActive = document.getElementById('inputIsActive').checked;
+        const expiryVal = document.getElementById('inputExpiry').value;
+        const expiresAt = expiryVal ? new Date(expiryVal).toISOString() : null;
 
         if (!kode || diskon <= 0 || kuota <= 0) {
-            showAdminToast('Harap isi data promo dengan benar!', 'error');
+            showAdminToast('Periksa kembali data voucher Anda!', 'error');
             return;
         }
 
@@ -852,44 +975,103 @@
         btn.textContent = 'Menyimpan...';
 
         try {
-            const { error } = await dbClient
-                .from('promos')
-                .insert([{ kode, diskon, kuota, terpakai: 0, target }]);
+            const { data, error } = await dbClient.rpc('admin_save_voucher', {
+                p_id: id,
+                p_kode: kode,
+                p_target: target,
+                p_diskon: diskon,
+                p_kuota: kuota,
+                p_is_active: isActive,
+                p_expires_at: expiresAt
+            });
 
-            if (error) {
-                if (error.code === '23505') throw new Error('Kode promo ini sudah ada di database!');
-                throw error;
-            }
+            if (error) throw error;
+            if (data && !data.success) throw new Error(data.error || 'Gagal menyimpan');
 
-            showAdminToast(`Promo ${kode} berhasil disimpan di Supabase Cloud!`, 'success');
-            document.getElementById('inputKode').value = '';
-            document.getElementById('inputDiskon').value = '';
-            document.getElementById('inputKuota').value = '';
-            document.getElementById('inputTarget').value = 'SEMUA';
-            
-            await loadPromosOnline();
+            showAdminToast(id === 0 ? `Voucher ${kode} berhasil dibuat!` : `Voucher ${kode} berhasil diubah!`, 'success');
+            resetVoucherForm();
+            await loadVouchers();
         } catch (err) {
-            showAdminToast(err.message || 'Gagal menyimpan promo ke Supabase', 'error');
+            showAdminToast(err.message || 'Gagal menyimpan voucher', 'error');
         } finally {
             btn.disabled = false;
-            btn.textContent = 'Simpan ke Supabase Cloud';
+            btn.textContent = 'Simpan Voucher ke Cloud';
         }
     }
 
-    function hapusPromoOnline(promoId, kode) {
-        showConfirmModal('Hapus Kode Promo', `Yakin ingin menghapus kode ${kode} dari Supabase Cloud?`, async () => {
+    function editVoucher(id) {
+        const v = cachedVouchers.find(item => item.id === id);
+        if (!v) return;
+
+        document.getElementById('editVoucherId').value = v.id;
+        document.getElementById('inputKode').value = v.kode;
+        document.getElementById('inputDiskon').value = v.diskon;
+        document.getElementById('inputKuota').value = v.kuota;
+        document.getElementById('inputTarget').value = v.target;
+        document.getElementById('inputIsActive').checked = v.is_active;
+
+        if (v.expires_at) {
+            const d = new Date(v.expires_at);
+            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            document.getElementById('inputExpiry').value = d.toISOString().slice(0, 16);
+        } else {
+            document.getElementById('inputExpiry').value = '';
+        }
+
+        document.getElementById('formVoucherTitle').textContent = `✏️ Edit Voucher: ${v.kode}`;
+        document.getElementById('btnSubmitVoucher').textContent = 'Perbarui Voucher';
+        document.getElementById('btnCancelEdit').style.display = 'inline-block';
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+    }
+
+    function resetVoucherForm() {
+        document.getElementById('editVoucherId').value = 0;
+        document.getElementById('inputKode').value = '';
+        document.getElementById('inputDiskon').value = '';
+        document.getElementById('inputKuota').value = '';
+        document.getElementById('inputTarget').value = 'SEMUA';
+        document.getElementById('inputExpiry').value = '';
+        document.getElementById('inputIsActive').checked = true;
+
+        document.getElementById('formVoucherTitle').textContent = '+ Buat Voucher Baru';
+        document.getElementById('btnSubmitVoucher').textContent = 'Simpan Voucher ke Cloud';
+        document.getElementById('btnCancelEdit').style.display = 'none';
+    }
+
+    async function toggleActiveVoucher(id, newStatus) {
+        const v = cachedVouchers.find(item => item.id === id);
+        if (!v) return;
+
+        try {
+            const { error } = await dbClient.rpc('admin_save_voucher', {
+                p_id: v.id,
+                p_kode: v.kode,
+                p_target: v.target,
+                p_diskon: v.diskon,
+                p_kuota: v.kuota,
+                p_is_active: newStatus,
+                p_expires_at: v.expires_at
+            });
+
+            if (error) throw error;
+            showAdminToast(`Status voucher ${v.kode} diubah!`, 'success');
+            await loadVouchers();
+        } catch (err) {
+            showAdminToast('Gagal mengubah status voucher.', 'error');
+        }
+    }
+
+    function hapusVoucher(voucherId, kode) {
+        showConfirmModal('Hapus Voucher', `Yakin ingin menghapus kode ${kode} dari database Supabase?`, async () => {
             try {
-                const { error } = await dbClient
-                    .from('promos')
-                    .delete()
-                    .eq('id', promoId);
-
+                const { data, error } = await dbClient.rpc('admin_delete_voucher', { p_id: voucherId });
                 if (error) throw error;
+                if (data && !data.success) throw new Error(data.error);
 
-                showAdminToast(`Promo ${kode} berhasil dihapus dari cloud!`, 'success');
-                await loadPromosOnline();
+                showAdminToast(`Voucher ${kode} berhasil dihapus!`, 'success');
+                await loadAllVoucherData();
             } catch (err) {
-                showAdminToast('Gagal menghapus promo dari database.', 'error');
+                showAdminToast('Gagal menghapus voucher.', 'error');
             }
         });
     }

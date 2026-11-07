@@ -53,6 +53,11 @@
             color: #166534;
         }
 
+        .status-badge.diproses {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
         /* Kotak Pembayaran QRIS */
         .qris-box {
             background: #f8fafc;
@@ -116,6 +121,18 @@
             margin-bottom: 0.25rem;
         }
 
+        .voucher-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
         @media print {
             nav, footer, .no-print {
                 display: none !important;
@@ -164,7 +181,7 @@
             <div style="font-size: 1.35rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 0.25rem;">
                 <i data-lucide="zap" style="width: 22px; height: 22px;"></i> SakaPay Official
             </div>
-            <p style="color: var(--text-muted); font-size: 0.8rem;">Invoice Transaksi Digital & PPOB</p>
+            <p style="color: var(--text-muted); font-size: 0.8rem;">Invoice Transaksi Digital &amp; PPOB</p>
         </div>
 
         <div class="invoice-row">
@@ -189,6 +206,13 @@
                 <span>Nomor / Akun Tujuan:</span>
                 <strong style="color: var(--dark);" id="viewTarget">-</strong>
             </div>
+            
+            <!-- Rincian Voucher Diskon (Tampil Otomatis Jika Menggunakan Voucher) -->
+            <div class="invoice-row" id="rowVoucher" style="display: none;">
+                <span>Diskon Voucher:</span>
+                <span class="voucher-badge" id="viewVoucherInfo">✓ Hemat</span>
+            </div>
+
             <div class="invoice-row" style="margin-bottom: 0;">
                 <span>Metode Pembayaran:</span>
                 <strong style="color: var(--dark);" id="viewMethod">QRIS All Payment</strong>
@@ -208,7 +232,6 @@
             </p>
 
             <div class="qris-image-container">
-                <!-- Gambar Barcode QRIS Toko -->
                 <img src="assets/img/qris.png" alt="QRIS SakaPay" class="qris-image" id="qrisImg" onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SakaPay%20Official%20QRIS';">
             </div>
 
@@ -222,10 +245,10 @@
                 <strong style="color: var(--dark);">📱 Cara Bayar Menggunakan QRIS:</strong>
                 <ol>
                     <li>Screenshot atau klik tombol <strong>Simpan Gambar QRIS</strong> di atas.</li>
-                    <li>Buka aplikasi m-Banking (BCA, BRI, Mandiri, dll.) atau E-Wallet (DANA, GoPay, OVO, ShopeePay).</li>
+                    <li>Buka m-Banking (BCA, BRI, Mandiri) atau E-Wallet (DANA, GoPay, OVO, ShopeePay).</li>
                     <li>Pilih menu <strong>QRIS / Bayar</strong>, lalu pilih ikon <strong>Galeri / Upload Foto</strong>.</li>
                     <li>Masukkan nominal transfer persis sesuai <strong>Total Pembayaran</strong>.</li>
-                    <li>Setelah transfer berhasil, klik tombol hijau <strong>Konfirmasi WhatsApp</strong> di bawah untuk kirim bukti struk.</li>
+                    <li>Setelah transfer berhasil, klik tombol hijau <strong>Konfirmasi WhatsApp</strong> di bawah untuk mengirimkan bukti struk.</li>
                 </ol>
             </div>
         </div>
@@ -241,7 +264,7 @@
         </div>
     </div>
 
-    <!-- Kotak Form Ulasan Pelanggan (Muncul Otomatis Jika Status Sudah Selesai) -->
+    <!-- Kotak Form Ulasan Pelanggan -->
     <div class="invoice-card no-print" id="reviewSection" style="display: none;">
         <h3 style="font-size: 0.95rem; color: var(--dark); margin-bottom: 0.75rem; font-weight: 700;">Beri Ulasan Layanan SakaPay</h3>
         <div id="reviewFormContainer">
@@ -312,31 +335,55 @@
         try {
             const data = JSON.parse(localStorage.getItem(invID));
 
-            const produkNama = data.produk || data.layanan || '-';
+            let rawProduk = data.produk || data.layanan || '-';
             const totalHarga = data.harga || 'Rp 0';
             const statusTransaksi = data.status || 'Menunggu Pembayaran';
 
+            // Ekstrak informasi voucher jika ada pada nama produk
+            let voucherCode = null;
+            if (rawProduk.includes('[Voucher:') || rawProduk.includes('[Promo:')) {
+                const match = rawProduk.match(/\[(Voucher|Promo):\s*([^\]]+)\]/i);
+                if (match && match[2]) {
+                    voucherCode = match[2].trim();
+                    // Bersihkan nama produk dari tag kode voucher
+                    rawProduk = rawProduk.replace(/\[(Voucher|Promo):[^\]]+\]/i, '').trim();
+                }
+            }
+
             document.getElementById('viewInvoiceId').textContent = data.id || invID;
             document.getElementById('viewDate').textContent = data.tanggal || '-';
-            document.getElementById('viewProduct').textContent = produkNama;
+            document.getElementById('viewProduct').textContent = rawProduk;
             document.getElementById('viewTarget').textContent = data.tujuan || '-';
             document.getElementById('viewMethod').textContent = data.metode || 'QRIS All Payment';
             document.getElementById('viewTotal').textContent = totalHarga;
             
+            // Tampilkan baris voucher jika ada
+            if (voucherCode) {
+                document.getElementById('rowVoucher').style.display = 'flex';
+                document.getElementById('viewVoucherInfo').textContent = `✓ Kode: ${voucherCode} (Potongan Aktif)`;
+            }
+
             const statusEl = document.getElementById('viewStatus');
             statusEl.textContent = statusTransaksi;
 
-            // Jika status pesanan selesai
-            if (statusTransaksi.trim().toLowerCase() === 'selesai') {
-                statusEl.classList.add('selesai');
+            const stLower = statusTransaksi.trim().toLowerCase();
+            if (stLower === 'selesai') {
+                statusEl.className = 'status-badge selesai';
                 document.getElementById('reviewSection').style.display = 'block';
-                // Sembunyikan QRIS kalau sudah lunas
                 document.getElementById('qrisPaymentBox').style.display = 'none';
+            } else if (stLower === 'diproses') {
+                statusEl.className = 'status-badge diproses';
             }
 
-            // Tombol Konfirmasi WhatsApp resmi
+            // Susun pesan WhatsApp konfirmasi
             const csPhone = '6285780243664';
-            const textWA = `Halo Admin SakaPay, saya ingin konfirmasi pembayaran Invoice: *${data.id}* (${produkNama}) sebesar *${totalHarga}*. Bukti transfer saya lampirkan di chat ini. Mohon diproses. Terima kasih!`;
+            let textWA = `Halo Admin SakaPay, saya ingin konfirmasi pembayaran Invoice: *${data.id}*\n`
+                       + `Produk: ${rawProduk}\n`
+                       + (voucherCode ? `Voucher: ${voucherCode}\n` : '')
+                       + `Total Bayar: *${totalHarga}*\n`
+                       + `Metode: ${data.metode || 'QRIS'}\n`
+                       + `Bukti transfer saya lampirkan. Mohon diproses. Terima kasih!`;
+
             document.getElementById('waConfirmBtn').href = `https://wa.me/${csPhone}?text=${encodeURIComponent(textWA)}`;
 
         } catch (e) {

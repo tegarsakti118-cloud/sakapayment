@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client Resmi -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #17A897;
@@ -34,7 +36,6 @@
             min-height: 100vh;
         }
 
-        /* Top Header */
         .header {
             background: var(--primary);
             color: white;
@@ -72,7 +73,6 @@
             padding: 0 14px;
         }
 
-        /* Banner Modern Fintech */
         .product-banner {
             background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
             border-radius: var(--radius);
@@ -118,7 +118,6 @@
             font-weight: 700;
         }
 
-        /* Section Box */
         .section-box {
             background: white;
             border-radius: var(--radius);
@@ -151,7 +150,6 @@
             font-weight: 800;
         }
 
-        /* Input Modern */
         .input-group {
             position: relative;
             display: flex;
@@ -176,7 +174,6 @@
             box-shadow: 0 0 0 3px rgba(23, 168, 151, 0.15);
         }
 
-        /* Efek Bergetar Jika Kosong */
         .input-error {
             border-color: #ef4444 !important;
             animation: shake 0.3s ease-in-out;
@@ -190,7 +187,6 @@
             75% { transform: translateX(-4px); }
         }
 
-        /* Grid Nominal */
         .nominal-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -245,7 +241,6 @@
             margin-top: 4px;
         }
 
-        /* Kotak Promo */
         .promo-box {
             display: flex;
             gap: 8px;
@@ -268,7 +263,6 @@
             background: var(--primary-dark);
         }
 
-        /* PILIHAN PEMBAYARAN KARTU VISUAL */
         .payment-list {
             display: flex;
             flex-direction: column;
@@ -319,7 +313,6 @@
             height: 16px;
         }
 
-        /* Footer Checkout Melayang */
         .footer-checkout {
             position: fixed;
             bottom: 0;
@@ -366,7 +359,6 @@
             background: var(--primary-dark);
         }
 
-        /* Toast Notifikasi Modern */
         .toast-box {
             position: fixed;
             top: 20px;
@@ -395,12 +387,10 @@
 </head>
 <body>
 
-    <!-- Toast Notifikasi (Bebas Alert Kaku) -->
     <div id="toast" class="toast-box">
-        <span id="toastIcon">⚠️</span> <span id="toastMsg">Harap masukkan nomor tujuan!</span>
+        <span id="toastIcon">⚠️</span> <span id="toastMsg">Pesan</span>
     </div>
 
-    <!-- Header -->
     <header class="header">
         <button type="button" class="back-arrow" onclick="kembaliKeKatalog()" aria-label="Kembali">&larr;</button>
         <h2 id="namaProdukHeader">Pemesanan</h2>
@@ -408,7 +398,6 @@
 
     <main class="container">
         
-        <!-- Banner Produk Modern -->
         <div class="product-banner">
             <div class="product-icon-box" id="bannerIcon">📱</div>
             <div class="product-info">
@@ -417,7 +406,6 @@
             </div>
         </div>
 
-        <!-- Langkah 1: Input Nomor / ID -->
         <div class="section-box">
             <div class="section-title">
                 <span class="step-badge">1</span> Masukkan Nomor / ID Akun
@@ -430,31 +418,27 @@
             </small>
         </div>
 
-        <!-- Langkah 2: Pilihan Nominal -->
         <div class="section-box">
             <div class="section-title">
                 <span class="step-badge">2</span> Pilih Paket / Nominal
             </div>
-            <div class="nominal-grid" id="gridNominal">
-                <!-- Diisi via JS -->
-            </div>
+            <div class="nominal-grid" id="gridNominal"></div>
         </div>
 
-        <!-- Langkah 3: Kode Promo Berkuota (BARU!) -->
+        <!-- Langkah Promo Supabase Cloud -->
         <div class="section-box">
             <div class="section-title">
-                <span class="step-badge">%</span> Punya Kode Promo? (Opsional)
+                <span class="step-badge">%</span> Punya Kode Voucher? (Opsional)
             </div>
             <div class="promo-box">
-                <input type="text" id="inputPromo" placeholder="Masukkan kode promo (Cth: SAKAPAY)" style="text-transform: uppercase;">
-                <button type="button" class="btn-apply-promo" onclick="terapkanPromo()">Gunakan</button>
+                <input type="text" id="inputPromo" placeholder="Masukkan kode voucher (Cth: SAKABERSIH)" style="text-transform: uppercase;">
+                <button type="button" id="btnGunakanPromo" class="btn-apply-promo" onclick="terapkanVoucher()">Gunakan</button>
             </div>
             <div id="promoNotice" style="display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 700;">
                 🎉 Berhasil! Anda hemat <span id="diskonNominalText">Rp 0</span>
             </div>
         </div>
 
-        <!-- Langkah 4: Kartu Pilihan Pembayaran Visual -->
         <div class="section-box">
             <div class="section-title">
                 <span class="step-badge">3</span> Metode Pembayaran
@@ -505,16 +489,19 @@
 
     </main>
 
-    <!-- Bottom Bar Checkout Sticky -->
     <footer class="footer-checkout">
         <div class="price-summary">
             <span id="selectedItemLabel">Total Pembayaran</span>
             <h4 id="totalHargaText">Rp 0</h4>
         </div>
-        <button class="btn-buy" onclick="prosesBeli()">Beli Sekarang</button>
+        <button class="btn-buy" id="btnSubmitOrder" onclick="prosesBeli()">Beli Sekarang</button>
     </footer>
 
     <script>
+        const SUPABASE_URL = "https://uqnwdybpjlkcvlezibhl.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
+        const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         const urlParams = new URLSearchParams(window.location.search);
         const namaProduk = urlParams.get('produk') || 'Layanan Digital';
 
@@ -524,55 +511,57 @@
         const bannerIcon = document.getElementById('bannerIcon');
         const prodLower = namaProduk.toLowerCase();
 
-        // Ikon & Input sesuai produk
+        let TARGET_HALAMAN = "PULSA";
+
         if (prodLower.includes('pln') || prodLower.includes('token') || prodLower.includes('listrik')) {
+            TARGET_HALAMAN = "PLN";
             bannerIcon.textContent = '⚡';
             document.getElementById('inputAreaTujuan').innerHTML = `
                 <input type="number" id="noTujuan" placeholder="Nomor Meter / ID Pelanggan PLN" required autocomplete="off">
             `;
         } else if (prodLower.includes('dana') || prodLower.includes('gopay') || prodLower.includes('ovo') || prodLower.includes('shopee')) {
+            TARGET_HALAMAN = "EWALLET";
             bannerIcon.textContent = '💰';
             document.getElementById('inputAreaTujuan').innerHTML = `
                 <input type="number" id="noTujuan" placeholder="Nomor Akun E-Wallet (cth: 0857xxxxxxxx)" required autocomplete="off">
             `;
         } else {
+            TARGET_HALAMAN = "PULSA";
             bannerIcon.textContent = '📱';
             document.getElementById('inputAreaTujuan').innerHTML = `
                 <input type="number" id="noTujuan" placeholder="Nomor Handphone Tujuan (cth: 0812xxxxxxxx)" required autocomplete="off">
             `;
         }
 
-        // Daftar nominal standar pasar top-up
         let daftarNominal = [];
 
-        if (prodLower.includes('token') || prodLower.includes('pln')) {
+        if (TARGET_HALAMAN === "PLN") {
             daftarNominal = [
-                { nama: "Token PLN 20.000", harga: 21500, badge: "POPULER", isHot: true },
-                { nama: "Token PLN 50.000", harga: 51500, badge: "BEST SELLER", isBest: true },
-                { nama: "Token PLN 100.000", harga: 101500 },
-                { nama: "Token PLN 200.000", harga: 201500 },
-                { nama: "Token PLN 500.000", harga: 502000 },
-                { nama: "Token PLN 1.000.000", harga: 1003000 }
+                { nama: "Token PLN 20.000", harga: 25000, badge: "POPULER", isHot: true },
+                { nama: "Token PLN 50.000", harga: 55000, badge: "BEST SELLER", isBest: true },
+                { nama: "Token PLN 100.000", harga: 105000 },
+                { nama: "Token PLN 200.000", harga: 205000 },
+                { nama: "Token PLN 500.000", harga: 505000 },
+                { nama: "Token PLN 1.000.000", harga: 1010000 }
             ];
-        } else if (prodLower.includes('dana') || prodLower.includes('gopay') || prodLower.includes('ovo') || prodLower.includes('shopee')) {
+        } else if (TARGET_HALAMAN === "EWALLET") {
             daftarNominal = [
-                { nama: "Saldo Rp 10.000", harga: 11000 },
-                { nama: "Saldo Rp 20.000", harga: 21000, badge: "POPULER", isHot: true },
-                { nama: "Saldo Rp 25.000", harga: 26000 },
-                { nama: "Saldo Rp 50.000", harga: 51000, badge: "BEST SELLER", isBest: true },
-                { nama: "Saldo Rp 100.000", harga: 101000 },
-                { nama: "Saldo Rp 200.000", harga: 201500 }
+                { nama: "Saldo Rp 10.000", harga: 13000 },
+                { nama: "Saldo Rp 20.000", harga: 23000, badge: "POPULER", isHot: true },
+                { nama: "Saldo Rp 25.000", harga: 28000 },
+                { nama: "Saldo Rp 50.000", harga: 58000, badge: "BEST SELLER", isBest: true },
+                { nama: "Saldo Rp 100.000", harga: 105000 },
+                { nama: "Saldo Rp 200.000", harga: 205000 }
             ];
         } else {
-            // Default Pulsa
             daftarNominal = [
-                { nama: "Pulsa 5.000", harga: 6500 },
-                { nama: "Pulsa 10.000", harga: 11500, badge: "POPULER", isHot: true },
-                { nama: "Pulsa 15.000", harga: 16500 },
-                { nama: "Pulsa 20.000", harga: 21500 },
-                { nama: "Pulsa 25.000", harga: 26500, badge: "BEST SELLER", isBest: true },
-                { nama: "Pulsa 50.000", harga: 51500 },
-                { nama: "Pulsa 100.000", harga: 101500 }
+                { nama: "Pulsa 5.000", harga: 7000 },
+                { nama: "Pulsa 10.000", harga: 12500, badge: "POPULER", isHot: true },
+                { nama: "Pulsa 15.000", harga: 17500 },
+                { nama: "Pulsa 20.000", harga: 23000 },
+                { nama: "Pulsa 25.000", harga: 28000, badge: "BEST SELLER", isBest: true },
+                { nama: "Pulsa 50.000", harga: 53000 },
+                { nama: "Pulsa 100.000", harga: 105000 }
             ];
         }
 
@@ -582,7 +571,7 @@
         };
 
         let metodePilihan = 'QRIS';
-        let promoAktif = null;
+        let voucherAktif = null;
 
         function renderNominal() {
             const grid = document.getElementById('gridNominal');
@@ -639,8 +628,8 @@
             let hargaAwal = produkPilihan.harga;
             let hargaFinal = hargaAwal;
 
-            if (promoAktif) {
-                hargaFinal = Math.max(0, hargaAwal - promoAktif.diskon);
+            if (voucherAktif) {
+                hargaFinal = Math.max(0, hargaAwal - voucherAktif.diskon);
                 document.getElementById('totalHargaText').innerHTML = `
                     <del style="color:#94a3b8; font-size:12px; margin-right:4px;">Rp ${hargaAwal.toLocaleString('id-ID')}</del>
                     Rp ${hargaFinal.toLocaleString('id-ID')}
@@ -662,48 +651,69 @@
             }, 3000);
         }
 
-        function terapkanPromo() {
+        async function terapkanVoucher() {
             const input = document.getElementById('inputPromo');
+            const btn = document.getElementById('btnGunakanPromo');
             const kode = input.value.trim().toUpperCase();
 
             if (!kode) {
-                showToast('Masukkan kode promo terlebih dahulu!');
+                showToast('Masukkan kode voucher terlebih dahulu!');
                 return;
             }
 
-            let promos = [];
+            btn.disabled = true;
+            btn.textContent = '...';
+
             try {
-                promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
-            } catch (e) {}
+                const { data: v, error } = await dbClient
+                    .from('vouchers')
+                    .select('*')
+                    .eq('kode', kode)
+                    .maybeSingle();
 
-            if (promos.length === 0) {
-                promos = [
-                    { kode: "SAKAPAY", diskon: 1000, kuota: 10, terpakai: 0 },
-                    { kode: "HEMAT500", diskon: 500, kuota: 20, terpakai: 0 }
-                ];
-                localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+                if (error) throw error;
+
+                if (!v) {
+                    showToast('Kode voucher tidak ditemukan di database!');
+                    return;
+                }
+
+                if (!v.is_active) {
+                    showToast('Voucher ini sudah dinonaktifkan!');
+                    return;
+                }
+
+                if (v.expires_at && new Date(v.expires_at) < new Date()) {
+                    showToast('Masa berlaku voucher ini telah berakhir!');
+                    return;
+                }
+
+                if (v.target !== "SEMUA" && v.target !== TARGET_HALAMAN) {
+                    showToast(`Voucher ${kode} khusus untuk produk ${v.target}!`);
+                    return;
+                }
+
+                const sisa = v.kuota - v.terpakai;
+                if (sisa <= 0) {
+                    showToast('Maaf, kuota voucher ini sudah habis terpakai!');
+                    return;
+                }
+
+                voucherAktif = v;
+                document.getElementById('diskonNominalText').textContent = `Rp ${Number(v.diskon).toLocaleString('id-ID')} (Sisa kuota: ${sisa} orang)`;
+                document.getElementById('promoNotice').style.display = 'block';
+                input.disabled = true;
+
+                showToast(`Voucher ${kode} aktif! Hemat Rp ${Number(v.diskon).toLocaleString('id-ID')}`, '🎉');
+                hitungTotal();
+
+            } catch (err) {
+                console.error(err);
+                showToast('Gagal memverifikasi voucher ke cloud.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Gunakan';
             }
-
-            const promoFound = promos.find(p => p.kode === kode);
-
-            if (!promoFound) {
-                showToast('Kode promo tidak ditemukan!');
-                return;
-            }
-
-            const sisaKuota = promoFound.kuota - promoFound.terpakai;
-            if (sisaKuota <= 0) {
-                showToast('Maaf, kuota promo ini sudah habis!');
-                return;
-            }
-
-            promoAktif = promoFound;
-            document.getElementById('diskonNominalText').textContent = `Rp ${promoFound.diskon.toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} lagi)`;
-            document.getElementById('promoNotice').style.display = 'block';
-            input.disabled = true;
-
-            showToast(`Promo ${kode} aktif! Hemat Rp ${promoFound.diskon.toLocaleString('id-ID')}`, '🎉');
-            hitungTotal();
         }
 
         function kembaliKeKatalog() {
@@ -714,7 +724,8 @@
             }
         }
 
-        function prosesBeli() {
+        async function prosesBeli() {
+            const btnBuy = document.getElementById('btnSubmitOrder');
             const noEl = document.getElementById('noTujuan');
             const noVal = noEl ? noEl.value.trim() : '';
 
@@ -728,22 +739,44 @@
                 return;
             }
 
-            // Kurangi kuota jika pakai promo
-            if (promoAktif) {
-                let promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
-                const idx = promos.findIndex(p => p.kode === promoAktif.kode);
-                if (idx !== -1 && promos[idx].terpakai < promos[idx].kuota) {
-                    promos[idx].terpakai += 1;
-                    localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+            btnBuy.disabled = true;
+            btnBuy.textContent = 'Memproses...';
+
+            const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+            let diskonFinal = 0;
+
+            if (voucherAktif) {
+                try {
+                    const { data: res, error } = await dbClient.rpc('claim_voucher', {
+                        p_kode: voucherAktif.kode,
+                        p_target_game: TARGET_HALAMAN,
+                        p_invoice_id: invoiceId,
+                        p_target_user: noVal
+                    });
+
+                    if (error) throw error;
+                    if (!res.success) {
+                        showToast(res.message, '⚠️');
+                        btnBuy.disabled = false;
+                        btnBuy.textContent = 'Beli Sekarang';
+                        return;
+                    }
+
+                    diskonFinal = Number(res.diskon);
+                } catch (err) {
+                    console.error(err);
+                    showToast('Gagal memproses klaim voucher ke server.');
+                    btnBuy.disabled = false;
+                    btnBuy.textContent = 'Beli Sekarang';
+                    return;
                 }
             }
 
-            const hargaFinal = promoAktif ? Math.max(0, produkPilihan.harga - promoAktif.diskon) : produkPilihan.harga;
-            const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+            const hargaFinal = Math.max(0, produkPilihan.harga - diskonFinal);
 
             const dataInvoice = {
                 id: invoiceId,
-                produk: namaProduk + ' (' + produkPilihan.item + ')' + (promoAktif ? ` [Promo: ${promoAktif.kode}]` : ""),
+                produk: namaProduk + ' (' + produkPilihan.item + ')' + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
                 tujuan: noVal,
                 harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
                 metode: metodePilihan,

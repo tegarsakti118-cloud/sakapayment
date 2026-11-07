@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Supabase JS Client Resmi -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #17A897;
@@ -305,8 +307,8 @@
 <main class="container">
     <section class="hero">
         <span class="tag">TOP UP INSTAN</span>
-        <h1>Free Fire Global</h1>
-        <p>Top up diamond &amp; membership mingguan resmi langsung via Player ID.</p>
+        <h1>Free Fire</h1>
+        <p>Top up diamond resmi langsung via Player ID.</p>
     </section>
 
     <section class="card">
@@ -316,16 +318,16 @@
     </section>
 
     <section class="card">
-        <h2 class="section-title"><span class="number">2</span> Pilih Paket Diamond / Membership</h2>
+        <h2 class="section-title"><span class="number">2</span> Pilih Paket Diamond</h2>
         <div class="nominal-grid" id="nominalGrid"></div>
     </section>
 
-    <!-- Langkah Promo Berkuota -->
+    <!-- Langkah Promo Berkuota Supabase -->
     <section class="card">
-        <h2 class="section-title"><span class="number">%</span> Punya Kode Promo? (Opsional)</h2>
+        <h2 class="section-title"><span class="number">%</span> Punya Kode Voucher? (Opsional)</h2>
         <div class="promo-box">
-            <input type="text" id="inputPromo" placeholder="Masukkan kode promo (Cth: FFHEMAT)" style="text-transform: uppercase;">
-            <button type="button" class="btn-apply-promo" onclick="terapkanPromo()">Gunakan</button>
+            <input type="text" id="inputPromo" placeholder="Masukkan kode voucher (Cth: SAKABERSIH)" style="text-transform: uppercase;">
+            <button type="button" id="btnGunakanPromo" class="btn-apply-promo" onclick="terapkanVoucher()">Gunakan</button>
         </div>
         <div id="promoNotice" style="display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 700;">
             🎉 Berhasil! Anda hemat <span id="diskonNominalText">Rp 0</span>
@@ -362,35 +364,83 @@
 
 <footer class="footer-checkout">
     <div class="price-summary">
-        <span id="selectedItemLabel">Membership Mingguan</span>
-        <h4 id="totalHargaText">Rp 29.000</h4>
+        <span id="selectedItemLabel">5 Diamond</span>
+        <h4 id="totalHargaText">Rp 2.500</h4>
     </div>
-    <button class="btn-buy" onclick="prosesBeli()">Beli Sekarang</button>
+    <button class="btn-buy" id="btnSubmitOrder" onclick="prosesBeli()">Beli Sekarang</button>
 </footer>
 
 <script>
-// IDENTITAS HALAMAN: KHUSUS FREE FIRE (FF)
+const SUPABASE_URL = "https://uqnwdybpjlkcvlezibhl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
+const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const TARGET_HALAMAN = "FF";
 
 const daftarNominal = [
-    { nama: "Membership Mingguan", harga: 29000, badge: "BEST SELLER", isBest: true },
-    { nama: "Membership Bulanan", harga: 145000 },
-    { nama: "Level Up Pass", harga: 15000 },
-    { nama: "5 Diamond", harga: 1000 },
-    { nama: "12 Diamond", harga: 2000 },
-    { nama: "50 Diamond", harga: 7000 },
-    { nama: "70 Diamond", harga: 9500, badge: "POPULER", isHot: true },
-    { nama: "140 Diamond", harga: 19000 },
+    { nama: "5 Diamond", harga: 2500 },
+    { nama: "10 Diamond", harga: 3000 },
+    { nama: "12 Diamond", harga: 3500 },
+    { nama: "15 Diamond", harga: 4000 },
+    { nama: "20 Diamond", harga: 4500 },
+    { nama: "25 Diamond", harga: 5500 },
+    { nama: "30 Diamond", harga: 6500 },
+    { nama: "40 Diamond", harga: 7500 },
+    { nama: "50 Diamond", harga: 8000 },
+    { nama: "55 Diamond", harga: 9000 },
+    { nama: "70 Diamond", harga: 10500, badge: "POPULER", isHot: true },
+    { nama: "75 Diamond", harga: 11500 },
+    { nama: "80 Diamond", harga: 12500 },
+    { nama: "90 Diamond", harga: 14000 },
+    { nama: "100 Diamond", harga: 15000 },
+    { nama: "120 Diamond", harga: 17500 },
+    { nama: "130 Diamond", harga: 19000 },
+    { nama: "140 Diamond", harga: 20000, badge: "BEST SELLER", isBest: true },
+    { nama: "145 Diamond", harga: 20500 },
+    { nama: "150 Diamond", harga: 22000 },
+    { nama: "160 Diamond", harga: 23500 },
+    { nama: "190 Diamond", harga: 27000 },
+    { nama: "200 Diamond", harga: 27500 },
     { nama: "210 Diamond", harga: 28500 },
-    { nama: "355 Diamond", harga: 47500 },
-    { nama: "720 Diamond", harga: 94000 },
-    { nama: "1440 Diamond", harga: 188000 },
-    { nama: "2180 Diamond", harga: 280000 }
+    { nama: "250 Diamond", harga: 33500 },
+    { nama: "260 Diamond", harga: 35500 },
+    { nama: "280 Diamond", harga: 38000 },
+    { nama: "300 Diamond", harga: 41000 },
+    { nama: "355 Diamond", harga: 45500 },
+    { nama: "375 Diamond", harga: 48500 },
+    { nama: "405 Diamond", harga: 51500 },
+    { nama: "420 Diamond", harga: 58000 },
+    { nama: "425 Diamond", harga: 53500 },
+    { nama: "475 Diamond", harga: 60000 },
+    { nama: "500 Diamond", harga: 63500 },
+    { nama: "510 Diamond", harga: 64500 },
+    { nama: "545 Diamond", harga: 68500 },
+    { nama: "565 Diamond", harga: 70500 },
+    { nama: "635 Diamond", harga: 78500 },
+    { nama: "720 Diamond", harga: 86500 },
+    { nama: "770 Diamond", harga: 92000 },
+    { nama: "790 Diamond", harga: 94000 },
+    { nama: "800 Diamond", harga: 95500 },
+    { nama: "860 Diamond", harga: 103000 },
+    { nama: "930 Diamond", harga: 110500 },
+    { nama: "1000 Diamond", harga: 119500 },
+    { nama: "1050 Diamond", harga: 124500 },
+    { nama: "1075 Diamond", harga: 126500 },
+    { nama: "1080 Diamond", harga: 137500 },
+    { nama: "1450 Diamond", harga: 167000 },
+    { nama: "2000 Diamond", harga: 229500 },
+    { nama: "2180 Diamond", harga: 247000 },
+    { nama: "2200 Diamond", harga: 270000 },
+    { nama: "2350 Diamond", harga: 265000 },
+    { nama: "2720 Diamond", harga: 306500 },
+    { nama: "3640 Diamond", harga: 413000 },
+    { nama: "4000 Diamond", harga: 452500 },
+    { nama: "7290 Diamond", harga: 804000 }
 ];
 
 let itemTerpilih = daftarNominal[0];
 let metodeTerpilih = 'QRIS';
-let promoAktif = null;
+let voucherAktif = null;
 
 function renderNominal() {
     const grid = document.getElementById('nominalGrid');
@@ -445,8 +495,8 @@ function hitungTotal() {
     let hargaAwal = itemTerpilih.harga;
     let hargaFinal = hargaAwal;
 
-    if (promoAktif) {
-        hargaFinal = Math.max(0, hargaAwal - promoAktif.diskon);
+    if (voucherAktif) {
+        hargaFinal = Math.max(0, hargaAwal - voucherAktif.diskon);
         document.getElementById('totalHargaText').innerHTML = `
             <del style="color:#94a3b8; font-size:12px; margin-right:4px;">Rp ${hargaAwal.toLocaleString('id-ID')}</del>
             Rp ${hargaFinal.toLocaleString('id-ID')}
@@ -466,55 +516,69 @@ function showToast(msg, icon = '⚠️') {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// VALIDASI PROMO KHUSUS FREE FIRE
-function terapkanPromo() {
+async function terapkanVoucher() {
     const input = document.getElementById('inputPromo');
+    const btn = document.getElementById('btnGunakanPromo');
     const kode = input.value.trim().toUpperCase();
 
     if (!kode) {
-        showToast('Masukkan kode promo terlebih dahulu!');
+        showToast('Masukkan kode voucher terlebih dahulu!');
         return;
     }
 
-    let promos = [];
+    btn.disabled = true;
+    btn.textContent = '...';
+
     try {
-        promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
-    } catch (e) {}
+        const { data: v, error } = await dbClient
+            .from('vouchers')
+            .select('*')
+            .eq('kode', kode)
+            .maybeSingle();
 
-    const promoFound = promos.find(p => p.kode === kode);
+        if (error) throw error;
 
-    if (!promoFound) {
-        showToast('Kode promo tidak ditemukan!');
-        return;
+        if (!v) {
+            showToast('Kode voucher tidak ditemukan di database!');
+            return;
+        }
+
+        if (!v.is_active) {
+            showToast('Voucher ini sudah dinonaktifkan!');
+            return;
+        }
+
+        if (v.expires_at && new Date(v.expires_at) < new Date()) {
+            showToast('Masa berlaku voucher ini telah berakhir!');
+            return;
+        }
+
+        if (v.target !== "SEMUA" && v.target !== TARGET_HALAMAN) {
+            showToast(`Voucher ${kode} khusus untuk produk ${v.target}!`);
+            return;
+        }
+
+        const sisa = v.kuota - v.terpakai;
+        if (sisa <= 0) {
+            showToast('Maaf, kuota voucher ini sudah habis terpakai!');
+            return;
+        }
+
+        voucherAktif = v;
+        document.getElementById('diskonNominalText').textContent = `Rp ${Number(v.diskon).toLocaleString('id-ID')} (Sisa kuota: ${sisa} orang)`;
+        document.getElementById('promoNotice').style.display = 'block';
+        input.disabled = true;
+
+        showToast(`Voucher ${kode} aktif! Hemat Rp ${Number(v.diskon).toLocaleString('id-ID')}`, '🎉');
+        hitungTotal();
+
+    } catch (err) {
+        console.error(err);
+        showToast('Gagal memverifikasi voucher ke cloud.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Gunakan';
     }
-
-    // CEK APAKAH PROMO KHUSUS UNTUK PRODUK LAIN (MISAL KHUSUS ML)
-    const targetPromo = promoFound.target || "SEMUA";
-    if (targetPromo !== "SEMUA" && targetPromo !== TARGET_HALAMAN) {
-        let namaTarget = "produk lain";
-        if (targetPromo === "ML") namaTarget = "Mobile Legends";
-        else if (targetPromo === "PUBG") namaTarget = "PUBG Mobile";
-        else if (targetPromo === "PULSA") namaTarget = "Pulsa & Data";
-        else if (targetPromo === "PLN") namaTarget = "Token PLN";
-        else if (targetPromo === "EWALLET") namaTarget = "E-Wallet";
-
-        showToast(`Maaf, promo ${kode} hanya khusus untuk ${namaTarget}!`);
-        return;
-    }
-
-    const sisaKuota = promoFound.kuota - promoFound.terpakai;
-    if (sisaKuota <= 0) {
-        showToast('Maaf, kuota promo ini sudah habis!');
-        return;
-    }
-
-    promoAktif = promoFound;
-    document.getElementById('diskonNominalText').textContent = `Rp ${promoFound.diskon.toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} orang)`;
-    document.getElementById('promoNotice').style.display = 'block';
-    input.disabled = true;
-
-    showToast(`Promo ${kode} aktif! Hemat Rp ${promoFound.diskon.toLocaleString('id-ID')}`, '🎉');
-    hitungTotal();
 }
 
 function kembaliKeHalamanSebelumnya() {
@@ -525,7 +589,8 @@ function kembaliKeHalamanSebelumnya() {
     }
 }
 
-function prosesBeli() {
+async function prosesBeli() {
+    const btnBuy = document.getElementById('btnSubmitOrder');
     const idEl = document.getElementById('playerId');
     const idVal = idEl.value.trim();
 
@@ -537,21 +602,44 @@ function prosesBeli() {
         return;
     }
 
-    if (promoAktif) {
-        let promos = JSON.parse(localStorage.getItem('sakapay_promos')) || [];
-        const idx = promos.findIndex(p => p.kode === promoAktif.kode);
-        if (idx !== -1 && promos[idx].terpakai < promos[idx].kuota) {
-            promos[idx].terpakai += 1;
-            localStorage.setItem('sakapay_promos', JSON.stringify(promos));
+    btnBuy.disabled = true;
+    btnBuy.textContent = 'Memproses...';
+
+    const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+    let diskonFinal = 0;
+
+    if (voucherAktif) {
+        try {
+            const { data: res, error } = await dbClient.rpc('claim_voucher', {
+                p_kode: voucherAktif.kode,
+                p_target_game: TARGET_HALAMAN,
+                p_invoice_id: invoiceId,
+                p_target_user: idVal
+            });
+
+            if (error) throw error;
+            if (!res.success) {
+                showToast(res.message, '⚠️');
+                btnBuy.disabled = false;
+                btnBuy.textContent = 'Beli Sekarang';
+                return;
+            }
+
+            diskonFinal = Number(res.diskon);
+        } catch (err) {
+            console.error(err);
+            showToast('Gagal memproses klaim voucher ke server.');
+            btnBuy.disabled = false;
+            btnBuy.textContent = 'Beli Sekarang';
+            return;
         }
     }
 
-    const hargaFinal = promoAktif ? Math.max(0, itemTerpilih.harga - promoAktif.diskon) : itemTerpilih.harga;
-    const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+    const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal);
 
     const dataInvoice = {
         id: invoiceId,
-        produk: "Free Fire (" + itemTerpilih.nama + ")" + (promoAktif ? ` [Promo: ${promoAktif.kode}]` : ""),
+        produk: "Free Fire (" + itemTerpilih.nama + ")" + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
         tujuan: idVal,
         harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
         metode: metodeTerpilih,

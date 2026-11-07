@@ -328,6 +328,7 @@
         <p>Layanan top up diamond &amp; Weekly Diamond Pass instan 24 jam dengan invoice digital.</p>
     </section>
 
+    <!-- Langkah 1: Input Akun Bersih -->
     <section class="card">
         <h2 class="section-title"><span class="number">1</span> Masukkan User ID &amp; Zone ID</h2>
         <p class="hint">Contoh: User ID: 12345678, Zone ID: (1234).</p>
@@ -341,24 +342,25 @@
         </div>
     </section>
 
+    <!-- Langkah 2: Nominal -->
     <section class="card">
         <h2 class="section-title"><span class="number">2</span> Pilih Nominal Diamond / Pass</h2>
         <div class="nominal-grid" id="nominalGrid"></div>
     </section>
 
-    <!-- Langkah Promo Berkuota Real-Time Supabase -->
+    <!-- Langkah 3: Voucher Supabase -->
     <section class="card">
-        <h2 class="section-title"><span class="number">%</span> Punya Kode Promo? (Opsional)</h2>
+        <h2 class="section-title"><span class="number">%</span> Punya Kode Voucher? (Opsional)</h2>
         <div class="promo-box">
-            <input type="text" id="inputPromo" placeholder="Masukkan kode promo (Cth: MLMAMPUS)" style="text-transform: uppercase;">
-            <button type="button" id="btnGunakanPromo" class="btn-apply-promo" onclick="terapkanPromoCloud()">Gunakan</button>
+            <input type="text" id="inputPromo" placeholder="Masukkan kode voucher (Cth: SAKABERSIH)" style="text-transform: uppercase;">
+            <button type="button" id="btnGunakanPromo" class="btn-apply-promo" onclick="terapkanVoucher()">Gunakan</button>
         </div>
         <div id="promoNotice" style="display: none; margin-top: 8px; font-size: 12px; color: #16a34a; font-weight: 700;">
             🎉 Berhasil! Anda hemat <span id="diskonNominalText">Rp 0</span>
         </div>
     </section>
 
-    <!-- Pembayaran Visual -->
+    <!-- Langkah 4: Pembayaran -->
     <section class="card">
         <h2 class="section-title"><span class="number">3</span> Pilih Metode Pembayaran</h2>
         <div class="payment-list">
@@ -389,8 +391,8 @@
 
 <footer class="footer-checkout">
     <div class="price-summary">
-        <span id="selectedItemLabel">Weekly Diamond Pass</span>
-        <h4 id="totalHargaText">Rp 27.500</h4>
+        <span id="selectedItemLabel">3 Diamond</span>
+        <h4 id="totalHargaText">Rp 3.500</h4>
     </div>
     <button class="btn-buy" id="btnSubmitOrder" onclick="prosesBeli()">Beli Sekarang</button>
 </footer>
@@ -404,26 +406,150 @@ const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const TARGET_HALAMAN = "ML";
 
 const daftarNominal = [
-    { nama: "Weekly Diamond Pass", harga: 27500, badge: "BEST SELLER", isBest: true },
-    { nama: "5 Diamond", harga: 1500 },
-    { nama: "12 Diamond", harga: 3500 },
-    { nama: "19 Diamond", harga: 5500 },
-    { nama: "44 Diamond", harga: 12000 },
-    { nama: "86 Diamond", harga: 21000, badge: "POPULER", isHot: true },
-    { nama: "172 Diamond", harga: 41500 },
-    { nama: "257 Diamond", harga: 61500 },
-    { nama: "344 Diamond", harga: 82000 },
-    { nama: "429 Diamond", harga: 102000 },
-    { nama: "706 Diamond", harga: 165000 },
-    { nama: "1412 Diamond", harga: 330000 },
-    { nama: "2195 Diamond", harga: 500000 },
-    { nama: "Twilight Pass", harga: 145000 }
+    // Halaman 1 - Kolom 1
+    { nama: "3 Diamond", harga: 3500 },
+    { nama: "5 Diamond", harga: 3000 },
+    { nama: "10 (10+0) Diamond", harga: 5000 },
+    { nama: "12 (11+1) Diamond", harga: 5500 },
+    { nama: "14 (14+0) Diamond", harga: 6500 },
+    { nama: "15 (15+0) Diamond", harga: 6500 },
+    { nama: "19 (17+2) Diamond", harga: 8000 },
+    { nama: "28 (25+3) Diamond", harga: 11000 },
+    { nama: "36 (33+3) Diamond", harga: 14000 },
+    { nama: "38 (34+4) Diamond", harga: 14500 },
+    { nama: "44 (40+4) Diamond", harga: 15500 },
+    { nama: "50 (50+0) Diamond", harga: 19000 },
+    { nama: "Weekly Elite Bundle", harga: 19500 },
+    { nama: "54 (50+4) Diamond", harga: 19500 },
+    { nama: "56 (51+5) Diamond", harga: 20000 },
+    { nama: "59 (53+6) Diamond", harga: 20500 },
+    { nama: "70 (63+7) Diamond", harga: 25000 },
+    { nama: "71 (64+7) Diamond", harga: 25000 },
+    { nama: "72 (65+7) Diamond", harga: 25500 },
+    { nama: "74 (69+5) Diamond", harga: 25500 },
+    { nama: "78 (70+8) Diamond", harga: 27500 },
+    { nama: "80 (74+6) Diamond", harga: 28500 },
+    { nama: "85 (77+8) Diamond", harga: 28500 },
+    { nama: "86 (78+8) Diamond", harga: 30000, badge: "POPULER", isHot: true },
+    { nama: "92 (87+5) Diamond", harga: 33000 },
+
+    // Halaman 1 - Kolom 2
+    { nama: "98 (89+9) Diamond", harga: 35000 },
+    { nama: "1X Weekly Diamond Pass", harga: 32000, badge: "BEST SELLER", isBest: true },
+    { nama: "110 (101+9) Diamond", harga: 38500 },
+    { nama: "112 (102+10) Diamond", harga: 38000 },
+    { nama: "113 (102+11) Diamond", harga: 39000 },
+    { nama: "118 (59+59) Diamond", harga: 40000 },
+    { nama: "129 (117+12) Diamond", harga: 44000 },
+    { nama: "144 (130+14) Diamond", harga: 47500 },
+    { nama: "170 (154+16) Diamond", harga: 56500 },
+    { nama: "172 (156+16) Diamond", harga: 56000 },
+    { nama: "182 (165+17) Diamond", harga: 60500 },
+    { nama: "185 (167+18) Diamond", harga: 60000 },
+    { nama: "2X Weekly Pass (440)", harga: 67500 },
+    { nama: "222 (200+22) Diamond", harga: 70500 },
+    { nama: "229 (207+22) Diamond", harga: 74500 },
+    { nama: "240 (217+23) Diamond", harga: 75500 },
+    { nama: "257 (234+23) Diamond", harga: 80500 },
+    { nama: "Coupon Pass", harga: 82000 },
+    { nama: "264 Diamond", harga: 90500 },
+    { nama: "277 (250+27) Diamond", harga: 86500 },
+    { nama: "278 (251+27) Diamond", harga: 89500 },
+    { nama: "284 (254+30) Diamond", harga: 88000 },
+    { nama: "296 (256+40) Diamond", harga: 91000 },
+    { nama: "Starlight Membership", harga: 94000 },
+    { nama: "301 (261+40) Diamond", harga: 95500 },
+
+    // Halaman 3 - Kolom 1
+    { nama: "3X Weekly Pass (660)", harga: 98000 },
+    { nama: "324 (281+43) Diamond", harga: 102500 },
+    { nama: "344 (312+32) Diamond", harga: 105500 },
+    { nama: "345 (301+44) Diamond", harga: 108500 },
+    { nama: "355 (309+46) Diamond", harga: 110500 },
+    { nama: "370 (333+37) Diamond", harga: 114500 },
+    { nama: "371 (324+47) Diamond", harga: 116500 },
+    { nama: "374 (326+48) Diamond", harga: 117000 },
+    { nama: "381 (333+48) Diamond", harga: 118500 },
+    { nama: "384 (346+38) Diamond", harga: 119000 },
+    { nama: "408 (367+41) Diamond", harga: 125000 },
+    { nama: "4X Weekly Pass (880)", harga: 128000 },
+    { nama: "425 (373+52) Diamond", harga: 132000 },
+    { nama: "427 (384+43) Diamond", harga: 133000 },
+    { nama: "429 (390+39) Diamond", harga: 129500 },
+    { nama: "448 (403+45) Diamond", harga: 138500 },
+    { nama: "450 (408+42) Diamond", harga: 139500 },
+    { nama: "460 (415+45) Diamond", harga: 141000 },
+    { nama: "500 (452+49) Diamond", harga: 151000 },
+    { nama: "512 (461+51) Diamond", harga: 157500 },
+    { nama: "514 (468+46) Diamond", harga: 153000 },
+    { nama: "518 (469+52) Diamond", harga: 155000 },
+    { nama: "5X Weekly Pass (1100)", harga: 158500 },
+    { nama: "522 (471+51) Diamond", harga: 160500 },
+    { nama: "554 (502+52) Diamond", harga: 170500 },
+    { nama: "568 (503+65) Diamond", harga: 164000 },
+    { nama: "600 (568+32) Diamond", harga: 175000 },
+    { nama: "601 (533+68) Diamond", harga: 179500 },
+    { nama: "642 (570+72) Diamond", harga: 186500 },
+    { nama: "706 (625+81) Diamond", harga: 203000 },
+    { nama: "712 (633+79) Diamond", harga: 211500 },
+    { nama: "716 (638+78) Diamond", harga: 207500 },
+    { nama: "717 (638+79) Diamond", harga: 213000 },
+    { nama: "722 (643+79) Diamond", harga: 215000 },
+    { nama: "750 (668+82) Diamond", harga: 223000 },
+    { nama: "762 (666+96) Diamond", harga: 230000 },
+    { nama: "808 (720+88) Diamond", harga: 241000 },
+    { nama: "875 (774+101) Diamond", harga: 249500 },
+    { nama: "963 (859+104) Diamond", harga: 277500 },
+    { nama: "965 (856+109) Diamond", harga: 283000 },
+
+    // Halaman 3 - Kolom 2
+    { nama: "1050 (937+113) Diamond", harga: 302500 },
+    { nama: "1134 (1008+126) Diamond", harga: 332500 },
+    { nama: "1136 (1006+130) Diamond", harga: 332000 },
+    { nama: "1139 (1013+126) Diamond", harga: 334000 },
+    { nama: "1159 (1031+128) Diamond", harga: 339500 },
+    { nama: "1164 (1036+128) Diamond", harga: 341000 },
+    { nama: "1183 (1041+142) Diamond", harga: 346500 },
+    { nama: "1220 (1159+61) Diamond", harga: 349000 },
+    { nama: "1220 (1075+145) Diamond", harga: 360000 },
+    { nama: "1230 (1083+147) Diamond", harga: 360000 },
+    { nama: "1368 (1218+150) Diamond", harga: 399500 },
+    { nama: "1412 (1250+162) Diamond", harga: 411500 },
+    { nama: "1443 (1277+166) Diamond", harga: 418000 },
+    { nama: "1453 (1295+158) Diamond", harga: 424500 },
+    { nama: "1507 (1335+172) Diamond", harga: 436500 },
+    { nama: "1672 (1484+188) Diamond", harga: 484500 },
+    { nama: "1704 (1509+195) Diamond", harga: 493000 },
+    { nama: "1750 (1548+202) Diamond", harga: 504000 },
+    { nama: "1835 (1625+210) Diamond", harga: 527500 },
+    { nama: "2010 (1708+302) Diamond", harga: 547000 },
+    { nama: "2046 (1741+305) Diamond", harga: 558000 },
+    { nama: "2180 (1862+318) Diamond", harga: 596500 },
+    { nama: "2195 (1860+335) Diamond", harga: 599500 },
+    { nama: "2199 (1879+320) Diamond", harga: 602000 },
+    { nama: "2350 (2017+333) Diamond", harga: 646000 },
+    { nama: "2382 (2033+349) Diamond", harga: 655500 },
+    { nama: "2536 (2182+354) Diamond", harga: 700000 },
+    { nama: "2578 (2211+367) Diamond", harga: 708000 },
+    { nama: "2885 (2482+403) Diamond", harga: 794000 },
+    { nama: "2904 (2499+405) Diamond", harga: 800000 },
+    { nama: "2977 (2565+412) Diamond", harga: 821500 },
+    { nama: "3453 (2985+468) Diamond", harga: 955000 },
+    { nama: "3481 (3010+471) Diamond", harga: 963500 },
+    { nama: "3693 (3202+491) Diamond", harga: 1025000 },
+    { nama: "4020 (3416+604) Diamond", harga: 1084000 },
+    { nama: "4404 (3763+641) Diamond", harga: 1196000 },
+    { nama: "4678 (4001+677) Diamond", harga: 1272000 },
+    { nama: "4830 (4003+827) Diamond", harga: 1299000 },
+    { nama: "5372 (4826+546) Diamond", harga: 1460000 },
+    { nama: "5398 (4506+892) Diamond", harga: 1460000 }
 ];
 
 let itemTerpilih = daftarNominal[0];
 let metodeTerpilih = 'QRIS';
-let promoAktif = null;
+let voucherAktif = null;
 
+// ================= RENDER NOMINAL =================
 function renderNominal() {
     const grid = document.getElementById('nominalGrid');
     grid.innerHTML = '';
@@ -477,8 +603,8 @@ function hitungTotal() {
     let hargaAwal = itemTerpilih.harga;
     let hargaFinal = hargaAwal;
 
-    if (promoAktif) {
-        hargaFinal = Math.max(0, hargaAwal - promoAktif.diskon);
+    if (voucherAktif) {
+        hargaFinal = Math.max(0, hargaAwal - voucherAktif.diskon);
         document.getElementById('totalHargaText').innerHTML = `
             <del style="color:#94a3b8; font-size:12px; margin-right:4px;">Rp ${hargaAwal.toLocaleString('id-ID')}</del>
             Rp ${hargaFinal.toLocaleString('id-ID')}
@@ -498,14 +624,14 @@ function showToast(msg, icon = '⚠️') {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// VALIDASI PROMO LANGSUNG DARI SUPABASE CLOUD SECARA REAL-TIME
-async function terapkanPromoCloud() {
+// VALIDASI VOUCHER KE SUPABASE
+async function terapkanVoucher() {
     const input = document.getElementById('inputPromo');
     const btn = document.getElementById('btnGunakanPromo');
     const kode = input.value.trim().toUpperCase();
 
     if (!kode) {
-        showToast('Masukkan kode promo terlebih dahulu!');
+        showToast('Masukkan kode voucher terlebih dahulu!');
         return;
     }
 
@@ -513,51 +639,51 @@ async function terapkanPromoCloud() {
     btn.textContent = '...';
 
     try {
-        const { data: promoFound, error } = await dbClient
-            .from('promos')
+        const { data: v, error } = await dbClient
+            .from('vouchers')
             .select('*')
             .eq('kode', kode)
             .maybeSingle();
 
         if (error) throw error;
 
-        if (!promoFound) {
-            showToast('Kode promo tidak terdaftar di database!');
+        if (!v) {
+            showToast('Kode voucher tidak ditemukan di database!');
             return;
         }
 
-        // Cek target produk spesifik
-        const targetPromo = promoFound.target || "SEMUA";
-        if (targetPromo !== "SEMUA" && targetPromo !== TARGET_HALAMAN) {
-            let namaTarget = "produk lain";
-            if (targetPromo === "FF") namaTarget = "Free Fire";
-            else if (targetPromo === "PUBG") namaTarget = "PUBG Mobile";
-            else if (targetPromo === "PULSA") namaTarget = "Pulsa & Data";
-            else if (targetPromo === "PLN") namaTarget = "Token PLN";
-            else if (targetPromo === "EWALLET") namaTarget = "E-Wallet";
-
-            showToast(`Maaf, promo ${kode} hanya khusus untuk ${namaTarget}!`);
+        if (!v.is_active) {
+            showToast('Voucher ini sudah dinonaktifkan!');
             return;
         }
 
-        const sisaKuota = promoFound.kuota - promoFound.terpakai;
-        if (sisaKuota <= 0) {
-            showToast('Maaf, kuota promo ini sudah habis!');
+        if (v.expires_at && new Date(v.expires_at) < new Date()) {
+            showToast('Masa berlaku voucher ini telah berakhir!');
             return;
         }
 
-        // Promo Valid
-        promoAktif = promoFound;
-        document.getElementById('diskonNominalText').textContent = `Rp ${Number(promoFound.diskon).toLocaleString('id-ID')} (Sisa kuota: ${sisaKuota} orang)`;
+        if (v.target !== "SEMUA" && v.target !== TARGET_HALAMAN) {
+            showToast(`Voucher ${kode} khusus untuk produk ${v.target}!`);
+            return;
+        }
+
+        const sisa = v.kuota - v.terpakai;
+        if (sisa <= 0) {
+            showToast('Maaf, kuota voucher ini sudah habis terpakai!');
+            return;
+        }
+
+        voucherAktif = v;
+        document.getElementById('diskonNominalText').textContent = `Rp ${Number(v.diskon).toLocaleString('id-ID')} (Sisa kuota: ${sisa} orang)`;
         document.getElementById('promoNotice').style.display = 'block';
         input.disabled = true;
 
-        showToast(`Promo ${kode} aktif! Hemat Rp ${Number(promoFound.diskon).toLocaleString('id-ID')}`, '🎉');
+        showToast(`Voucher ${kode} aktif! Hemat Rp ${Number(v.diskon).toLocaleString('id-ID')}`, '🎉');
         hitungTotal();
 
     } catch (err) {
         console.error(err);
-        showToast('Gagal memverifikasi promo ke server cloud.');
+        showToast('Gagal memverifikasi voucher ke cloud.');
     } finally {
         btn.disabled = false;
         btn.textContent = 'Gunakan';
@@ -598,25 +724,44 @@ async function prosesBeli() {
     btnBuy.disabled = true;
     btnBuy.textContent = 'Memproses...';
 
-    // JIKA MEMAKAI PROMO, POTONG KUOTA LANGSUNG DI DATABASE SUPABASE
-    if (promoAktif) {
+    const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+    const targetUser = `${u} (${z})`;
+    let diskonFinal = 0;
+
+    // KLAIM RESMI VOUCHER DI SUPABASE
+    if (voucherAktif) {
         try {
-            await dbClient
-                .from('promos')
-                .update({ terpakai: promoAktif.terpakai + 1 })
-                .eq('id', promoAktif.id);
-        } catch (e) {
-            console.error('Gagal update kuota promo di cloud:', e);
+            const { data: res, error } = await dbClient.rpc('claim_voucher', {
+                p_kode: voucherAktif.kode,
+                p_target_game: TARGET_HALAMAN,
+                p_invoice_id: invoiceId,
+                p_target_user: targetUser
+            });
+
+            if (error) throw error;
+            if (!res.success) {
+                showToast(res.message, '⚠️');
+                btnBuy.disabled = false;
+                btnBuy.textContent = 'Beli Sekarang';
+                return;
+            }
+
+            diskonFinal = Number(res.diskon);
+        } catch (err) {
+            console.error(err);
+            showToast('Gagal memproses klaim voucher ke server.');
+            btnBuy.disabled = false;
+            btnBuy.textContent = 'Beli Sekarang';
+            return;
         }
     }
 
-    const hargaFinal = promoAktif ? Math.max(0, itemTerpilih.harga - promoAktif.diskon) : itemTerpilih.harga;
-    const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+    const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal);
 
     const dataInvoice = {
         id: invoiceId,
-        produk: "Mobile Legends (" + itemTerpilih.nama + ")" + (promoAktif ? ` [Promo: ${promoAktif.kode}]` : ""),
-        tujuan: `${u} (${z})`,
+        produk: "Mobile Legends (" + itemTerpilih.nama + ")" + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
+        tujuan: targetUser,
         harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
         metode: metodeTerpilih,
         status: "Menunggu Pembayaran",
