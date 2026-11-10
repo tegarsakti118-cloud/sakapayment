@@ -654,14 +654,14 @@ const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
 
         if (dbError) throw dbError;
 
-      // 🔔 KIRIM NOTIFIKASI TELEGRAM KE ADMIN
+      // 🔔 Tambahkan kata "await" di depannya:
         if (typeof kirimNotifTelegram === 'function') {
-            kirimNotifTelegram(dataInvoice);
+            await kirimNotifTelegram(dataInvoice);
         }
 
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);
-
+        
         const targetUrl = window.location.pathname.includes('/game/') ? '../invoice.html?id=' : 'invoice.html?id=';
         window.location.href = targetUrl + invoiceId;
 

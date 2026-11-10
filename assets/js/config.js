@@ -9,15 +9,24 @@ const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const TELEGRAM_BOT_TOKEN = "9110652075:AAFiGE3BeXfvFIkjVFYkiEKLpHgf6pWgZ9g";
 const TELEGRAM_CHAT_ID   = "7235094348";
 
-// Fungsi pengirim notifikasi instan
+// Fungsi pembersih simbol & < > agar tidak error di Telegram
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+// Fungsi pengirim notifikasi instan yang stabil
 async function kirimNotifTelegram(order) {
     const pesan = `🔔 <b>PESANAN BARU MASUK - SAKAPAY</b>\n`
                 + `───────────────────────\n`
-                + `📄 <b>Invoice</b> : <code>${order.id}</code>\n`
-                + `📦 <b>Produk</b>  : ${order.produk}\n`
-                + `🎯 <b>Tujuan</b>  : <code>${order.tujuan}</code>\n`
-                + `💰 <b>Total Bayar</b> : <b>${order.harga}</b>\n`
-                + `💳 <b>Metode</b>  : ${order.metode}\n`
+                + `📄 <b>Invoice</b> : <code>${escapeHtml(order.id)}</code>\n`
+                + `📦 <b>Produk</b>  : ${escapeHtml(order.produk)}\n`
+                + `🎯 <b>Tujuan</b>  : <code>${escapeHtml(order.tujuan)}</code>\n`
+                + `💰 <b>Total Bayar</b> : <b>${escapeHtml(order.harga)}</b>\n`
+                + `💳 <b>Metode</b>  : ${escapeHtml(order.metode)}\n`
                 + `───────────────────────\n`
                 + `<i>Segera cek mutasi & verifikasi di panel admin!</i>`;
 
@@ -29,7 +38,8 @@ async function kirimNotifTelegram(order) {
                 chat_id: TELEGRAM_CHAT_ID,
                 text: pesan,
                 parse_mode: 'HTML'
-            })
+            }),
+            keepalive: true // Menjaga pengiriman tetap jalan meski halaman langsung berpindah
         });
     } catch (e) {
         console.error("Gagal kirim notif telegram:", e);

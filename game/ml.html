@@ -773,14 +773,14 @@ const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
 
         if (dbError) throw dbError;
 
-      // 🔔 KIRIM NOTIFIKASI TELEGRAM KE ADMIN
+      // 🔔 Tambahkan kata "await" di depannya:
         if (typeof kirimNotifTelegram === 'function') {
-            kirimNotifTelegram(dataInvoice);
+            await kirimNotifTelegram(dataInvoice);
         }
 
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);
-
+      
         // Jika file di dalam folder game/, gunakan: ../invoice.html?id=
         // Jika file di folder root, gunakan: invoice.html?id=
         const targetUrl = window.location.pathname.includes('/game/') ? '../invoice.html?id=' : 'invoice.html?id=';
@@ -792,6 +792,7 @@ const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
         btnBuy.disabled = false;
         btnBuy.textContent = 'Beli Sekarang';
     }
+  
 }
 
 window.onload = () => {

@@ -790,15 +790,13 @@ const hargaFinal = Math.max(0, produkPilihan.harga - diskonFinal) + kodeUnik;
 
         if (dbError) throw dbError;
 
-      // 🔔 KIRIM NOTIFIKASI TELEGRAM KE ADMIN
+      // 🔔 Tambahkan kata "await" di depannya:
         if (typeof kirimNotifTelegram === 'function') {
-            kirimNotifTelegram(dataInvoice);
-            }
+            await kirimNotifTelegram(dataInvoice);
+        }
 
-        // Simpan cache lokal untuk kenyamanan redirect nota
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);
-
         // Arahkan ke nota invoice
         window.location.href = 'invoice.html?id=' + invoiceId;
 
@@ -808,6 +806,7 @@ const hargaFinal = Math.max(0, produkPilihan.harga - diskonFinal) + kodeUnik;
         btnBuy.disabled = false;
         btnBuy.textContent = 'Beli Sekarang';
     }
+          
 }
 
         window.onload = () => {
