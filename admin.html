@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Supabase JS Client Resmi -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
     <style>
         :root {
             --sidebar-width: 250px;
@@ -608,11 +609,7 @@
         lucide.createIcons();
     }
 
-    // ================= KONEKSI SUPABASE RESMI SAKAPAY =================
-    const SUPABASE_URL = "https://uqnwdybpjlkcvlezibhl.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
-    const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+    let cachedOrders = [];
     let cachedVouchers = [];
 
     // ================= TOAST NOTIFIKASI ADMIN =================
@@ -676,32 +673,31 @@
         }
     }
 
-    // ================= LOAD & RENDER TRANSAKSI =================
-    function loadOrders() {
-        let orders = [];
-        let totalCount = 0, pendingCount = 0, completedCount = 0;
+    // ================= LOAD PESANAN DARI SUPABASE CLOUD =================
+    async function loadOrders() {
+        try {
+            const { data: orders, error } = await dbClient
+                .from('orders')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('SKP-')) {
-                try {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    data.id = data.id || key;
-                    orders.push(data);
+            if (error) throw error;
+            cachedOrders = orders || [];
 
-                    totalCount++;
-                    const st = (data.status || '').trim();
-                    if (st === 'Menunggu Pembayaran') pendingCount++;
-                    if (st.toLowerCase() === 'selesai') completedCount++;
-                } catch (e) {}
-            }
+            let totalCount = cachedOrders.length;
+            let pendingCount = cachedOrders.filter(o => (o.status || '').trim() === 'Menunggu Pembayaran').length;
+            let completedCount = cachedOrders.filter(o => (o.status || '').toLowerCase() === 'selesai').length;
+
+            document.getElementById('statTotal').textContent = totalCount;
+            document.getElementById('statPending').textContent = pendingCount;
+            document.getElementById('statCompleted').textContent = completedCount;
+
+            renderTables(cachedOrders);
+        } catch (err) {
+            console.error(err);
+            showAdminToast('Gagal memuat pesanan dari cloud.', 'error');
         }
 
-        document.getElementById('statTotal').textContent = totalCount;
-        document.getElementById('statPending').textContent = pendingCount;
-        document.getElementById('statCompleted').textContent = completedCount;
-
-        renderTables(orders);
         loadAllVoucherData();
     }
 
@@ -714,19 +710,19 @@
 
     function renderTables(dataList) {
         let recentHtml = '', fullHtml = '', payHtml = '';
-        const list = [...dataList].reverse();
 
-        list.forEach((data, index) => {
+        dataList.forEach((data, index) => {
             const badgeClass = getBadgeClass(data.status);
-            const namaProduk = data.produk || data.layanan || '-';
+            const namaProduk = data.produk || '-';
             const hargaText = data.harga || 'Rp 0';
             const invoiceId = data.id;
+            const tanggal = data.created_at ? new Date(data.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'short' }) : '-';
 
             if (index < 5) {
                 recentHtml += `
                     <tr>
                         <td><strong>${invoiceId}</strong></td>
-                        <td>${data.tanggal || '-'}</td>
+                        <td>${tanggal}</td>
                         <td>${namaProduk}</td>
                         <td>${data.tujuan || '-'}</td>
                         <td>${hargaText}</td>
@@ -771,26 +767,31 @@
         document.getElementById('paymentTable').innerHTML = payHtml || '<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 1.5rem;">Tidak ada pembayaran yang tertunda.</td></tr>';
     }
 
-    function updateStatus(id, newStatus) {
+    async function updateStatus(id, newStatus) {
         try {
-            const raw = localStorage.getItem(id);
-            if (raw) {
-                const data = JSON.parse(raw);
-                data.status = newStatus;
-                localStorage.setItem(id, JSON.stringify(data));
-                showAdminToast(`Invoice ${id} diubah: ${newStatus}`, 'success');
-                loadOrders();
-            }
+            const { error } = await dbClient
+                .from('orders')
+                .update({ status: newStatus })
+                .eq('id', id);
+
+            if (error) throw error;
+            showAdminToast(`Invoice ${id} diubah: ${newStatus}`, 'success');
+            await loadOrders();
         } catch (e) {
-            showAdminToast('Gagal memperbarui status.', 'error');
+            showAdminToast('Gagal mengubah status di server.', 'error');
         }
     }
 
     function deleteOrder(id) {
-        showConfirmModal('Hapus Pesanan', `Yakin ingin menghapus riwayat pesanan ${id}? Tindakan ini permanen.`, () => {
-            localStorage.removeItem(id);
-            showAdminToast(`Pesanan ${id} berhasil dihapus`, 'success');
-            loadOrders();
+        showConfirmModal('Hapus Pesanan', `Yakin ingin menghapus riwayat pesanan ${id}? Tindakan ini permanen.`, async () => {
+            try {
+                const { error } = await dbClient.from('orders').delete().eq('id', id);
+                if (error) throw error;
+                showAdminToast(`Pesanan ${id} berhasil dihapus`, 'success');
+                await loadOrders();
+            } catch (e) {
+                showAdminToast('Gagal menghapus pesanan dari server.', 'error');
+            }
         });
     }
 
@@ -798,32 +799,21 @@
         const query = (document.getElementById('searchInvoice').value || '').toLowerCase();
         const statusFilter = document.getElementById('filterStatus').value;
 
-        let filtered = [];
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('SKP-')) {
-                try {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    data.id = data.id || key;
-                    const prodName = (data.produk || data.layanan || '').toLowerCase();
-                    const target = (data.tujuan || '').toLowerCase();
-                    const invId = data.id.toLowerCase();
-                    const st = (data.status || 'Menunggu Pembayaran');
+        const filtered = cachedOrders.filter(data => {
+            const prodName = (data.produk || '').toLowerCase();
+            const target = (data.tujuan || '').toLowerCase();
+            const invId = (data.id || '').toLowerCase();
+            const st = data.status || 'Menunggu Pembayaran';
 
-                    const matchQuery = invId.includes(query) || target.includes(query) || prodName.includes(query);
-                    const matchStatus = statusFilter === "" || st === statusFilter;
+            const matchQuery = invId.includes(query) || target.includes(query) || prodName.includes(query);
+            const matchStatus = statusFilter === "" || st === statusFilter;
+            return matchQuery && matchStatus;
+        });
 
-                    if (matchQuery && matchStatus) {
-                        filtered.push(data);
-                    }
-                } catch (e) {}
-            }
-        }
         renderTables(filtered);
     }
 
-    // ================= SISTEM VOUCHER CLOUD SUPABASE =================
-
+    // ================= KELOLA VOUCHER CLOUD SUPABASE =================
     function getTargetLabel(target) {
         switch (target) {
             case 'ML': return '<span class="badge" style="background:#e0f2fe; color:#0369a1;">⚔️ Mobile Legends</span>';
@@ -860,7 +850,7 @@
             if (error) throw error;
             cachedVouchers = vouchers || [];
 
-            if (!vouchers || vouchers.length === 0) {
+            if (cachedVouchers.length === 0) {
                 tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:var(--text-muted);">Belum ada voucher yang dibuat.</td></tr>';
                 return;
             }
@@ -868,7 +858,7 @@
             let html = '';
             const now = new Date();
 
-            vouchers.forEach((v) => {
+            cachedVouchers.forEach((v) => {
                 const sisa = v.kuota - v.terpakai;
                 const isExpired = v.expires_at && new Date(v.expires_at) < now;
                 const isHabis = sisa <= 0;
@@ -910,7 +900,7 @@
             tableBody.innerHTML = html;
         } catch (err) {
             console.error(err);
-            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat data voucher dari database.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat voucher dari database.</td></tr>';
         }
     }
 
@@ -939,7 +929,7 @@
                     <tr>
                         <td><small style="color:var(--text-muted);">${waktu}</small></td>
                         <td><strong>${log.kode_voucher}</strong></td>
-                        <td>${log.produk_game}</td>
+                        <td>${log.produk_game || '-'}</td>
                         <td>${log.target_user || '-'}</td>
                         <td>${log.invoice_id || '-'}</td>
                         <td style="color:#16a34a; font-weight:700;">-Rp ${Number(log.diskon_didapat).toLocaleString('id-ID')}</td>
@@ -950,7 +940,7 @@
             tableBody.innerHTML = html;
         } catch (err) {
             console.error(err);
-            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat riwayat pemakaian.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:#ef4444;">Gagal memuat log voucher.</td></tr>';
         }
     }
 
@@ -967,7 +957,7 @@
         const expiresAt = expiryVal ? new Date(expiryVal).toISOString() : null;
 
         if (!kode || diskon <= 0 || kuota <= 0) {
-            showAdminToast('Periksa kembali data voucher Anda!', 'error');
+            showAdminToast('Lengkapi data voucher dengan benar!', 'error');
             return;
         }
 
@@ -988,7 +978,7 @@
             if (error) throw error;
             if (data && !data.success) throw new Error(data.error || 'Gagal menyimpan');
 
-            showAdminToast(id === 0 ? `Voucher ${kode} berhasil dibuat!` : `Voucher ${kode} berhasil diubah!`, 'success');
+            showAdminToast(id === 0 ? `Voucher ${kode} berhasil dibuat!` : `Voucher ${kode} diperbarui!`, 'success');
             resetVoucherForm();
             await loadVouchers();
         } catch (err) {
@@ -1062,7 +1052,7 @@
     }
 
     function hapusVoucher(voucherId, kode) {
-        showConfirmModal('Hapus Voucher', `Yakin ingin menghapus kode ${kode} dari database Supabase?`, async () => {
+        showConfirmModal('Hapus Voucher', `Yakin ingin menghapus voucher ${kode} dari database?`, async () => {
             try {
                 const { data, error } = await dbClient.rpc('admin_delete_voucher', { p_id: voucherId });
                 if (error) throw error;
@@ -1076,10 +1066,11 @@
         });
     }
 
-    function logoutAdmin() {
-        sessionStorage.removeItem('adminLoggedIn');
-        window.location.href = 'login-admin.html';
-    }
+ async function logoutAdmin() {
+    await dbClient.auth.signOut();
+    sessionStorage.removeItem('adminLoggedIn');
+    window.location.href = 'login-admin.html';
+}
 
     window.onload = () => {
         loadOrders();

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Supabase JS Client Resmi -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
     <style>
         :root {
             --primary: #17A897;
@@ -498,10 +499,6 @@
     </footer>
 
     <script>
-        const SUPABASE_URL = "https://uqnwdybpjlkcvlezibhl.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
-        const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         const urlParams = new URLSearchParams(window.location.search);
         const namaProduk = urlParams.get('produk') || 'Layanan Digital';
 
@@ -725,70 +722,88 @@
         }
 
         async function prosesBeli() {
-            const btnBuy = document.getElementById('btnSubmitOrder');
-            const noEl = document.getElementById('noTujuan');
-            const noVal = noEl ? noEl.value.trim() : '';
+    const btnBuy = document.getElementById('btnSubmitOrder');
+    const noEl = document.getElementById('noTujuan');
+    const noVal = noEl ? noEl.value.trim() : '';
 
-            if (!noVal) {
-                if (noEl) {
-                    noEl.classList.add('input-error');
-                    noEl.focus();
-                    setTimeout(() => noEl.classList.remove('input-error'), 600);
-                }
-                showToast('Harap masukkan nomor tujuan / ID Anda!');
+    if (!noVal) {
+        if (noEl) {
+            noEl.classList.add('input-error');
+            noEl.focus();
+            setTimeout(() => noEl.classList.remove('input-error'), 600);
+        }
+        showToast('Harap masukkan nomor tujuan / ID Anda!');
+        return;
+    }
+
+    btnBuy.disabled = true;
+    btnBuy.textContent = 'Memproses...';
+
+    const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
+    let diskonFinal = 0;
+
+    // 1. Klaim Voucher ke Database Supabase jika ada
+    if (voucherAktif) {
+        try {
+            const { data: res, error } = await dbClient.rpc('claim_voucher', {
+                p_kode: voucherAktif.kode,
+                p_target_game: TARGET_HALAMAN,
+                p_invoice_id: invoiceId,
+                p_target_user: noVal
+            });
+
+            if (error) throw error;
+            if (!res.success) {
+                showToast(res.message, '⚠️');
+                btnBuy.disabled = false;
+                btnBuy.textContent = 'Beli Sekarang';
                 return;
             }
 
-            btnBuy.disabled = true;
-            btnBuy.textContent = 'Memproses...';
-
-            const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
-            let diskonFinal = 0;
-
-            if (voucherAktif) {
-                try {
-                    const { data: res, error } = await dbClient.rpc('claim_voucher', {
-                        p_kode: voucherAktif.kode,
-                        p_target_game: TARGET_HALAMAN,
-                        p_invoice_id: invoiceId,
-                        p_target_user: noVal
-                    });
-
-                    if (error) throw error;
-                    if (!res.success) {
-                        showToast(res.message, '⚠️');
-                        btnBuy.disabled = false;
-                        btnBuy.textContent = 'Beli Sekarang';
-                        return;
-                    }
-
-                    diskonFinal = Number(res.diskon);
-                } catch (err) {
-                    console.error(err);
-                    showToast('Gagal memproses klaim voucher ke server.');
-                    btnBuy.disabled = false;
-                    btnBuy.textContent = 'Beli Sekarang';
-                    return;
-                }
-            }
-
-            const hargaFinal = Math.max(0, produkPilihan.harga - diskonFinal);
-
-            const dataInvoice = {
-                id: invoiceId,
-                produk: namaProduk + ' (' + produkPilihan.item + ')' + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
-                tujuan: noVal,
-                harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
-                metode: metodePilihan,
-                status: 'Menunggu Pembayaran',
-                tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-            };
-
-            localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
-            localStorage.setItem('latestInvoice', invoiceId);
-
-            window.location.href = 'invoice.html?id=' + invoiceId;
+            diskonFinal = Number(res.diskon);
+        } catch (err) {
+            console.error(err);
+            showToast('Gagal memproses klaim voucher ke server.');
+            btnBuy.disabled = false;
+            btnBuy.textContent = 'Beli Sekarang';
+            return;
         }
+    }
+
+    // Buat 3 digit kode unik acak (antara 101 s/d 499)
+const kodeUnik = Math.floor(Math.random() * 399) + 101;
+const hargaFinal = Math.max(0, produkPilihan.harga - diskonFinal) + kodeUnik;
+    const dataInvoice = {
+        id: invoiceId,
+        produk: namaProduk + ' (' + produkPilihan.item + ')' + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
+        tujuan: noVal,
+        harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
+        metode: metodePilihan,
+        status: 'Menunggu Pembayaran'
+    };
+
+    // 2. SIMPAN KE TABEL ORDERS SUPABASE BARU
+    try {
+        const { error: dbError } = await dbClient
+            .from('orders')
+            .insert([dataInvoice]);
+
+        if (dbError) throw dbError;
+
+        // Simpan cache lokal untuk kenyamanan redirect nota
+        localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
+        localStorage.setItem('latestInvoice', invoiceId);
+
+        // Arahkan ke nota invoice
+        window.location.href = 'invoice.html?id=' + invoiceId;
+
+    } catch (err) {
+        console.error(err);
+        showToast('Gagal mencatat pesanan ke server. Coba lagi.');
+        btnBuy.disabled = false;
+        btnBuy.textContent = 'Beli Sekarang';
+    }
+}
 
         window.onload = () => {
             renderNominal();

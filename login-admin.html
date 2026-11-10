@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
 </head>
 <body>
 
@@ -41,19 +43,42 @@
 </div>
 
 <script>
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 
-    function handleLogin(event) {
+    async function handleLogin(event) {
         event.preventDefault();
-        const user = document.getElementById('username').value;
+        const email = document.getElementById('username').value.trim();
         const pass = document.getElementById('password').value;
+        const btn = event.target.querySelector('button[type="submit"]');
 
-        // Atur username & password admin di sini (bisa diubah sesuai keinginan Anda)
-        if (user === 'admin' && pass === 'sakapay2026') {
+        btn.disabled = true;
+        btn.textContent = 'Memeriksa...';
+
+        try {
+            // Login aman langsung diverifikasi oleh Supabase Auth
+            const { data, error } = await dbClient.auth.signInWithPassword({
+                email: email,
+                password: pass
+            });
+
+            if (error) {
+                alert('Email atau Password Admin salah!');
+                btn.disabled = false;
+                btn.textContent = 'Login Admin';
+                return;
+            }
+
+            // Jika berhasil, simpan status sesi dan arahkan ke admin.html
             sessionStorage.setItem('adminLoggedIn', 'true');
             window.location.href = 'admin.html';
-        } else {
-            alert('Username atau Password salah!');
+
+        } catch (err) {
+            console.error(err);
+            alert('Gagal menghubungkan ke server login.');
+            btn.disabled = false;
+            btn.textContent = 'Login Admin';
         }
     }
 </script>

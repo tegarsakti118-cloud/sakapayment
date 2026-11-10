@@ -10,7 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Supabase JS Client Resmi -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
+<script src="../assets/js/config.js"></script>
+  <style>
         :root {
             --primary: #17A897;
             --primary-dark: #108779;
@@ -156,10 +157,6 @@
 </footer>
 
 <script>
-const SUPABASE_URL = "https://uqnwdybpjlkcvlezibhl.supabase.co";
-const SUPABASE_KEY = "sb_publishable_fsp1QPLHrryeOqMsh5v6cw_3D9oeVi4";
-const dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 const TARGET_HALAMAN = "CODM";
 
 // Daftar harga sesuai katalog resmi
@@ -378,14 +375,29 @@ async function prosesBeli() {
         tujuan: idVal,
         harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
         metode: metodeTerpilih,
-        status: "Menunggu Pembayaran",
-        tanggal: new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
+        status: "Menunggu Pembayaran"
     };
 
-    localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
-    localStorage.setItem('latestInvoice', invoiceId);
+    // SIMPAN KE DATABASE SUPABASE
+    try {
+        const { error: dbError } = await dbClient
+            .from('orders')
+            .insert([dataInvoice]);
 
-    window.location.href = "../invoice.html?id=" + invoiceId;
+        if (dbError) throw dbError;
+
+        localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
+        localStorage.setItem('latestInvoice', invoiceId);
+
+        const targetUrl = window.location.pathname.includes('/game/') ? '../invoice.html?id=' : 'invoice.html?id=';
+        window.location.href = targetUrl + invoiceId;
+
+    } catch (err) {
+        console.error(err);
+        showToast('Gagal menyimpan pesanan ke server.');
+        btnBuy.disabled = false;
+        btnBuy.textContent = 'Beli Sekarang';
+    }
 }
 
 window.onload = () => {

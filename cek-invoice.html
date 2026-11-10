@@ -12,6 +12,8 @@
     <meta name="theme-color" content="#17A897">
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
     <style>
         .search-box {
             background: var(--white);
@@ -198,65 +200,59 @@
         });
     }
 
-    function searchInvoice(event) {
-        event.preventDefault();
-        const rawQuery = document.getElementById('searchId').value.trim();
-        const queryUpper = rawQuery.toUpperCase();
+    async function searchInvoice(event) {
+    event.preventDefault();
+    const rawQuery = document.getElementById('searchId').value.trim();
+    const queryUpper = rawQuery.toUpperCase();
 
-        const searchResult = document.getElementById('searchResult');
-        const errorResult = document.getElementById('errorResult');
+    const searchResult = document.getElementById('searchResult');
+    const errorResult = document.getElementById('errorResult');
 
-        // Cari di localStorage baik dengan format asli maupun huruf besar
-        let targetKey = null;
-        for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i);
-            if (k && k.toUpperCase() === queryUpper) {
-                targetKey = k;
-                break;
+    try {
+        // Ambil data langsung dari Supabase
+        const { data, error } = await dbClient
+            .from('orders')
+            .select('*')
+            .eq('id', queryUpper)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (data) {
+            document.getElementById('resNo').textContent = data.id;
+            document.getElementById('resProd').textContent = data.produk || '-';
+            document.getElementById('resTarget').textContent = data.tujuan || '-';
+            document.getElementById('resPrice').textContent = data.harga || 'Rp 0';
+            document.getElementById('resMethod').textContent = data.metode || '-';
+
+            const statusEl = document.getElementById('resStatus');
+            const st = (data.status || 'Menunggu Pembayaran').trim();
+            statusEl.textContent = st;
+
+            statusEl.className = 'badge-status';
+            const stLower = st.toLowerCase();
+            if (stLower === 'selesai') {
+                statusEl.classList.add('badge-success');
+            } else if (stLower === 'diproses') {
+                statusEl.classList.add('badge-process');
+            } else {
+                statusEl.classList.add('badge-pending');
             }
-        }
 
-        if (targetKey) {
-            try {
-                const data = JSON.parse(localStorage.getItem(targetKey));
+            document.getElementById('detailLink').href = `invoice.html?id=${encodeURIComponent(data.id)}`;
 
-                document.getElementById('resNo').textContent = data.id || targetKey;
-                document.getElementById('resProd').textContent = data.produk || data.layanan || '-';
-                document.getElementById('resTarget').textContent = data.tujuan || '-';
-                document.getElementById('resPrice').textContent = data.harga || 'Rp 0';
-                document.getElementById('resMethod').textContent = data.metode || '-';
-
-                const statusEl = document.getElementById('resStatus');
-                const st = (data.status || 'Menunggu Pembayaran').trim();
-                statusEl.textContent = st;
-
-                statusEl.className = 'badge-status';
-                const stLower = st.toLowerCase();
-                if (stLower === 'selesai') {
-                    statusEl.classList.add('badge-success');
-                } else if (stLower === 'diproses') {
-                    statusEl.classList.add('badge-process');
-                } else {
-                    statusEl.classList.add('badge-pending');
-                }
-
-                document.getElementById('detailLink').href = `invoice.html?id=${encodeURIComponent(data.id || targetKey)}`;
-
-                searchResult.style.display = 'block';
-                errorResult.style.display = 'none';
-
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-            } catch (err) {
-                searchResult.style.display = 'none';
-                errorResult.style.display = 'block';
-            }
+            searchResult.style.display = 'block';
+            errorResult.style.display = 'none';
         } else {
             searchResult.style.display = 'none';
             errorResult.style.display = 'block';
         }
+    } catch (err) {
+        console.error(err);
+        searchResult.style.display = 'none';
+        errorResult.style.display = 'block';
     }
+}
 </script>
 </body>
 </html>
