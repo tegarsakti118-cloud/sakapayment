@@ -8,9 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Supabase JS Client Resmi -->
+    
+    <!-- Supabase JS Client & Config dari folder luar -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../assets/js/config.js"></script>
+    <script>
+        (function() {
+            var prefix = window.location.pathname.includes('/game/') ? '../' : '';
+            document.write('<script src="' + prefix + 'assets/js/config.js"><\/script>');
+        })();
+    </script>
    
     <style>
         :root {
@@ -213,7 +219,6 @@
             margin-top: 4px;
         }
 
-        /* Input Kode Promo */
         .promo-box { display: flex; gap: 8px; }
 
         .btn-apply-promo {
@@ -228,7 +233,6 @@
             white-space: nowrap;
         }
 
-        /* Pilihan Pembayaran Visual */
         .payment-list { display: flex; flex-direction: column; gap: 8px; }
 
         .payment-tile {
@@ -329,18 +333,19 @@
         <p>Layanan top up diamond &amp; Weekly Diamond Pass instan 24 jam dengan invoice digital.</p>
     </section>
 
-    <!-- Langkah 1: Input Akun Bersih -->
+    <!-- LANGKAH 1: INPUT ID (SUDAH DILENGKAPI CEK USERNAME OTOMATIS) -->
     <section class="card">
         <h2 class="section-title"><span class="number">1</span> Masukkan User ID &amp; Zone ID</h2>
         <p class="hint">Contoh: User ID: 12345678, Zone ID: (1234).</p>
         <div class="input-row">
             <div>
-                <input type="number" id="userId" placeholder="User ID" required autocomplete="off">
+                <input type="number" id="userId" placeholder="User ID" oninput="cekNicknameML()" required autocomplete="off">
             </div>
             <div>
-                <input type="number" id="zoneId" placeholder="Zone ID" required autocomplete="off">
+                <input type="number" id="zoneId" placeholder="Zone ID" oninput="cekNicknameML()" required autocomplete="off">
             </div>
         </div>
+        <div id="nickStatus" style="margin-top: 6px;"></div>
     </section>
 
     <!-- Langkah 2: Nominal -->
@@ -402,7 +407,6 @@
 const TARGET_HALAMAN = "ML";
 
 const daftarNominal = [
-    // Halaman 1 - Kolom 1
     { nama: "3 Diamond", harga: 3500 },
     { nama: "5 Diamond", harga: 3000 },
     { nama: "10 (10+0) Diamond", harga: 5000 },
@@ -428,8 +432,6 @@ const daftarNominal = [
     { nama: "85 (77+8) Diamond", harga: 28500 },
     { nama: "86 (78+8) Diamond", harga: 30000, badge: "POPULER", isHot: true },
     { nama: "92 (87+5) Diamond", harga: 33000 },
-
-    // Halaman 1 - Kolom 2
     { nama: "98 (89+9) Diamond", harga: 35000 },
     { nama: "1X Weekly Diamond Pass", harga: 32000, badge: "BEST SELLER", isBest: true },
     { nama: "110 (101+9) Diamond", harga: 38500 },
@@ -455,8 +457,6 @@ const daftarNominal = [
     { nama: "296 (256+40) Diamond", harga: 91000 },
     { nama: "Starlight Membership", harga: 94000 },
     { nama: "301 (261+40) Diamond", harga: 95500 },
-
-    // Halaman 3 - Kolom 1
     { nama: "3X Weekly Pass (660)", harga: 98000 },
     { nama: "324 (281+43) Diamond", harga: 102500 },
     { nama: "344 (312+32) Diamond", harga: 105500 },
@@ -497,8 +497,6 @@ const daftarNominal = [
     { nama: "875 (774+101) Diamond", harga: 249500 },
     { nama: "963 (859+104) Diamond", harga: 277500 },
     { nama: "965 (856+109) Diamond", harga: 283000 },
-
-    // Halaman 3 - Kolom 2
     { nama: "1050 (937+113) Diamond", harga: 302500 },
     { nama: "1134 (1008+126) Diamond", harga: 332500 },
     { nama: "1136 (1006+130) Diamond", harga: 332000 },
@@ -544,8 +542,38 @@ const daftarNominal = [
 let itemTerpilih = daftarNominal[0];
 let metodeTerpilih = 'QRIS';
 let voucherAktif = null;
+let gameUsername = ''; // Menampung username ML
 
-// ================= RENDER NOMINAL =================
+// ================= FUNGSI CEK NICKNAME ML OTOMATIS =================
+async function cekNicknameML() {
+    const u = document.getElementById('userId').value.trim();
+    const z = document.getElementById('zoneId').value.trim();
+    const statusEl = document.getElementById('nickStatus');
+
+    // Cek hanya jika ID dan Server sudah diisi cukup angka
+    if (u.length >= 7 && z.length >= 4) {
+        statusEl.innerHTML = '<span style="color:#0284c7; font-size:12px; font-weight:700;">⏳ Sedang melacak nickname ML...</span>';
+        try {
+            const res = await fetch(`https://api.isan.eu.org/nickname/ml?id=${u}&server=${z}`);
+            const data = await res.json();
+            
+            if (data.success && data.name) {
+                gameUsername = decodeURIComponent(data.name);
+                statusEl.innerHTML = `<span style="color:#16a34a; font-size:12px; font-weight:800; background:#dcfce7; padding:3px 8px; border-radius:6px; display:inline-block;">✓ Username: ${gameUsername}</span>`;
+            } else {
+                gameUsername = '';
+                statusEl.innerHTML = '<span style="color:#ef4444; font-size:12px; font-weight:600;">⚠️ Akun tidak ditemukan. Cek User ID & Server.</span>';
+            }
+        } catch (e) {
+            gameUsername = '';
+            statusEl.innerHTML = '';
+        }
+    } else {
+        gameUsername = '';
+        statusEl.innerHTML = '';
+    }
+}
+
 function renderNominal() {
     const grid = document.getElementById('nominalGrid');
     grid.innerHTML = '';
@@ -620,7 +648,6 @@ function showToast(msg, icon = '⚠️') {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// VALIDASI VOUCHER KE SUPABASE
 async function terapkanVoucher() {
     const input = document.getElementById('inputPromo');
     const btn = document.getElementById('btnGunakanPromo');
@@ -721,10 +748,11 @@ async function prosesBeli() {
     btnBuy.textContent = 'Memproses...';
 
     const invoiceId = 'SKP-' + Math.floor(100000 + Math.random() * 900000);
-    const targetUser = `${u} (${z})`;
+    
+    // Gabungkan Nickname akun ke data tujuan jika ditemukan
+    const targetUser = gameUsername ? `${gameUsername} [${u} (${z})]` : `${u} (${z})`;
     let diskonFinal = 0;
 
-    // Klaim voucher jika ada
     if (voucherAktif) {
         try {
             const { data: res, error } = await dbClient.rpc('claim_voucher', {
@@ -745,16 +773,16 @@ async function prosesBeli() {
             diskonFinal = Number(res.diskon);
         } catch (err) {
             console.error(err);
-            showToast('Gagal memproses klaim voucher ke server.');
+            alert('Gagal klaim voucher: ' + err.message);
             btnBuy.disabled = false;
             btnBuy.textContent = 'Beli Sekarang';
             return;
         }
     }
 
-    // Tambah 3 digit angka unik acak (antara 101 - 499)
-const kodeUnik = Math.floor(Math.random() * 399) + 101;
-const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
+    // Tambahkan 3 digit angka unik acak
+    const kodeUnik = Math.floor(Math.random() * 399) + 101;
+    const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
 
     const dataInvoice = {
         id: invoiceId,
@@ -765,7 +793,7 @@ const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
         status: "Menunggu Pembayaran"
     };
 
-    // SIMPAN KE SUPABASE CLOUD
+    // SIMPAN KE DATABASE SUPABASE
     try {
         const { error: dbError } = await dbClient
             .from('orders')
@@ -773,26 +801,23 @@ const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
 
         if (dbError) throw dbError;
 
-      // 🔔 Tambahkan kata "await" di depannya:
+        // Kirim notifikasi ke Bot Telegram Admin
         if (typeof kirimNotifTelegram === 'function') {
             await kirimNotifTelegram(dataInvoice);
         }
 
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);
-      
-        // Jika file di dalam folder game/, gunakan: ../invoice.html?id=
-        // Jika file di folder root, gunakan: invoice.html?id=
-        const targetUrl = window.location.pathname.includes('/game/') ? '../invoice.html?id=' : 'invoice.html?id=';
-        window.location.href = targetUrl + invoiceId;
+
+        // Mundur ke nota invoice
+        window.location.href = '../invoice.html?id=' + invoiceId;
 
     } catch (err) {
         console.error(err);
-        showToast('Gagal menyimpan pesanan ke server.');
+        alert('Gagal simpan ke Supabase: ' + (err.message || JSON.stringify(err)));
         btnBuy.disabled = false;
         btnBuy.textContent = 'Beli Sekarang';
     }
-  
 }
 
 window.onload = () => {

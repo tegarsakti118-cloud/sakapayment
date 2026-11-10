@@ -8,10 +8,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Supabase JS Client Resmi -->
+    
+    <!-- Supabase JS Client & Config dari folder luar -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../assets/js/config.js"></script>
-  <style>
+    <script>
+        (function() {
+            var prefix = window.location.pathname.includes('/game/') ? '../' : '';
+            document.write('<script src="' + prefix + 'assets/js/config.js"><\/script>');
+        })();
+    </script>
+
+    <style>
         :root {
             --primary: #17A897;
             --primary-dark: #108779;
@@ -110,7 +117,7 @@
         <div class="nominal-grid" id="nominalGrid"></div>
     </section>
 
-    <!-- Langkah Promo Berkuota Supabase -->
+    <!-- Langkah Promo Voucher -->
     <section class="card">
         <h2 class="section-title"><span class="number">%</span> Punya Kode Voucher? (Opsional)</h2>
         <div class="promo-box">
@@ -122,7 +129,7 @@
         </div>
     </section>
 
-    <!-- Pembayaran Visual -->
+    <!-- Pembayaran -->
     <section class="card">
         <h2 class="section-title"><span class="number">3</span> Pilih Metode Pembayaran</h2>
         <div class="payment-list">
@@ -249,7 +256,6 @@ function showToast(msg, icon = '⚠️') {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// VALIDASI VOUCHER KE SUPABASE
 async function terapkanVoucher() {
     const input = document.getElementById('inputPromo');
     const btn = document.getElementById('btnGunakanPromo');
@@ -362,18 +368,18 @@ async function prosesBeli() {
             diskonFinal = Number(res.diskon);
         } catch (err) {
             console.error(err);
-            showToast('Gagal memproses klaim voucher ke server.');
+            alert('Gagal klaim voucher: ' + err.message);
             btnBuy.disabled = false;
             btnBuy.textContent = 'Beli Sekarang';
             return;
         }
     }
 
-    // Tambah 3 digit angka unik acak (antara 101 - 499)
-const kodeUnik = Math.floor(Math.random() * 399) + 101;
-const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
-    
-  const dataInvoice = {
+    // Tambahkan 3 digit angka unik acak
+    const kodeUnik = Math.floor(Math.random() * 399) + 101;
+    const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
+
+    const dataInvoice = {
         id: invoiceId,
         produk: "Google Play ID (" + itemTerpilih.nama + ")" + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
         tujuan: idVal,
@@ -390,20 +396,20 @@ const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
 
         if (dbError) throw dbError;
 
-      // 🔔 Tambahkan kata "await" di depannya:
+        // Kirim Notifikasi ke Bot Telegram Admin
         if (typeof kirimNotifTelegram === 'function') {
             await kirimNotifTelegram(dataInvoice);
         }
 
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);
-      
-        const targetUrl = window.location.pathname.includes('/game/') ? '../invoice.html?id=' : 'invoice.html?id=';
-        window.location.href = targetUrl + invoiceId;
+
+        // Mundur ke nota invoice di root
+        window.location.href = '../invoice.html?id=' + invoiceId;
 
     } catch (err) {
         console.error(err);
-        showToast('Gagal menyimpan pesanan ke server.');
+        alert('Gagal simpan ke Supabase: ' + (err.message || JSON.stringify(err)));
         btnBuy.disabled = false;
         btnBuy.textContent = 'Beli Sekarang';
     }

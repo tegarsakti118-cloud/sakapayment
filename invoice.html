@@ -8,9 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Library Ikon & Supabase -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/config.js"></script>
+
     <style>
         .invoice-card {
             background: var(--white);
@@ -209,7 +212,7 @@
                 <strong style="color: var(--dark);" id="viewTarget">-</strong>
             </div>
             
-            <!-- Rincian Voucher Diskon (Tampil Otomatis Jika Menggunakan Voucher) -->
+            <!-- Rincian Voucher Diskon -->
             <div class="invoice-row" id="rowVoucher" style="display: none;">
                 <span>Diskon Voucher:</span>
                 <span class="voucher-badge" id="viewVoucherInfo">✓ Hemat</span>
@@ -222,18 +225,18 @@
         </div>
 
         <div class="invoice-row" style="margin-bottom: 0.5rem; align-items: center;">
-    <strong style="font-size: 0.95rem; color: var(--dark);">Total Pembayaran:</strong>
-    <div style="text-align: right;">
-        <strong style="font-size: 1.25rem; color: var(--primary);" id="viewTotal">Rp 0</strong>
-        <br>
-        <button type="button" onclick="salinNominal()" style="background: #e6f6f4; color: var(--primary-dark); border: 1px solid var(--primary); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 4px;">
-            📋 Salin Nominal 
-        </button>
-    </div>
-</div>
-<small style="color: #ef4444; font-size: 11px; display: block; margin-bottom: 1rem; text-align: right;">
-    *Transfer nominal persis hingga 3 digit terakhir untuk verifikasi instan.
-</small>
+            <strong style="font-size: 0.95rem; color: var(--dark);">Total Pembayaran:</strong>
+            <div style="text-align: right;">
+                <strong style="font-size: 1.25rem; color: var(--primary);" id="viewTotal">Rp 0</strong>
+                <br>
+                <button type="button" onclick="salinNominal()" style="background: #e6f6f4; color: var(--primary-dark); border: 1px solid var(--primary); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; margin-top: 4px;">
+                    📋 Salin Nominal 
+                </button>
+            </div>
+        </div>
+        <small style="color: #ef4444; font-size: 11px; display: block; margin-bottom: 1rem; text-align: right;">
+            *Transfer nominal persis hingga 3 digit terakhir untuk verifikasi instan.
+        </small>
 
         <!-- ================= KOTAK PEMBAYARAN QRIS ================= -->
         <div class="qris-box no-print" id="qrisPaymentBox">
@@ -243,7 +246,7 @@
             </p>
 
             <div class="qris-image-container">
-                <img src="assets/img/qris.png" alt="QRIS SakaPay" class="qris-image" id="qrisImg" onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SakaPay%20Official%20QRIS';">
+                <img src="assets/img/qris.png" alt="QRIS SakaPay" class="qris-image" id="qrisImg">
             </div>
 
             <div style="margin-bottom: 0.85rem;">
@@ -258,7 +261,7 @@
                     <li>Screenshot atau klik tombol <strong>Simpan Gambar QRIS</strong> di atas.</li>
                     <li>Buka m-Banking (BCA, BRI, Mandiri) atau E-Wallet (DANA, GoPay, OVO, ShopeePay).</li>
                     <li>Pilih menu <strong>QRIS / Bayar</strong>, lalu pilih ikon <strong>Galeri / Upload Foto</strong>.</li>
-                    <li>Masukkan nominal transfer persis sesuai <strong>Total Pembayaran</strong>.</li>
+                    <li>Nominal akan <strong>terkunci otomatis</strong> sesuai total pembayaran.</li>
                     <li>Setelah transfer berhasil, klik tombol hijau <strong>Konfirmasi WhatsApp</strong> di bawah untuk mengirimkan bukti struk.</li>
                 </ol>
             </div>
@@ -342,6 +345,41 @@
     const urlParams = new URLSearchParams(window.location.search);
     let invID = urlParams.get('id') || localStorage.getItem('latestInvoice');
 
+    // ================= SENSOR REALTIME NOTA INVOICE =================
+    // (Otomatis mengubah status jadi hijau jika admin klik 'Selesai')
+    function pantauStatusInvoice(invoiceId) {
+        if (!invoiceId) return;
+
+        dbClient
+            .channel(`order-live-${invoiceId}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'orders',
+                    filter: `id=eq.${invoiceId}`
+                },
+                (payload) => {
+                    const statusBaru = payload.new.status || 'Menunggu Pembayaran';
+                    const statusEl = document.getElementById('viewStatus');
+                    if (statusEl) statusEl.textContent = statusBaru;
+
+                    const stLower = statusBaru.trim().toLowerCase();
+                    if (stLower === 'selesai') {
+                        statusEl.className = 'status-badge selesai';
+                        document.getElementById('reviewSection').style.display = 'block';
+                        document.getElementById('qrisPaymentBox').style.display = 'none';
+                    } else if (stLower === 'diproses') {
+                        statusEl.className = 'status-badge diproses';
+                    } else {
+                        statusEl.className = 'status-badge';
+                    }
+                }
+            )
+            .subscribe();
+    }
+
     // ================= MUAT DATA INVOICE DARI SUPABASE CLOUD =================
     async function muatDataInvoice() {
         if (!invID) {
@@ -351,14 +389,12 @@
         }
 
         try {
-            // Ambil langsung dari tabel orders di Supabase
             let { data, error } = await dbClient
                 .from('orders')
                 .select('*')
                 .eq('id', invID)
                 .maybeSingle();
 
-            // Fallback ke cache localStorage jika ada gangguan jaringan
             if (!data && localStorage.getItem(invID)) {
                 data = JSON.parse(localStorage.getItem(invID));
             }
@@ -373,7 +409,7 @@
             const totalHarga = data.harga || 'Rp 0';
             const statusTransaksi = data.status || 'Menunggu Pembayaran';
 
-            // Cek apakah ada informasi voucher
+            // Ekstrak info voucher jika ada
             let voucherCode = null;
             if (rawProduk.includes('[Voucher:')) {
                 const match = rawProduk.match(/\[Voucher:\s*([^\]]+)\]/i);
@@ -391,15 +427,13 @@
             document.getElementById('viewTarget').textContent = data.tujuan || '-';
             document.getElementById('viewMethod').textContent = data.metode || 'QRIS All Payment';
             document.getElementById('viewTotal').textContent = totalHarga;
-            // ================= UBAH GAMBAR QRIS SESUAI NOMINAL OTOMATIS =================
+
+            // QRIS Dinamis Otomatis Sesuai Nominal
             const nominalAngka = parseInt(totalHarga.replace(/[^0-9]/g, '')) || 0;
-            
             if (nominalAngka > 0 && typeof generateQrisDinamis === 'function') {
                 const qrisPayload = generateQrisDinamis(nominalAngka);
                 if (qrisPayload) {
-                    // Generate barcode QR baru menggunakan API QR resmi
                     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=8&data=${encodeURIComponent(qrisPayload)}`;
-                    
                     const qrisImgEl = document.getElementById('qrisImg');
                     if (qrisImgEl) qrisImgEl.src = qrUrl;
 
@@ -409,7 +443,7 @@
                         downloadBtn.setAttribute('download', `QRIS-${data.id}.png`);
                     }
                 }
-  }
+            }
 
             if (voucherCode) {
                 document.getElementById('rowVoucher').style.display = 'flex';
@@ -428,7 +462,7 @@
                 statusEl.className = 'status-badge diproses';
             }
 
-            // Susun tombol Konfirmasi WhatsApp
+            // Tombol Konfirmasi WhatsApp
             const csPhone = '6285780243664';
             let textWA = `Halo Admin SakaPay, saya ingin konfirmasi pembayaran Invoice: *${data.id}*\n`
                        + `Produk: ${rawProduk}\n`
@@ -439,13 +473,31 @@
 
             document.getElementById('waConfirmBtn').href = `https://wa.me/${csPhone}?text=${encodeURIComponent(textWA)}`;
 
+            // Hidupkan radar Realtime untuk invoice ini
+            pantauStatusInvoice(data.id || invID);
+
         } catch (err) {
             console.error(err);
             alert('Gagal mengambil data nota transaksi.');
         }
     }
 
-    function submitReview() {
+    // Salin Nominal Persis
+    function salinNominal() {
+        const rawTotal = document.getElementById('viewTotal').textContent;
+        const angkaSaja = rawTotal.replace(/[^0-9]/g, '');
+        
+        if (angkaSaja) {
+            navigator.clipboard.writeText(angkaSaja).then(() => {
+                alert(`Nominal Rp ${parseInt(angkaSaja).toLocaleString('id-ID')} berhasil disalin! Pastikan transfer dengan nominal persis ini.`);
+            }).catch(() => {
+                alert('Gagal menyalin otomatis, silakan salin manual.');
+            });
+        }
+    }
+
+    // Kirim Ulasan ke Supabase
+    async function submitReview() {
         const rating = document.getElementById('userRating').value;
         const comment = document.getElementById('userComment').value.trim();
 
@@ -454,90 +506,38 @@
             return;
         }
 
-        const reviewObj = {
-            nama: 'Pelanggan SakaPay',
-            rating: rating,
-            komentar: comment,
-            tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-        };
-
-        let reviews = [];
-        try {
-            reviews = JSON.parse(localStorage.getItem('sakapay_reviews')) || [];
-        } catch (e) {
-            reviews = [];
+        let maskedTujuan = 'Pelanggan SakaPay';
+        if (invID && localStorage.getItem(invID)) {
+            try {
+                const data = JSON.parse(localStorage.getItem(invID));
+                const rawTujuan = data.tujuan || '';
+                maskedTujuan = rawTujuan.length > 6 
+                    ? rawTujuan.substring(0, 4) + '****' + rawTujuan.slice(-2) 
+                    : (rawTujuan || 'Pelanggan SakaPay');
+            } catch (e) {}
         }
 
-        reviews.push(reviewObj);
-        localStorage.setItem('sakapay_reviews', JSON.stringify(reviews));
+        try {
+            const { error } = await dbClient
+                .from('reviews')
+                .insert([{
+                    nama: maskedTujuan,
+                    rating: rating,
+                    komentar: comment
+                }]);
 
-        document.getElementById('reviewFormContainer').style.display = 'none';
-        document.getElementById('reviewSuccessMsg').style.display = 'block';
+            if (error) throw error;
+
+            document.getElementById('reviewFormContainer').style.display = 'none';
+            document.getElementById('reviewSuccessMsg').style.display = 'block';
+
+        } catch (err) {
+            console.error(err);
+            alert('Gagal mengirim ulasan ke server. Coba lagi.');
+        }
     }
 
     window.onload = muatDataInvoice;
-
-  function salinNominal() {
-    const rawTotal = document.getElementById('viewTotal').textContent;
-    // Ambil angka murninya saja tanpa "Rp" dan titik (misal: "21345")
-    const angkaSaja = rawTotal.replace(/[^0-9]/g, '');
-    
-    if (angkaSaja) {
-        navigator.clipboard.writeText(angkaSaja).then(() => {
-            alert(`Nominal Rp ${parseInt(angkaSaja).toLocaleString('id-ID')} berhasil disalin! Pastikan transfer dengan nominal persis ini.`);
-        }).catch(() => {
-            alert('Gagal menyalin otomatis, silakan salin manual.');
-        });
-    }
-}
-
-// ================= QRIS DINAMIS OTOMATIS SAKAPAY =================
-// Kode QRIS Asli Toko SakaPay
-const QRIS_DASAR = "00020101021126570011ID.DANA.WWW011893600915303488015102090348801510303UMI51440014ID.CO.QRIS.WWW0215ID10265893961530303UMI5204799953033605802ID5907SakaPay6015Kab. Tulang Baw610534691630401B2";
-
-// Rumus Hitung Checksum Resmi QRIS (CRC16-CCITT)
-function hitungCRC16(str) {
-    let crc = 0xFFFF;
-    for (let c = 0; c < str.length; c++) {
-        crc ^= str.charCodeAt(c) << 8;
-        for (let i = 0; i < 8; i++) {
-            if (crc & 0x8000) {
-                crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
-            } else {
-                crc = (crc << 1) & 0xFFFF;
-            }
-        }
-    }
-    let hex = (crc & 0xFFFF).toString(16).toUpperCase();
-    return hex.padStart(4, '0');
-}
-
-// Fungsi Pengubah Menjadi QRIS Dinamis Sesuai Total Tagihan
-function generateQrisDinamis(nominal) {
-    if (!QRIS_DASAR || !QRIS_DASAR.startsWith("000201")) return null;
-
-    // 1. Ambil payload tanpa 4 digit CRC lama di belakang
-    let qris = QRIS_DASAR.slice(0, -4);
-
-    // 2. Ubah tipe dari Statis (010211) menjadi Dinamis (010212)
-    qris = qris.replace("010211", "010212");
-
-    // 3. Format Tag 54 (Nominal Transaksi)
-    const strNominal = nominal.toString();
-    const lenNominal = strNominal.length.toString().padStart(2, '0');
-    const tag54 = "54" + lenNominal + strNominal;
-
-    // 4. Sisipkan Tag 54 tepat sebelum Tag 58 ("5802ID")
-    const index58 = qris.indexOf("5802ID");
-    if (index58 === -1) return null;
-
-    qris = qris.slice(0, index58) + tag54 + qris.slice(index58);
-
-    // 5. Hitung ulang checksum CRC16
-    const crcBaru = hitungCRC16(qris);
-    return qris + crcBaru;
-  }
-  
 </script>
 </body>
 </html>

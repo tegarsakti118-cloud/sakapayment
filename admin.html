@@ -420,6 +420,9 @@
                         <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
                         <option value="Diproses">Diproses</option>
                         <option value="Selesai">Selesai</option>
+                      <button type="button" onclick="exportOrdersToCSV()" class="btn-action success" style="padding: 0.55rem 0.9rem; font-size: 0.825rem; display: flex; align-items: center; gap: 4px;">
+                        📥 Unduh Laporan Excel
+                      </button>
                     </select>
                 </div>
 
@@ -1072,9 +1075,92 @@
     window.location.href = 'login-admin.html';
 }
 
+    // ================= FITUR SUARA NOTIFIKASI KASIR =================
+    let audioAllowed = false;
+    // Buka izin suara browser saat admin pertama kali menyentuh layar / klik
+    document.addEventListener('click', () => { audioAllowed = true; }, { once: true });
+
+    function playNotifSound() {
+        try {
+            // Suara ding-dong kasir jernih
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+            audio.play().catch(e => console.log('Izin suara belum aktif:', e));
+        } catch (e) {}
+    }
+
+    // ================= RADAR REALTIME SUPABASE =================
+    function hubungkanRealtimeOrders() {
+        dbClient
+            .channel('sakapay-orders-live')
+            .on(
+                'postgres_changes',
+                {
+                    event: '*', // Pantau INSERT (baru), UPDATE (status), DELETE (hapus)
+                    schema: 'public',
+                    table: 'orders'
+                },
+                (payload) => {
+                    console.log('Perubahan Realtime terdeteksi:', payload);
+
+                    if (payload.eventType === 'INSERT') {
+                        // Jika ada pesanan baru masuk:
+                        playNotifSound(); // Bunyikan suara ting!
+                        showAdminToast(`🔔 Pesanan Baru Masuk: ${payload.new.id}`, 'success');
+                    } else if (payload.eventType === 'UPDATE') {
+                        showAdminToast(`Status pesanan ${payload.new.id} diperbarui`, 'success');
+                    }
+
+                    // Muat ulang daftar pesanan otomatis tanpa refresh halaman
+                    loadOrders();
+                }
+            )
+            .subscribe((status) => {
+                console.log('Status Sensor Realtime:', status);
+                if (status === 'SUBSCRIBED') {
+                    console.log('✅ Panel Admin terhubung Realtime ke Supabase!');
+                }
+            });
+    }
+
+    // ================= JALANKAN SAAT HALAMAN DIBUKA =================
     window.onload = () => {
-        loadOrders();
+        loadOrders();             // Ambil data pertama kali
+        hubungkanRealtimeOrders(); // Hidupkan sensor radar realtime
     };
+  // ================= EXPORT LAPORAN TRANSAKSI KE EXCEL (CSV) =================
+    function exportOrdersToCSV() {
+        if (!cachedOrders || cachedOrders.length === 0) {
+            showAdminToast('Tidak ada data pesanan untuk diekspor!', 'error');
+            return;
+        }
+
+        // Header Kolom Excel
+        let csv = 'Invoice,Tanggal,Produk,Tujuan Akun / HP,Total Pembayaran,Metode Bayar,Status Transaksi\n';
+
+        cachedOrders.forEach(o => {
+            const tgl = o.created_at ? new Date(o.created_at).toLocaleDateString('id-ID') : '-';
+            const prod = `"${(o.produk || '').replace(/"/g, '""')}"`;
+            const tujuan = `"${(o.tujuan || '').replace(/"/g, '""')}"`;
+            const harga = `"${(o.harga || '').replace(/"/g, '""')}"`;
+            const metode = `"${(o.metode || '').replace(/"/g, '""')}"`;
+            const status = `"${(o.status || '').replace(/"/g, '""')}"`;
+
+            csv += `${o.id},${tgl},${prod},${tujuan},${harga},${metode},${status}\n`;
+        });
+
+        // Simpan sebagai file CSV dengan format UTF-8 agar rapi dibuka di Excel
+        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Laporan-Penjualan-SakaPay-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showAdminToast('Laporan penjualan berhasil diunduh!', 'success');
+  }
 </script>
 </body>
 </html>

@@ -8,9 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Supabase JS Client Resmi -->
+    
+    <!-- Supabase JS Client & Config dari folder luar -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../assets/js/config.js"></script>
+    <script>
+        (function() {
+            var prefix = window.location.pathname.includes('/game/') ? '../' : '';
+            document.write('<script src="' + prefix + 'assets/js/config.js"><\/script>');
+        })();
+    </script>
   
     <style>
         :root {
@@ -313,10 +319,12 @@
         <p>Top up diamond resmi langsung via Player ID.</p>
     </section>
 
+    <!-- LANGKAH 1: INPUT ID (SUDAH DILENGKAPI CEK NICKNAME) -->
     <section class="card">
         <h2 class="section-title"><span class="number">1</span> Masukkan Player ID</h2>
         <p class="hint">Temukan User ID di profil akun Free Fire Anda.</p>
-        <input type="number" id="playerId" placeholder="Contoh: 1234567890" required autocomplete="off">
+        <input type="number" id="playerId" placeholder="Contoh: 1234567890" oninput="cekNicknameFF()" required autocomplete="off">
+        <div id="nickStatus" style="margin-top: 6px;"></div>
     </section>
 
     <section class="card">
@@ -324,7 +332,7 @@
         <div class="nominal-grid" id="nominalGrid"></div>
     </section>
 
-    <!-- Langkah Promo Berkuota Supabase -->
+    <!-- Langkah Promo Voucher -->
     <section class="card">
         <h2 class="section-title"><span class="number">%</span> Punya Kode Voucher? (Opsional)</h2>
         <div class="promo-box">
@@ -336,7 +344,7 @@
         </div>
     </section>
 
-    <!-- Pembayaran Visual -->
+    <!-- Pembayaran -->
     <section class="card">
         <h2 class="section-title"><span class="number">3</span> Pilih Metode Pembayaran</h2>
         <div class="payment-list">
@@ -439,6 +447,36 @@ const daftarNominal = [
 let itemTerpilih = daftarNominal[0];
 let metodeTerpilih = 'QRIS';
 let voucherAktif = null;
+let gameUsername = ''; // Menampung nickname akun
+
+// ================= FUNGSI CEK NICKNAME OTOMATIS =================
+async function cekNicknameFF() {
+    const id = document.getElementById('playerId').value.trim();
+    const statusEl = document.getElementById('nickStatus');
+
+    // Cek jika ID Free Fire minimal 8 digit angka
+    if (id.length >= 8) {
+        statusEl.innerHTML = '<span style="color:#0284c7; font-size:12px; font-weight:700;">⏳ Sedang melacak nickname...</span>';
+        try {
+            const res = await fetch(`https://api.isan.eu.org/nickname/ff?id=${id}`);
+            const data = await res.json();
+            
+            if (data.success && data.name) {
+                gameUsername = decodeURIComponent(data.name);
+                statusEl.innerHTML = `<span style="color:#16a34a; font-size:12px; font-weight:800; background:#dcfce7; padding:3px 8px; border-radius:6px; display:inline-block;">✓ Nickname: ${gameUsername}</span>`;
+            } else {
+                gameUsername = '';
+                statusEl.innerHTML = '<span style="color:#ef4444; font-size:12px; font-weight:600;">⚠️ ID tidak ditemukan, cek kembali ID Anda.</span>';
+            }
+        } catch (e) {
+            gameUsername = '';
+            statusEl.innerHTML = '';
+        }
+    } else {
+        gameUsername = '';
+        statusEl.innerHTML = '';
+    }
+}
 
 function renderNominal() {
     const grid = document.getElementById('nominalGrid');
@@ -626,21 +664,24 @@ async function prosesBeli() {
             diskonFinal = Number(res.diskon);
         } catch (err) {
             console.error(err);
-            showToast('Gagal memproses klaim voucher ke server.');
+            alert('Gagal klaim voucher: ' + err.message);
             btnBuy.disabled = false;
             btnBuy.textContent = 'Beli Sekarang';
             return;
         }
     }
 
-    // Tambah 3 digit angka unik acak (antara 101 - 499)
-const kodeUnik = Math.floor(Math.random() * 399) + 101;
-const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
+    // Tambahkan 3 digit angka unik acak
+    const kodeUnik = Math.floor(Math.random() * 399) + 101;
+    const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
+
+    // Gabungkan Nickname akun ke data tujuan jika ditemukan
+    const tujuanFinal = gameUsername ? `${gameUsername} [${idVal}]` : idVal;
 
     const dataInvoice = {
         id: invoiceId,
         produk: "Free Fire (" + itemTerpilih.nama + ")" + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
-        tujuan: idVal,
+        tujuan: tujuanFinal,
         harga: 'Rp ' + hargaFinal.toLocaleString('id-ID'),
         metode: metodeTerpilih,
         status: "Menunggu Pembayaran"
@@ -654,20 +695,20 @@ const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
 
         if (dbError) throw dbError;
 
-      // 🔔 Tambahkan kata "await" di depannya:
+        // Kirim notifikasi Telegram ke Admin
         if (typeof kirimNotifTelegram === 'function') {
             await kirimNotifTelegram(dataInvoice);
         }
 
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);
-        
-        const targetUrl = window.location.pathname.includes('/game/') ? '../invoice.html?id=' : 'invoice.html?id=';
-        window.location.href = targetUrl + invoiceId;
+
+        // Mundur ke nota invoice
+        window.location.href = '../invoice.html?id=' + invoiceId;
 
     } catch (err) {
         console.error(err);
-        showToast('Gagal menyimpan pesanan ke server.');
+        alert('Gagal simpan ke Supabase: ' + (err.message || JSON.stringify(err)));
         btnBuy.disabled = false;
         btnBuy.textContent = 'Beli Sekarang';
     }

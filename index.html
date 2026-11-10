@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SakaPay - Solusi Pembayaran Digital & PPOB</title>
+    <!-- ================= OPEN GRAPH / TAMPILAN PREVIEW WHATSAPP & MEDSOS ================= -->
+    <meta name="description" content="Platform top up game Mobile Legends, Free Fire, pulsa, token PLN, dan saldo digital resmi, instan 24 jam dengan invoice real-time.">
+    <meta name="keywords" content="top up ml, top up ff, pulsa murah, token pln, sakapay, ppob">
+    <meta name="author" content="SakaPay Official">
+
+    <!-- Facebook, WhatsApp, Telegram Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sakapay.com/">
+    <meta property="og:title" content="SakaPay - Solusi Pembayaran Digital & Top Up Game Cepat">
+    <meta property="og:description" content="Top up diamond ML, FF, pulsa, dan token PLN resmi. QRIS otomatis langsung terkunci nominal!">
+    <meta property="og:image" content="https://sakastore.vercel.app.app/assets/img/logo-sakapay.png">
+    <!-- Twitter Preview -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SakaPay Official">
+    <meta name="twitter:description" content="Top up game dan pembayaran digital amanah berbasis invoice digital.">
+    <meta name="twitter:image" content="assets/img/logo-sakapay.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,6 +29,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/config.js"></script>
     <style>
         /* Floating WhatsApp Button Elegan */
         .floating-wa-btn {
@@ -424,95 +442,98 @@
         lucide.createIcons();
     }
 
+    // Menu Hamburger Mobile
     const menuBtn = document.getElementById('menu-btn');
     const navMenu = document.getElementById('nav-menu');
-
     if (menuBtn && navMenu) {
         menuBtn.addEventListener('click', () => {
             navMenu.classList.toggle('active');
         });
     }
 
-    // Fungsi Buka Tutup FAQ Accordion
+    // Fungsi Accordion FAQ
     function toggleFaq(btnEl) {
         const item = btnEl.parentElement;
         const isActive = item.classList.contains('active');
-
-        // Tutup item lain
         document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
-
-        // Buka jika sebelumnya tertutup
         if (!isActive) {
             item.classList.add('active');
         }
     }
 
-    // Render Ulasan Pelanggan Aman
-    document.addEventListener('DOMContentLoaded', () => {
+    // ================= AMBIL ULASAN DARI SUPABASE CLOUD =================
+    document.addEventListener('DOMContentLoaded', async () => {
         const grid = document.getElementById('testimonialGrid');
         if (!grid) return;
 
-        let reviews = [];
         try {
-            reviews = JSON.parse(localStorage.getItem('sakapay_reviews')) || [];
-        } catch (e) {
-            reviews = [];
+            // Ambil 6 ulasan terbaru dari tabel reviews Supabase
+            const { data: reviews, error } = await dbClient
+                .from('reviews')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(6);
+
+            if (error) throw error;
+
+            grid.innerHTML = '';
+
+            // Jika belum ada ulasan sama sekali
+            if (!reviews || reviews.length === 0) {
+                const emptyNotice = document.createElement('div');
+                emptyNotice.className = 'testimonial-empty';
+                emptyNotice.textContent = 'Belum ada ulasan yang dipublikasikan. Selesaikan pesanan Anda dan bagikan pengalaman Anda di halaman invoice!';
+                grid.appendChild(emptyNotice);
+                return;
+            }
+
+            // Tampilkan kartu ulasan pelanggan
+            reviews.forEach(rev => {
+                const card = document.createElement('div');
+                card.className = 'testimonial-card';
+
+                const stars = document.createElement('div');
+                stars.style.fontSize = '0.9rem';
+                stars.style.marginBottom = '0.5rem';
+                stars.textContent = rev.rating || '⭐⭐⭐⭐⭐';
+
+                const comment = document.createElement('p');
+                comment.style.color = 'var(--text-main)';
+                comment.style.fontSize = '0.85rem';
+                comment.style.fontStyle = 'italic';
+                comment.style.marginBottom = '1rem';
+                comment.style.lineHeight = '1.5';
+                comment.textContent = `"${rev.komentar || ''}"`;
+
+                const footer = document.createElement('div');
+                footer.style.display = 'flex';
+                footer.style.justifyContent = 'space-between';
+                footer.style.alignItems = 'center';
+                footer.style.fontSize = '0.75rem';
+                footer.style.color = 'var(--text-muted)';
+                footer.style.borderTop = '1px solid var(--border-color)';
+                footer.style.paddingTop = '0.75rem';
+
+                const author = document.createElement('strong');
+                author.style.color = 'var(--dark)';
+                author.textContent = `~ ${rev.nama}`;
+
+                const date = document.createElement('span');
+                date.textContent = rev.created_at ? new Date(rev.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '';
+
+                footer.appendChild(author);
+                footer.appendChild(date);
+
+                card.appendChild(stars);
+                card.appendChild(comment);
+                card.appendChild(footer);
+
+                grid.appendChild(card);
+            });
+
+        } catch (err) {
+            console.error("Gagal memuat ulasan pelanggan:", err);
         }
-
-        grid.innerHTML = '';
-
-        if (!Array.isArray(reviews) || reviews.length === 0) {
-            const emptyNotice = document.createElement('div');
-            emptyNotice.className = 'testimonial-empty';
-            emptyNotice.textContent = 'Belum ada ulasan yang dipublikasikan. Selesaikan pesanan Anda dan bagikan pengalaman Anda di halaman invoice!';
-            grid.appendChild(emptyNotice);
-            return;
-        }
-
-        const recentReviews = [...reviews].reverse().slice(0, 6);
-
-        recentReviews.forEach(rev => {
-            const card = document.createElement('div');
-            card.className = 'testimonial-card';
-
-            const stars = document.createElement('div');
-            stars.style.fontSize = '0.9rem';
-            stars.style.marginBottom = '0.5rem';
-            stars.textContent = typeof rev.rating === 'string' ? rev.rating : '⭐⭐⭐⭐⭐';
-
-            const comment = document.createElement('p');
-            comment.style.color = 'var(--text-main)';
-            comment.style.fontSize = '0.85rem';
-            comment.style.fontStyle = 'italic';
-            comment.style.marginBottom = '1rem';
-            comment.style.lineHeight = '1.5';
-            comment.textContent = `"${rev.komentar || ''}"`;
-
-            const footer = document.createElement('div');
-            footer.style.display = 'flex';
-            footer.style.justifyContent = 'space-between';
-            footer.style.alignItems = 'center';
-            footer.style.fontSize = '0.75rem';
-            footer.style.color = 'var(--text-muted)';
-            footer.style.borderTop = '1px solid var(--border-color)';
-            footer.style.paddingTop = '0.75rem';
-
-            const author = document.createElement('strong');
-            author.style.color = 'var(--dark)';
-            author.textContent = rev.nama ? `~ ${rev.nama}` : '~ Pelanggan';
-
-            const date = document.createElement('span');
-            date.textContent = rev.tanggal || '';
-
-            footer.appendChild(author);
-            footer.appendChild(date);
-
-            card.appendChild(stars);
-            card.appendChild(comment);
-            card.appendChild(footer);
-
-            grid.appendChild(card);
-        });
     });
 </script>
 </body>
