@@ -633,7 +633,9 @@ async function prosesBeli() {
         }
     }
 
-    const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal);
+    // Tambah 3 digit angka unik acak (antara 101 - 499)
+const kodeUnik = Math.floor(Math.random() * 399) + 101;
+const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
 
     const dataInvoice = {
         id: invoiceId,
@@ -651,6 +653,11 @@ async function prosesBeli() {
             .insert([dataInvoice]);
 
         if (dbError) throw dbError;
+
+      // 🔔 KIRIM NOTIFIKASI TELEGRAM KE ADMIN
+        if (typeof kirimNotifTelegram === 'function') {
+            kirimNotifTelegram(dataInvoice);
+        }
 
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);

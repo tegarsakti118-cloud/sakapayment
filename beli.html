@@ -790,6 +790,11 @@ const hargaFinal = Math.max(0, produkPilihan.harga - diskonFinal) + kodeUnik;
 
         if (dbError) throw dbError;
 
+      // 🔔 KIRIM NOTIFIKASI TELEGRAM KE ADMIN
+        if (typeof kirimNotifTelegram === 'function') {
+            kirimNotifTelegram(dataInvoice);
+            }
+
         // Simpan cache lokal untuk kenyamanan redirect nota
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);

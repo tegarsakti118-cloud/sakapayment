@@ -367,9 +367,11 @@ async function prosesBeli() {
         }
     }
 
-    const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal);
-
-    const dataInvoice = {
+    // Tambah 3 digit angka unik acak (antara 101 - 499)
+const kodeUnik = Math.floor(Math.random() * 399) + 101;
+const hargaFinal = Math.max(0, itemTerpilih.harga - diskonFinal) + kodeUnik;
+    
+  const dataInvoice = {
         id: invoiceId,
         produk: "Call of Duty Mobile (" + itemTerpilih.nama + ")" + (voucherAktif ? ` [Voucher: ${voucherAktif.kode}]` : ""),
         tujuan: idVal,
@@ -385,6 +387,11 @@ async function prosesBeli() {
             .insert([dataInvoice]);
 
         if (dbError) throw dbError;
+
+      // 🔔 KIRIM NOTIFIKASI TELEGRAM KE ADMIN
+        if (typeof kirimNotifTelegram === 'function') {
+            kirimNotifTelegram(dataInvoice);
+        }
 
         localStorage.setItem(invoiceId, JSON.stringify(dataInvoice));
         localStorage.setItem('latestInvoice', invoiceId);
